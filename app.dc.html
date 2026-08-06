@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="omelette-owns-print" content="1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Meridian FX">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-180.png">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;450;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--ink:#0a0a0c;--pane:#101015;--pane2:#15151b;--rule:rgba(232,228,220,.09);--rule2:rgba(232,228,220,.2);
+--fg:#e9e6e0;--fg2:#a09c95;--fg3:#6b6862;
+--red:#e0483a;--amb:#c9942f;--blu:#5b93b8;--grn:#4a9d6f;
+--acc:oklch(.7 .17 300);
+--srf:'Newsreader',Georgia,serif;--ui:'IBM Plex Sans Condensed',system-ui,sans-serif;--mn:'IBM Plex Mono',ui-monospace,monospace;
+--rowpad:10px;--rowfs:13.5px;--numfs:13px;--subfs:10px;--sub:block;--hdr:82px;--colh:26px;
+--lift:0 14px 34px rgba(0,0,0,.5);
+}
+:root[data-theme="light"]{
+--ink:#f4f2ed;--pane:#fffefb;--pane2:#f2efe8;--rule:rgba(20,18,14,.11);--rule2:rgba(20,18,14,.26);
+--fg:#16150f;--fg2:#55524a;--fg3:#8a877e;
+--red:#b62f22;--amb:#8a6210;--blu:#2c6183;--grn:#26714a;
+--lift:0 12px 30px rgba(24,20,12,.14);
+}
+:root[data-density="compact"]{--rowpad:5px;--rowfs:12.5px;--numfs:12px;--subfs:0px;--sub:none}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;overscroll-behavior-y:none}
+a{color:var(--fg);text-decoration:none;border-bottom:1px solid var(--rule2)}
+a:hover{color:var(--acc);border-bottom-color:var(--acc)}
+button,input,select,textarea{font-family:inherit;color:inherit}
+input,textarea,select{outline:none;border-radius:0}
+button{border-radius:0;-webkit-tap-highlight-color:transparent}
+::selection{background:var(--acc);color:#fff}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--rule2)}
+::-webkit-scrollbar-track{background:transparent}
+@keyframes mBlink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes mUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes mTickA{0%{transform:scale(1.085);opacity:.72}42%{transform:scale(.995)}100%{transform:scale(1);opacity:1}}
+@keyframes mTickB{0%{transform:scale(1.085);opacity:.72}42%{transform:scale(.995)}100%{transform:scale(1);opacity:1}}
+@keyframes mDrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes mOpen{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+@keyframes mFlash{0%{background:color-mix(in oklab,var(--acc) 34%,transparent)}100%{background:transparent}}
+@media(max-width:1180px){[data-c-trend]{display:none!important}}
+@media(max-width:1060px){[data-c-vol]{display:none!important}}
+@media(max-width:900px){[data-c-prev]{display:none!important}[data-lede]{grid-template-columns:1fr!important}[data-lede]>div{border-right:none!important;padding-left:0!important}}
+@media(max-width:700px){[data-c-sur]{display:none!important}[data-c-pairs]{display:none!important}}
+@media(max-width:560px){[data-c-fc]{display:none!important}[data-kbd]{display:none!important}}
+@media print{
+[data-noprint]{display:none!important}
+:root{--ink:#fff;--pane:#fff;--pane2:#fff;--fg:#111;--fg2:#3d3b36;--fg3:#6d6a63;--rule:#d8d5cd;--rule2:#a9a59c;--red:#a52a1c;--amb:#7d5a0e;--blu:#265a78;--grn:#1f6642;--acc:#333;--lift:none}
+@page{margin:13mm}
+}
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:var(--ink)">
+
+<sc-if value="{{ stale }}">
+  <div data-noprint style="background:var(--amb);color:#0a0a0c;padding:8px 20px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;position:relative;z-index:45">
+    <span style="font:700 9.5px var(--mn);letter-spacing:.18em">DATA {{ staleAge }} OLD</span>
+    <span style="font:500 12px/1.4 var(--ui);flex:1 1 220px">Consensus and actuals may have moved. Treat printed figures as unverified until re-synced.</span>
+    <a href="#" onClick="{{ goSettings }}" style="color:#0a0a0c;border-bottom-color:#0a0a0c;font:600 10px var(--mn);letter-spacing:.1em">HOW TO SYNC</a>
+  </div>
+</sc-if>
+
+<sc-if value="{{ hasDiff }}">
+  <div data-noprint style="background:var(--pane);border-bottom:1px solid var(--rule2);padding:9px 20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;position:relative;z-index:44">
+    <span style="font:600 9.5px var(--mn);letter-spacing:.18em;color:var(--acc)">SINCE YOU LAST LOOKED</span>
+    <span style="font:400 12.5px/1.45 var(--ui);color:var(--fg2);flex:1 1 240px">{{ diffText }}</span>
+    <button onClick="{{ clearDiff }}" style="background:none;border:1px solid var(--rule2);color:var(--fg2);font:600 9px var(--mn);letter-spacing:.12em;padding:5px 8px;cursor:pointer">DISMISS</button>
+  </div>
+</sc-if>
+
+<header data-noprint style="position:sticky;top:0;z-index:40;background:var(--ink);border-bottom:1px solid var(--rule2)">
+  <div style="max-width:1460px;margin:0 auto;padding:11px 20px 0 20px;display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap">
+    <div style="display:flex;align-items:baseline;gap:11px;flex:none">
+      <span style="font:500 27px/1 var(--srf);letter-spacing:-.015em">{{ brand }}</span>
+      <span style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3);padding-bottom:3px">FX CALENDAR</span>
+    </div>
+    <div style="flex:1 1 20px"></div>
+    <div style="display:flex;align-items:baseline;gap:14px;flex:none;padding-bottom:2px">
+      <span data-kbd style="font:400 11px var(--mn);letter-spacing:.06em;color:var(--fg3)">{{ editionLine }}</span>
+      <span style="display:flex;align-items:center;gap:7px">
+        <span style="width:5px;height:5px;background:var(--grn);animation:mBlink 2.4s ease-in-out infinite"></span>
+        <span style="font:500 15px/1 var(--mn);letter-spacing:-.01em">{{ clock }}</span>
+        <span style="font:400 10px var(--mn);color:var(--fg2)">{{ tzShort }}</span>
+      </span>
+    </div>
+  </div>
+  <div style="max-width:1460px;margin:0 auto;padding:0 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <nav style="display:flex;gap:0;overflow-x:auto;margin-bottom:-1px;scrollbar-width:none">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="8">
+        <button onClick="{{ t.go }}" style="background:none;border:none;border-bottom:2px solid {{ t.bd }};color:{{ t.fg }};font:600 10.5px var(--mn);letter-spacing:.15em;padding:11px 0 9px 0;margin-right:19px;cursor:pointer;white-space:nowrap;display:flex;align-items:baseline;gap:5px" style-hover="color:var(--fg)">
+          <span>{{ t.label }}</span>
+          <sc-if value="{{ t.count }}"><span style="font:400 9px var(--mn);color:var(--fg3)">{{ t.count }}</span></sc-if>
+        </button>
+      </sc-for>
+    </nav>
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-bottom:8px">
+      <sc-if value="{{ canInstall }}">
+        <button onClick="{{ doInstall }}" style="background:var(--acc);border:1px solid var(--acc);color:#fff;font:700 10px var(--mn);letter-spacing:.12em;padding:6px 9px;cursor:pointer">INSTALL APP</button>
+      </sc-if>
+      <select value="{{ tzValue }}" onChange="{{ onTz }}" style="background:transparent;border:1px solid var(--rule2);color:var(--fg);font:500 11px var(--ui);letter-spacing:.02em;padding:5px 6px;max-width:150px">
+        <sc-for list="{{ cities }}" as="c" hint-placeholder-count="6"><option value="{{ c.v }}">{{ c.label }}</option></sc-for>
+      </select>
+      <button onClick="{{ toggleDensity }}" title="Row density" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.1em;padding:6px 8px;cursor:pointer" style-hover="color:var(--fg)">{{ densityLabel }}</button>
+      <button onClick="{{ toggleAlerts }}" title="Notification + ping at 15 / 5 / 1 min before high-impact releases" style="background:{{ alertBg }};border:1px solid {{ alertBd }};color:{{ alertFg }};font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer">{{ alertLabel }}</button>
+      <button onClick="{{ toggleSound }}" style="background:transparent;border:1px solid {{ soundBd }};color:{{ soundFg }};font:600 10px var(--mn);letter-spacing:.1em;padding:6px 8px;cursor:pointer">{{ soundLabel }}</button>
+      <button onClick="{{ toggleTheme }}" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer" style-hover="color:var(--fg)">{{ themeLabel }}</button>
+    </div>
+  </div>
+</header>
+
+<div data-noprint style="position:fixed;right:0;bottom:20px;z-index:60;display:flex;flex-direction:column;gap:1px;align-items:flex-end;pointer-events:none">
+  <sc-for list="{{ toasts }}" as="n" hint-placeholder-count="0">
+    <div style="animation:mUp .22s ease both;background:var(--pane);border:1px solid var(--rule2);border-right:none;border-left:3px solid var(--red);padding:11px 16px;max-width:330px;box-shadow:var(--lift)">
+      <div style="font:600 9.5px var(--mn);letter-spacing:.16em;color:var(--red)">{{ n.head }}</div>
+      <div style="font:400 13px/1.4 var(--ui);margin-top:4px">{{ n.body }}</div>
+    </div>
+  </sc-for>
+</div>
+
+<main style="max-width:1460px;margin:0 auto;padding:0 20px 60px 20px">
+
+<sc-if value="{{ vCal }}" hint-placeholder-val="{{ true }}">
+<div>
+
+  <div data-lede style="display:grid;grid-template-columns:minmax(300px,7fr) minmax(260px,5fr);gap:0;border-bottom:1px solid var(--rule2)">
+    <div style="padding:22px 26px 20px 0;border-right:1px solid var(--rule)">
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <span style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3)">NEXT HIGH-IMPACT</span>
+        <span style="font:600 9.5px var(--mn);letter-spacing:.14em;color:{{ nextColor }}">{{ nextImpact }}</span>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-top:9px">
+        <span style="display:inline-block;font:450 54px/.95 var(--mn);letter-spacing:-.035em;color:{{ nextColor }};animation:{{ tickAnim }} .6s cubic-bezier(.16,1.1,.3,1) both">{{ countdown }}</span>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font:500 13px var(--mn);letter-spacing:.02em">{{ nextCur }} · {{ nextAt }}</span>
+          <span style="font:400 11px var(--mn);color:var(--fg3)">{{ nextPairs }}</span>
+        </div>
+      </div>
+      <div style="height:2px;background:var(--rule);margin-top:8px;overflow:hidden">
+        <div style="height:100%;width:100%;background:{{ nextColor }};transform-origin:left center;transform:scaleX({{ drainScale }})"></div>
+      </div>
+      <div style="font:400 22px/1.28 var(--srf);letter-spacing:-.01em;margin-top:12px;max-width:32ch;text-wrap:pretty">{{ nextName }}</div>
+      <div style="display:flex;gap:0;margin-top:14px;border-top:1px solid var(--rule);flex-wrap:wrap">
+        <div style="padding:9px 20px 0 0"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">FORECAST</div><div style="font:500 16px var(--mn);margin-top:3px">{{ nextFc }}</div></div>
+        <div style="padding:9px 20px 0 20px;border-left:1px solid var(--rule)"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">PREVIOUS</div><div style="font:400 16px var(--mn);margin-top:3px;color:var(--fg2)">{{ nextPrev }}</div></div>
+        <div style="padding:9px 0 0 20px;border-left:1px solid var(--rule)"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">{{ nextBracketLabel }}</div><div style="font:500 16px var(--mn);margin-top:3px;color:var(--amb)">{{ nextBracket }}</div></div>
+      </div>
+    </div>
+
+    <div style="padding:22px 0 20px 26px;display:flex;flex-direction:column;gap:16px">
+      <div>
+        <div style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3);margin-bottom:9px">DESK BRIEF</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <sc-for list="{{ brief }}" as="b" hint-placeholder-count="4">
+            <div style="display:flex;align-items:baseline;gap:12px;padding:6px 0;border-bottom:1px solid var(--rule)">
+              <span style="flex:1;font:400 12.5px/1.4 var(--ui);color:var(--fg2);text-wrap:pretty">{{ b.k }}</span>
+              <span style="flex:none;font:500 12.5px var(--mn);color:{{ b.fg }};text-align:right">{{ b.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px">
+          <span style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3)">SESSIONS</span>
+          <span style="font:400 10px var(--mn);color:var(--fg3)">{{ utcNow }} UTC</span>
+        </div>
+        <div style="position:relative">
+          <sc-for list="{{ sessions }}" as="s" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:5px">
+              <span style="width:58px;flex:none;font:500 10.5px var(--ui);letter-spacing:.04em;color:{{ s.fg }}">{{ s.name }}</span>
+              <div style="position:relative;flex:1;height:7px;background:var(--pane2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+                <sc-for list="{{ s.segs }}" as="g" hint-placeholder-count="1"><div style="position:absolute;top:0;bottom:0;left:{{ g.l }};width:{{ g.w }};background:{{ s.bar }}"></div></sc-for>
+                <div style="position:absolute;top:-3px;bottom:-3px;left:{{ nowMark }};width:1px;background:var(--fg)"></div>
+              </div>
+              <span style="width:84px;flex:none;text-align:right;font:500 9.5px var(--mn);letter-spacing:.06em;color:{{ s.fg }}">{{ s.status }}</span>
+            </div>
+          </sc-for>
+          <div style="display:flex;justify-content:space-between;margin-left:68px;margin-right:94px;font:400 8.5px var(--mn);color:var(--fg3)">
+            <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
+          </div>
+          <div style="font:400 9.5px var(--mn);color:var(--fg3);margin-top:6px">{{ sessionNote }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-noprint style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:11px 0;border-bottom:1px solid var(--rule)">
+    <input value="{{ query }}" onInput="{{ onQuery }}" placeholder="Search events   /" style="flex:0 1 190px;background:transparent;border:none;border-bottom:1px solid var(--rule2);padding:4px 0;font:400 12.5px var(--ui)">
+    <div style="display:flex;gap:13px">
+      <sc-for list="{{ impactBtns }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.go }}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;align-items:center;gap:6px">
+          <span style="width:9px;height:9px;background:{{ b.dot }};border:1px solid {{ b.bd }}"></span>
+          <span style="font:600 10px var(--mn);letter-spacing:.12em;color:{{ b.fg }}">{{ b.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="width:1px;height:14px;background:var(--rule2)"></div>
+    <div style="display:flex;gap:11px;flex-wrap:wrap">
+      <sc-for list="{{ curBtns }}" as="b" hint-placeholder-count="9">
+        <button onClick="{{ b.go }}" style="background:none;border:none;padding:0 0 2px 0;border-bottom:1px solid {{ b.bd }};color:{{ b.fg }};font:600 11px var(--mn);letter-spacing:.06em;cursor:pointer">{{ b.label }}</button>
+      </sc-for>
+    </div>
+    <div style="flex:1 1 10px"></div>
+    <button onClick="{{ toggleWatchOnly }}" style="background:none;border:none;padding:0;cursor:pointer;font:600 10px var(--mn);letter-spacing:.12em;color:{{ watchFg }}">{{ watchLabel }}</button>
+  </div>
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:20px 0 10px 0">
+    <h1 style="margin:0;font:400 30px/1.1 var(--srf);letter-spacing:-.018em">{{ listTitle }}</h1>
+    <span style="font:400 11px var(--mn);letter-spacing:.04em;color:var(--fg3)">{{ listSub }}</span>
+  </div>
+
+  <div data-colhead style="position:sticky;top:var(--hdr);z-index:22;background:var(--ink);display:flex;gap:12px;padding:7px 0;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">
+    <span style="width:44px;flex:none">TIME</span>
+    <span style="width:32px;flex:none">CCY</span>
+    <span style="width:16px;flex:none">I</span>
+    <span style="flex:1 1 170px;min-width:130px">RELEASE</span>
+    <span style="width:60px;flex:none;text-align:right">ACTUAL</span>
+    <span data-c-fc style="width:54px;flex:none;text-align:right">FCST</span>
+    <span data-c-prev style="width:54px;flex:none;text-align:right">PREV</span>
+    <span data-c-sur style="width:78px;flex:none;text-align:right">SURPRISE</span>
+    <span data-c-vol style="width:46px;flex:none;text-align:right">RANGE</span>
+    <span data-c-trend style="width:54px;flex:none;text-align:right">TREND</span>
+    <span style="width:42px;flex:none"></span>
+  </div>
+
+  <sc-for list="{{ groups }}" as="grp" hint-placeholder-count="1">
+    <div>
+      <sc-if value="{{ grp.showHead }}">
+        <div style="position:sticky;top:calc(var(--hdr) + var(--colh));z-index:20;background:var(--ink);display:flex;align-items:baseline;gap:11px;padding:11px 0 5px 0;border-bottom:1px solid var(--rule)">
+          <span style="font:500 15px var(--srf);letter-spacing:-.005em;color:{{ grp.fg }}">{{ grp.label }}</span>
+          <span style="font:400 10px var(--mn);letter-spacing:.06em;color:var(--fg3)">{{ grp.sub }}</span>
+        </div>
+      </sc-if>
+      <sc-for list="{{ grp.items }}" as="r" hint-placeholder-count="6">
+        <div>
+          <div data-row="{{ r.id }}" style="display:flex;gap:12px;align-items:baseline;padding:var(--rowpad) 0;border-bottom:1px solid var(--rule);border-left:2px solid {{ r.edge }};padding-left:10px;margin-left:-12px;background:{{ r.bg }};opacity:{{ r.dim }}" style-hover="background:var(--pane2)">
+            <span style="width:44px;flex:none;font:500 12.5px var(--mn);color:{{ r.timeFg }}">{{ r.time }}</span>
+            <span style="width:32px;flex:none;font:600 12px var(--mn);letter-spacing:.04em">{{ r.cur }}</span>
+            <span style="width:16px;flex:none;font:600 9.5px var(--mn);letter-spacing:.02em;color:{{ r.impFg }};border:1px solid {{ r.impBd }};background:{{ r.impBg }};text-align:center;line-height:14px">{{ r.impLetter }}</span>
+            <span style="flex:1 1 170px;min-width:130px;display:flex;flex-direction:column;gap:1px">
+              <span style="font:400 var(--rowfs)/1.35 var(--ui)">{{ r.name }} <span style="color:var(--fg3);font:400 11px var(--mn)">{{ r.period }}</span> <sc-if value="{{ r.flag }}"><span style="font:600 8.5px var(--mn);letter-spacing:.12em;color:{{ r.flagFg }};border:1px solid {{ r.flagFg }};padding:0 3px">{{ r.flag }}</span></sc-if></span>
+              <span data-c-pairs style="display:var(--sub);font:400 var(--subfs) var(--mn);letter-spacing:.03em;color:var(--fg3)">{{ r.pairsText }}</span>
+            </span>
+            <span style="width:60px;flex:none;text-align:right;font:500 var(--numfs) var(--mn);color:{{ r.actFg }};animation:{{ r.flashAnim }}">
+              <sc-if value="{{ r.isNew }}">{{ r.actualEl }}</sc-if>
+              <sc-if value="{{ r.notNew }}">{{ r.actual }}</sc-if>
+            </span>
+            <span data-c-fc style="width:54px;flex:none;text-align:right;font:400 12.5px var(--mn);color:var(--fg2)">{{ r.forecast }}</span>
+            <span data-c-prev style="width:54px;flex:none;text-align:right;font:400 12.5px var(--mn);color:var(--fg3)">{{ r.previous }}</span>
+            <span data-c-sur style="width:78px;flex:none;text-align:right;font:500 12.5px var(--mn);color:{{ r.surFg }}">{{ r.surprise }} <span style="font:400 10px var(--mn);color:var(--fg3)">{{ r.sigma }}</span></span>
+            <span data-c-vol style="width:46px;flex:none;text-align:right;font:400 11.5px var(--mn);color:{{ r.volFg }}">{{ r.volText }}</span>
+            <span data-c-trend style="width:54px;flex:none;display:flex;align-items:flex-end;justify-content:flex-end;gap:2px;height:18px">
+              <sc-for list="{{ r.spark }}" as="s" hint-placeholder-count="8"><span style="width:4px;height:{{ s.h }};background:{{ s.bg }}"></span></sc-for>
+            </span>
+            <span style="width:42px;flex:none;display:flex;justify-content:flex-end;gap:2px">
+              <button onClick="{{ r.star }}" title="Watchlist — S" style="background:none;border:none;cursor:pointer;font:400 13px var(--ui);color:{{ r.starFg }};padding:0 2px">★</button>
+              <button onClick="{{ r.toggle }}" title="Detail — Space" style="background:none;border:1px solid var(--rule);cursor:pointer;font:500 11px var(--mn);color:var(--fg2);width:18px;height:18px;line-height:1;padding:0" style-hover="border-color:var(--rule2);color:var(--fg)">{{ r.chev }}</button>
+            </span>
+          </div>
+          <sc-if value="{{ r.open }}">
+            <div style="border-bottom:1px solid var(--rule);background:var(--pane2);box-shadow:var(--lift);padding:18px 20px 20px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;animation:mOpen .16s ease-out both;position:relative;z-index:5">
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">THE READ</span>
+                <p style="margin:0;font:400 14px/1.62 var(--srf);text-wrap:pretty">{{ r.desc }}</p>
+                <sc-if value="{{ r.bracket }}">
+                  <div style="border-top:1px solid var(--rule);padding-top:8px">
+                    <div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">REFERENCE BRACKET · {{ r.bracketPair }}</div>
+                    <div style="font:500 13px var(--mn);margin-top:3px;color:var(--amb)">{{ r.bracket }}</div>
+                    <div style="font:400 10px/1.5 var(--mn);color:var(--fg3);margin-top:3px">spot {{ r.spot }} ± {{ r.volRaw }} pips — reference level, not live</div>
+                  </div>
+                </sc-if>
+                <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:2px">
+                  <sc-for list="{{ r.pairs }}" as="p" hint-placeholder-count="3"><span style="font:500 10.5px var(--mn);letter-spacing:.04em;color:var(--fg2);border-bottom:1px solid var(--rule2)">{{ p }}</span></sc-for>
+                </div>
+                <span style="font:400 10px var(--mn);color:var(--fg3);margin-top:2px">{{ r.source }} · {{ r.utcLabel }}</span>
+                <sc-if value="{{ r.ratings }}"><span style="font:400 10px/1.5 var(--mn);color:var(--blu);border-top:1px solid var(--rule);padding-top:6px">{{ r.ratings }}</span></sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">LAST EIGHT PRINTS</span>
+                <div style="display:flex;align-items:flex-end;gap:5px;height:62px">
+                  <sc-for list="{{ r.hist }}" as="h" hint-placeholder-count="8">
+                    <div style="flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+                      <span style="font:400 8.5px var(--mn);color:var(--fg3)">{{ h.v }}</span>
+                      <div style="width:100%;height:{{ h.h }};background:{{ h.bg }}"></div>
+                    </div>
+                  </sc-for>
+                </div>
+                <span style="font:400 10.5px var(--ui);color:var(--fg3)">{{ r.histNote }}</span>
+                <div style="border-top:1px solid var(--rule);padding-top:9px;display:flex;flex-direction:column;gap:5px">
+                  <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">OUTCOME — WHAT IT ACTUALLY DID</span>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <input value="{{ r.moved }}" onInput="{{ r.onMoved }}" placeholder="pips" inputMode="decimal" style="width:66px;background:var(--pane);border:1px solid var(--rule);padding:5px 7px;font:500 12px var(--mn)">
+                    <span style="font:400 11px var(--mn);color:var(--fg3)">vs ±{{ r.volRaw }} expected</span>
+                    <span style="font:600 10.5px var(--mn);letter-spacing:.06em;color:{{ r.outFg }}">{{ r.outLabel }}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px">
+                <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">DESK NOTE</span>
+                <div style="display:flex;flex-direction:column;gap:7px">
+                  <div>
+                    <div style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3);margin-bottom:3px">BIAS</div>
+                    <input value="{{ r.bias }}" onInput="{{ r.onBias }}" placeholder="Long USD into the print" style="width:100%;background:var(--pane);border:1px solid var(--rule);padding:6px 8px;font:400 12.5px var(--ui)">
+                  </div>
+                  <div>
+                    <div style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3);margin-bottom:3px">LEVEL</div>
+                    <input value="{{ r.level }}" onInput="{{ r.onLevel }}" placeholder="Entry / target" style="width:100%;background:var(--pane);border:1px solid var(--rule);padding:6px 8px;font:400 12.5px var(--mn)">
+                  </div>
+                  <div>
+                    <div style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3);margin-bottom:3px">INVALIDATION</div>
+                    <input value="{{ r.inval }}" onInput="{{ r.onInval }}" placeholder="Where I'm wrong" style="width:100%;background:var(--pane);border:1px solid var(--rule);padding:6px 8px;font:400 12.5px var(--mn)">
+                  </div>
+                </div>
+                <button onClick="{{ r.report }}" style="align-self:flex-start;background:none;border:1px solid {{ r.repBd }};color:{{ r.repFg }};font:600 9.5px var(--mn);letter-spacing:.12em;padding:6px 9px;cursor:pointer">{{ r.repLabel }}</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-for>
+
+  <sc-if value="{{ empty }}">
+    <div style="padding:52px 0;text-align:center">
+      <div style="font:400 19px var(--srf);color:var(--fg2)">{{ emptyTitle }}</div>
+      <div style="font:400 12px var(--ui);color:var(--fg3);margin-top:6px">{{ emptyHint }}</div>
+    </div>
+  </sc-if>
+
+  <div data-kbd data-noprint style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;font:400 10px var(--mn);letter-spacing:.04em;color:var(--fg3);padding:16px 0 0 0;border-top:1px solid var(--rule)">
+    <span>J K move</span><span>SPACE detail</span><span>S star</span><span>/ search</span><span>T today</span><span>W week</span><span>1 2 3 impact</span><span>D density</span>
+  </div>
+  <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font:400 10px var(--mn);letter-spacing:.04em;color:var(--fg3);padding:10px 0 0 0">
+    <span>SNAPSHOT {{ snapshot }}</span><span>—</span>
+    <span>ForexFactory · Investing.com · Myfxbook, cross-checked</span><span>—</span>
+    <a href="#" onClick="{{ goSettings }}">update policy</a>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ vPairs }}">
+<div style="padding-top:22px">
+  <h1 style="margin:0;font:400 30px/1.1 var(--srf);letter-spacing:-.018em">By pair</h1>
+  <p style="margin:8px 0 0 0;max-width:58ch;font:400 14.5px/1.62 var(--srf);color:var(--fg2);text-wrap:pretty">Every release that moves either leg, on one timeline — the way a position is actually watched.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;padding-bottom:14px;border-bottom:1px solid var(--rule2)">
+    <sc-for list="{{ pairBtns }}" as="p" hint-placeholder-count="8">
+      <button onClick="{{ p.go }}" style="background:none;border:none;padding:0 0 3px 0;border-bottom:2px solid {{ p.bd }};color:{{ p.fg }};font:600 12px var(--mn);letter-spacing:.04em;cursor:pointer">{{ p.label }}</button>
+    </sc-for>
+  </div>
+  <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;padding:18px 0">
+    <span style="font:450 30px var(--mn);letter-spacing:-.02em">{{ pairSpot }}</span>
+    <span style="font:400 11px var(--mn);color:var(--fg3)">reference spot · {{ pairName }}</span>
+    <span style="font:500 12px var(--mn);color:var(--amb)">{{ pairRisk }}</span>
+  </div>
+  <div style="display:flex;gap:12px;padding:7px 0;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">
+    <span style="width:120px;flex:none">WHEN</span><span style="width:32px;flex:none">CCY</span><span style="width:16px;flex:none">I</span><span style="flex:1 1 160px">RELEASE</span><span style="width:60px;flex:none;text-align:right">FCST</span><span style="width:56px;flex:none;text-align:right">RANGE</span><span style="width:74px;flex:none;text-align:right">LEG</span>
+  </div>
+  <sc-for list="{{ pairRows }}" as="r" hint-placeholder-count="8">
+    <div style="display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule);opacity:{{ r.dim }}">
+      <span style="width:120px;flex:none;font:400 10.5px var(--mn);color:var(--fg2)">{{ r.when }}</span>
+      <span style="width:32px;flex:none;font:600 12px var(--mn)">{{ r.cur }}</span>
+      <span style="width:16px;flex:none;font:600 9.5px var(--mn);color:{{ r.impFg }};border:1px solid {{ r.impBd }};background:{{ r.impBg }};text-align:center;line-height:14px">{{ r.impLetter }}</span>
+      <span style="flex:1 1 160px;font:400 13px var(--ui)">{{ r.name }}</span>
+      <span style="width:60px;flex:none;text-align:right;font:500 12.5px var(--mn)">{{ r.fc }}</span>
+      <span style="width:56px;flex:none;text-align:right;font:400 11.5px var(--mn);color:var(--amb)">{{ r.vol }}</span>
+      <span style="width:74px;flex:none;text-align:right;font:600 9.5px var(--mn);letter-spacing:.08em;color:{{ r.legFg }}">{{ r.leg }}</span>
+    </div>
+  </sc-for>
+  <sc-if value="{{ pairEmpty }}"><div style="padding:44px 0;text-align:center;font:400 17px var(--srf);color:var(--fg2)">Nothing scheduled for this pair in the window.</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ vSpeakers }}">
+<div style="padding-top:22px">
+  <h1 style="margin:0;font:400 30px/1.1 var(--srf);letter-spacing:-.018em">Central banks</h1>
+  <p style="margin:8px 0 0 0;max-width:60ch;font:400 14.5px/1.62 var(--srf);color:var(--fg2);text-wrap:pretty">The Fed dropped forward guidance on 29 July, so unscripted remarks now carry the weight guidance used to. Treat any live mic from a voter as a high-impact window.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:0;margin-top:24px;border-top:1px solid var(--rule2)">
+    <sc-for list="{{ speakers }}" as="s" hint-placeholder-count="4">
+      <div style="padding:16px 20px 18px 0;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:7px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px">
+          <span style="font:600 11px var(--mn);letter-spacing:.08em">{{ s.cur }}</span>
+          <span style="font:600 9px var(--mn);letter-spacing:.14em;color:{{ s.color }}">{{ s.tag }}</span>
+        </div>
+        <div style="font:400 19px/1.25 var(--srf);letter-spacing:-.01em">{{ s.who }}</div>
+        <div style="font:400 11.5px/1.45 var(--ui);color:var(--fg3)">{{ s.role }}</div>
+        <div style="font:500 12px var(--mn);color:{{ s.color }};margin-top:2px">{{ s.when }}</div>
+        <div style="font:400 12.5px/1.55 var(--ui);color:var(--fg2);text-wrap:pretty">{{ s.topic }}</div>
+        <div style="font:400 10.5px/1.4 var(--mn);color:var(--fg3);margin-top:auto;padding-top:6px">{{ s.stance }}</div>
+      </div>
+    </sc-for>
+  </div>
+  <h2 style="margin:34px 0 0 0;font:400 22px var(--srf);letter-spacing:-.012em">Policy rates</h2>
+  <div style="display:flex;gap:12px;padding:8px 0;margin-top:12px;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">
+    <span style="width:38px;flex:none">CCY</span><span style="flex:1 1 150px">AUTHORITY</span><span style="width:96px;flex:none;text-align:right">RATE</span><span style="width:112px;flex:none;text-align:right">LAST MOVE</span><span style="width:136px;flex:none;text-align:right">NEXT</span>
+  </div>
+  <sc-for list="{{ rates }}" as="r" hint-placeholder-count="8">
+    <div style="display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap">
+      <span style="width:38px;flex:none;font:600 12px var(--mn);letter-spacing:.04em">{{ r.cur }}</span>
+      <span style="flex:1 1 150px;font:400 13px var(--ui);color:var(--fg2)">{{ r.bank }}</span>
+      <span style="width:96px;flex:none;font:500 14px var(--mn);text-align:right">{{ r.rate }}</span>
+      <span style="width:112px;flex:none;font:500 10.5px var(--mn);letter-spacing:.04em;text-align:right;color:{{ r.fg }}">{{ r.last }}</span>
+      <span style="width:136px;flex:none;font:400 10.5px var(--mn);text-align:right;color:var(--fg3)">{{ r.next }}</span>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ vReport }}">
+<div style="padding-top:22px">
+  <div data-noprint style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;padding-bottom:16px;border-bottom:1px solid var(--rule2)">
+    <div style="display:flex;flex-direction:column;gap:5px;flex:1 1 200px">
+      <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">PREPARED FOR</span>
+      <input value="{{ client }}" onInput="{{ onClient }}" placeholder="Client or desk" style="background:transparent;border:none;border-bottom:1px solid var(--rule2);padding:4px 0;font:400 14px var(--ui)">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">SECTIONS</span>
+      <div style="display:flex;gap:13px;flex-wrap:wrap">
+        <sc-for list="{{ secBtns }}" as="b" hint-placeholder-count="4">
+          <button onClick="{{ b.go }}" style="background:none;border:none;padding:0 0 2px 0;border-bottom:1px solid {{ b.bd }};color:{{ b.fg }};font:600 10px var(--mn);letter-spacing:.1em;cursor:pointer">{{ b.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onClick="{{ doPrint }}" style="background:var(--fg);border:1px solid var(--fg);color:var(--ink);font:700 10px var(--mn);letter-spacing:.14em;padding:9px 14px;cursor:pointer">PRINT / PDF</button>
+      <button onClick="{{ doCopy }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 10px var(--mn);letter-spacing:.12em;padding:9px 12px;cursor:pointer">{{ copyLabel }}</button>
+      <button onClick="{{ doEmail }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 10px var(--mn);letter-spacing:.12em;padding:9px 12px;cursor:pointer">EMAIL</button>
+    </div>
+  </div>
+
+  <div style="padding:30px 0 0 0;max-width:900px">
+    <div style="display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;border-bottom:2px solid var(--fg);padding-bottom:12px">
+      <div>
+        <div style="font:500 30px/1.05 var(--srf);letter-spacing:-.02em">{{ brand }}</div>
+        <div style="font:600 9px var(--mn);letter-spacing:.22em;color:var(--fg2);margin-top:5px">MACRO CALENDAR BRIEF</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font:400 12px var(--ui);color:var(--fg2)">{{ reportRange }}</div>
+        <div style="font:500 13px var(--ui);margin-top:4px">{{ clientOut }}</div>
+        <div style="font:400 10px var(--mn);color:var(--fg3);margin-top:3px">{{ generatedAt }} · {{ tzLong }}</div>
+      </div>
+    </div>
+
+    <sc-if value="{{ secAhead }}">
+      <div style="padding-top:26px">
+        <div style="font:600 9px var(--mn);letter-spacing:.2em;color:var(--fg3)">I. LOOK-AHEAD — HIGH IMPACT</div>
+        <div style="display:flex;gap:12px;padding:7px 0;margin-top:9px;border-bottom:1px solid var(--rule2);font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">
+          <span style="width:126px;flex:none">WHEN</span><span style="width:34px;flex:none">CCY</span><span style="flex:1 1 170px">RELEASE</span><span style="width:66px;flex:none;text-align:right">FCST</span><span style="width:66px;flex:none;text-align:right">PREV</span><span style="width:56px;flex:none;text-align:right">RANGE</span>
+        </div>
+        <sc-for list="{{ aheadRows }}" as="a" hint-placeholder-count="8">
+          <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);align-items:baseline">
+            <span style="width:126px;flex:none;font:400 10.5px var(--mn);color:var(--fg2)">{{ a.when }}</span>
+            <span style="width:34px;flex:none;font:600 11px var(--mn)">{{ a.cur }}</span>
+            <span style="flex:1 1 170px;font:400 12.5px var(--ui)">{{ a.name }}</span>
+            <span style="width:66px;flex:none;text-align:right;font:500 12px var(--mn)">{{ a.fc }}</span>
+            <span style="width:66px;flex:none;text-align:right;font:400 12px var(--mn);color:var(--fg2)">{{ a.prev }}</span>
+            <span style="width:56px;flex:none;text-align:right;font:400 11px var(--mn);color:var(--amb)">{{ a.vol }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ secRecap }}">
+      <div style="padding-top:26px">
+        <div style="font:600 9px var(--mn);letter-spacing:.2em;color:var(--fg3)">II. RECAP — RELEASED VS CONSENSUS</div>
+        <div style="display:flex;gap:12px;padding:7px 0;margin-top:9px;border-bottom:1px solid var(--rule2);font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">
+          <span style="width:126px;flex:none">WHEN</span><span style="width:34px;flex:none">CCY</span><span style="flex:1 1 170px">RELEASE</span><span style="width:58px;flex:none;text-align:right">ACTUAL</span><span style="width:58px;flex:none;text-align:right">FCST</span><span style="width:86px;flex:none;text-align:right">SURPRISE</span>
+        </div>
+        <sc-for list="{{ recapRows }}" as="a" hint-placeholder-count="6">
+          <div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule);align-items:baseline">
+            <span style="width:126px;flex:none;font:400 10.5px var(--mn);color:var(--fg2)">{{ a.when }}</span>
+            <span style="width:34px;flex:none;font:600 11px var(--mn)">{{ a.cur }}</span>
+            <span style="flex:1 1 170px;font:400 12.5px var(--ui)">{{ a.name }}</span>
+            <span style="width:58px;flex:none;text-align:right;font:500 12px var(--mn)">{{ a.actual }}</span>
+            <span style="width:58px;flex:none;text-align:right;font:400 12px var(--mn);color:var(--fg2)">{{ a.fc }}</span>
+            <span style="width:86px;flex:none;text-align:right;font:500 12px var(--mn);color:{{ a.fg }}">{{ a.sur }} <span style="font:400 10px var(--mn);color:var(--fg3)">{{ a.sigma }}</span></span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ secCur }}">
+      <div style="padding-top:26px">
+        <div style="font:600 9px var(--mn);letter-spacing:.2em;color:var(--fg3)">III. PER-CURRENCY READ</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;margin-top:12px;border-top:1px solid var(--rule2)">
+          <sc-for list="{{ curRead }}" as="c" hint-placeholder-count="4">
+            <div style="padding:12px 16px 14px 0;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule)">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+                <span style="font:600 13px var(--mn);letter-spacing:.06em">{{ c.cur }}</span>
+                <span style="font:600 9.5px var(--mn);letter-spacing:.14em;color:{{ c.fg }}">{{ c.tone }}</span>
+              </div>
+              <div style="font:400 12px/1.55 var(--ui);color:var(--fg2);margin-top:7px;text-wrap:pretty">{{ c.line }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ secNotes }}">
+      <div style="padding-top:26px">
+        <div style="font:600 9px var(--mn);letter-spacing:.2em;color:var(--fg3)">IV. DESK NOTES</div>
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:12px">
+          <sc-for list="{{ noteRows }}" as="n" hint-placeholder-count="2">
+            <div style="border-left:2px solid var(--rule2);padding-left:12px">
+              <div style="font:600 10.5px var(--mn);letter-spacing:.06em;color:var(--fg3)">{{ n.head }}</div>
+              <sc-if value="{{ n.bias }}"><div style="font:400 14px/1.6 var(--srf);margin-top:4px;text-wrap:pretty"><span style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">BIAS </span>{{ n.bias }}</div></sc-if>
+              <sc-if value="{{ n.level }}"><div style="font:400 13px/1.6 var(--mn);margin-top:2px"><span style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">LEVEL </span>{{ n.level }}</div></sc-if>
+              <sc-if value="{{ n.inval }}"><div style="font:400 13px/1.6 var(--mn);margin-top:2px;color:var(--fg2)"><span style="font:600 8.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">INVALIDATION </span>{{ n.inval }}</div></sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ noNotes }}"><div style="font:400 12.5px var(--ui);color:var(--fg3);margin-top:10px">No notes yet — open any release and fill in bias, level or invalidation to have it appear here.</div></sc-if>
+      </div>
+    </sc-if>
+
+    <div style="border-top:1px solid var(--rule2);margin-top:28px;padding-top:12px;font:400 9.5px/1.7 var(--mn);color:var(--fg3);text-wrap:pretty">
+      Times converted from each release’s UTC timestamp to {{ tzLong }}. Schedule and consensus cross-checked against ForexFactory, Investing.com and Myfxbook; snapshot {{ snapshot }}. Impact ratings follow {{ ratingSrcLabel }} where the three sites disagree. Expected ranges and reference spot levels are indicative, not live quotes. Tentative entries may shift. Informational only — not investment advice.
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ vGuide }}">
+<div style="padding-top:22px;max-width:800px">
+  <div style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3)">SETUP</div>
+  <h1 style="margin:10px 0 0 0;font:400 32px/1.1 var(--srf);letter-spacing:-.02em">Install on Android</h1>
+  <p style="margin:12px 0 0 0;max-width:58ch;font:400 15px/1.65 var(--srf);color:var(--fg2);text-wrap:pretty">Android with Chrome is the one platform where alerts fire on time with the app and the browser fully closed. Fifteen minutes of setup, once.</p>
+
+  <div style="margin-top:26px;border-top:1px solid var(--rule2)">
+    <sc-for list="{{ guideSteps }}" as="s" hint-placeholder-count="6">
+      <div style="display:grid;grid-template-columns:38px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--rule);align-items:start">
+        <div style="font:450 26px/1 var(--mn);letter-spacing:-.02em;color:{{ s.numFg }}">{{ s.n }}</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+            <span style="font:500 17px/1.3 var(--srf);letter-spacing:-.008em">{{ s.title }}</span>
+            <sc-if value="{{ s.tag }}"><span style="font:600 8.5px var(--mn);letter-spacing:.14em;color:{{ s.tagFg }};border:1px solid {{ s.tagFg }};padding:1px 4px">{{ s.tag }}</span></sc-if>
+          </div>
+          <p style="margin:0;font:400 13.5px/1.65 var(--ui);color:var(--fg2);text-wrap:pretty">{{ s.body }}</p>
+          <sc-if value="{{ s.detail }}">
+            <div style="font:400 11.5px/1.75 var(--mn);color:var(--fg3);border-left:1px solid var(--rule2);padding-left:11px;white-space:pre-line">{{ s.detail }}</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:24px;padding:16px 18px;background:var(--pane2);border-left:2px solid var(--amb)">
+    <div style="font:600 9px var(--mn);letter-spacing:.16em;color:var(--amb)">THE ONE THING THAT BREAKS IT</div>
+    <p style="margin:8px 0 0 0;font:400 13px/1.65 var(--ui);color:var(--fg2);text-wrap:pretty">Android will not install the app, and the background worker will not run, unless the page is served over HTTPS from a real domain. Opening the file directly, or from a <span style="font:500 11.5px var(--mn);color:var(--fg)">file://</span> path, or the single-file offline copy, silently disables both. If the Install option never appears in Chrome’s menu, that is almost always why.</p>
+  </div>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:22px">
+    <button onClick="{{ goSettings }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 10px var(--mn);letter-spacing:.12em;padding:9px 13px;cursor:pointer">BACK TO DATA</button>
+    <button onClick="{{ doPrint }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 10px var(--mn);letter-spacing:.12em;padding:9px 13px;cursor:pointer">PRINT THIS GUIDE</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ vSettings }}">
+<div style="padding-top:22px;max-width:960px">
+  <h1 style="margin:0;font:400 30px/1.1 var(--srf);letter-spacing:-.018em">Data &amp; settings</h1>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;margin-top:24px;border-top:1px solid var(--rule2)">
+    <div style="padding:18px 22px 20px 0;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+      <div style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">TIME ZONE</div>
+      <div style="font:400 20px var(--srf);margin-top:7px">{{ tzLong }}</div>
+      <p style="margin:8px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">Detected from your device as <span style="font:500 11.5px var(--mn);color:var(--fg)">{{ tzAuto }}</span>. Every time on screen and in exported reports is converted from the release’s UTC stamp, so DST needs no thought.</p>
+      <button onClick="{{ useAuto }}" style="margin-top:11px;background:none;border:1px solid var(--rule2);color:var(--fg);font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">USE MY CITY</button>
+    </div>
+    <div style="padding:18px 0 20px 22px;border-bottom:1px solid var(--rule)">
+      <div style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">ALERTS</div>
+      <p style="margin:7px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">A system notification on phone and desktop plus a two-tone ping at <span style="font:500 11.5px var(--mn);color:var(--fg)">15 / 5 / 1 min</span> before every high-impact release, and again the moment the number prints. Each one carries the consensus, the previous figure and the expected pip move, so the notification alone is enough to act on.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">
+        <button onClick="{{ toggleAlerts }}" style="background:{{ alertBg }};border:1px solid {{ alertBd }};color:{{ alertFg }};font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">{{ alertLabel }}</button>
+        <button onClick="{{ toggleSound }}" style="background:none;border:1px solid {{ soundBd }};color:{{ soundFg }};font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">{{ soundLabel }}</button>
+        <button onClick="{{ testAlert }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">SEND TEST NOTIFICATION</button>
+      </div>
+      <sc-if value="{{ testMsg }}" hint-placeholder-val="">
+        <p style="margin:10px 0 0 0;padding:9px 11px;border-left:2px solid {{ testFg }};background:var(--pane);font:400 11.5px/1.6 var(--ui);color:{{ testFg }};text-wrap:pretty">{{ testMsg }}</p>
+      </sc-if>
+      <div style="font:400 10.5px/1.7 var(--mn);color:var(--fg3);margin-top:10px;border-top:1px solid var(--rule);padding-top:9px">
+        Permission — {{ permLabel }}<br>
+        Scheduler — {{ swLabel }}<br>
+        Closed-app delivery — <span style="color:{{ closedFg }}">{{ closedLabel }}</span>
+      </div>
+      <p style="margin:9px 0 0 0;font:400 11.5px/1.6 var(--ui);color:var(--fg3);text-wrap:pretty">{{ closedNote }}</p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0;border-top:1px solid var(--rule)">
+    <div style="padding:18px 22px 20px 0;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+      <div style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">INSTALL ON YOUR PHONE</div>
+      <p style="margin:7px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">{{ installText }}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:11px">
+        <sc-if value="{{ canInstall }}"><button onClick="{{ doInstall }}" style="background:var(--acc);border:1px solid var(--acc);color:#fff;font:700 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">INSTALL NOW</button></sc-if>
+        <button onClick="{{ goGuide }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">ANDROID GUIDE</button>
+      </div>
+      <div style="font:400 10.5px/1.7 var(--mn);color:var(--fg3);margin-top:9px">Android — Chrome menu ▸ Install app (full alert support)<br>iPhone / iPad — Share ▸ Add to Home Screen<br>Desktop — install icon in the address bar</div>
+    </div>
+    <div style="padding:18px 0 20px 22px;border-bottom:1px solid var(--rule)">
+      <div style="font:600 8.5px var(--mn);letter-spacing:.18em;color:var(--fg3)">WHICH SITE’S IMPACT RATINGS</div>
+      <p style="margin:7px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">The three sites disagree — Myfxbook rates Spanish unemployment high, ForexFactory rates it low. Pick whose call drives the filter.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+        <sc-for list="{{ ratingBtns }}" as="b" hint-placeholder-count="4">
+          <button onClick="{{ b.go }}" style="background:none;border:none;padding:0 0 2px 0;border-bottom:2px solid {{ b.bd }};color:{{ b.fg }};font:600 10px var(--mn);letter-spacing:.1em;cursor:pointer">{{ b.label }}</button>
+        </sc-for>
+      </div>
+      <div style="font:400 10.5px var(--mn);color:var(--fg3);margin-top:10px">{{ splitCount }} events in the current dataset are rated differently across the three.</div>
+    </div>
+  </div>
+
+  <h2 style="margin:30px 0 0 0;font:400 22px var(--srf);letter-spacing:-.012em">Where the numbers come from</h2>
+  <div style="margin-top:14px;border-top:1px solid var(--rule2)">
+    <sc-for list="{{ sources }}" as="s" hint-placeholder-count="4">
+      <div style="display:flex;align-items:baseline;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);flex-wrap:wrap">
+        <span style="width:8px;height:8px;flex:none;background:{{ s.dot }};align-self:center"></span>
+        <span style="flex:1 1 160px;font:400 13.5px var(--ui)">{{ s.name }}</span>
+        <span style="font:400 11px var(--mn);color:var(--fg2)">{{ s.role }}</span>
+        <span style="width:170px;flex:none;text-align:right;font:400 10.5px var(--mn);color:var(--fg3)">{{ s.checked }}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <p style="margin:16px 0 0 0;max-width:70ch;font:400 14px/1.65 var(--srf);color:var(--fg2);text-wrap:pretty">A browser page cannot scrape those three sites directly — they block cross-origin requests and publish no open API. So the app ships with a verified snapshot, cross-checked across all three, and there are two ways to keep it current.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:0;margin-top:20px;border-top:1px solid var(--rule2)">
+    <div style="padding:16px 22px 18px 0;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)">
+      <div style="font:600 9.5px var(--mn);letter-spacing:.14em;color:var(--fg3)">A · EDIT THE SOURCE</div>
+      <p style="margin:8px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">The snapshot below is hand-checked against all three sites. To revise it, edit the <span style="color:var(--fg)">MRDN_EVENTS</span> array inside <span style="color:var(--fg)">app.dc.html</span> and re-upload the file to your repository — each entry carries its own actual, consensus, previous and per-site impact rating. Your notes, watchlist, timezone and alert settings live on this device and are never affected by a data update.</p>
+    </div>
+    <div style="padding:16px 0 18px 22px;border-bottom:1px solid var(--rule)">
+      <div style="font:600 9.5px var(--mn);letter-spacing:.14em;color:var(--acc)">B · LIVE FEED — RECOMMENDED</div>
+      <p style="margin:8px 0 0 0;font:400 12.5px/1.6 var(--ui);color:var(--fg2);text-wrap:pretty">The only way to keep the calendar current without touching the source. Point the app at a JSON endpoint returning the same shape — Trading Economics, FMP, Finnhub or your own scraper — and it pulls on every load and merges over the snapshot, so actuals, revisions and schedule changes arrive on their own. Every filter, alert and report keeps working.</p>
+      <input value="{{ apiUrl }}" onInput="{{ onApi }}" placeholder="https://your-feed/calendar.json — must return JSON, not a web page" style="width:100%;margin-top:11px;background:transparent;border:none;border-bottom:1px solid var(--rule2);padding:5px 0;font:400 11.5px var(--mn)">
+      <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap">
+        <button onClick="{{ doFetch }}" style="background:none;border:1px solid var(--rule2);color:var(--fg);font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">FETCH NOW</button>
+        <button onClick="{{ toggleAuto }}" style="background:{{ autoBg }};border:1px solid {{ autoBd }};color:{{ autoFg }};font:600 9.5px var(--mn);letter-spacing:.12em;padding:7px 10px;cursor:pointer">{{ autoLabel }}</button>
+        <label style="display:flex;align-items:center;gap:6px;font:400 9.5px var(--mn);letter-spacing:.1em;color:var(--fg3)">EVERY
+          <input value="{{ syncEvery }}" onInput="{{ onEvery }}" type="number" min="1" max="180" style="width:44px;background:transparent;border:none;border-bottom:1px solid var(--rule2);color:var(--fg);font:500 11px var(--mn);padding:3px 0;text-align:center">MIN
+        </label>
+      </div>
+      <div style="margin-top:9px;font:400 10.5px/1.6 var(--mn);color:{{ syncFg }}">{{ syncState }}</div>
+      <div style="margin-top:4px;font:400 10.5px var(--mn);color:{{ feedFg }}">{{ feedMsg }}</div>
+      <p style="margin:8px 0 0 0;font:400 11px/1.6 var(--ui);color:var(--fg3);text-wrap:pretty">Auto-resync also runs whenever you reopen the app or the device comes back online, and it notifies you when the feed changes. Failures back off automatically instead of retrying in a loop.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;align-items:center">
+    <a href="https://www.forexfactory.com/calendar" target="_blank" rel="noreferrer" style="font:500 11px var(--mn);letter-spacing:.04em">forexfactory ↗</a>
+    <a href="https://www.investing.com/economic-calendar/" target="_blank" rel="noreferrer" style="font:500 11px var(--mn);letter-spacing:.04em">investing.com ↗</a>
+    <a href="https://www.myfxbook.com/forex-economic-calendar" target="_blank" rel="noreferrer" style="font:500 11px var(--mn);letter-spacing:.04em">myfxbook ↗</a>
+  </div>
+</div>
+</sc-if>
+
+</main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;brandName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Meridian&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;oklch(.7 .17 300)&quot;,&quot;options&quot;:[&quot;oklch(.7 .17 300)&quot;,&quot;oklch(.72 .13 200)&quot;,&quot;oklch(.72 .15 150)&quot;,&quot;oklch(.78 .15 85)&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;}}">
+const MRDN_EVENTS = [
+  {id:'p1',utc:'2026-07-03T12:30:00Z',cur:'USD',imp:3,name:'Nonfarm Payrolls',period:'Jun',actual:'57K',forecast:'113K',previous:'129K',revised:true,vol:110,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[-17,160,-156,214,148,129,57,57],desc:'A heavy miss — 57K against 113K consensus, with April and May revised down a combined 74K. The three-month average fell to 111K from 164K. Unemployment still ticked down to 4.2%, but only because participation collapsed to 61.5% from 61.8%, which is worker disengagement rather than strength.'},
+  {id:'p2',utc:'2026-07-29T18:00:00Z',cur:'USD',imp:3,name:'Fed Interest Rate Decision',period:'Jul',actual:'3.50–3.75%',forecast:'3.50–3.75%',previous:'3.50–3.75%',vol:95,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Federal Reserve',hist:[3.75,3.75,3.63,3.63,3.63,3.63,3.63,3.63],desc:'Held, but with three officials dissenting in favour of a HIKE — not a cut. The committee also dropped forward guidance entirely, so incoming data is now the guidance. Markets moved to price roughly a 65% chance of a September hike.'},
+  {id:'p3',utc:'2026-07-31T01:30:00Z',cur:'CNY',imp:2,name:'NBS Manufacturing PMI',period:'Jul',actual:'49.2',forecast:'50.0',previous:'49.8',vol:28,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[49.1,49.5,50.2,49.9,49.6,49.8,49.8,49.2],desc:'The official factory gauge slipped further under the expansion line and missed by a wide margin — a drag on the commodity bloc, and the reason AUD and NZD opened the week heavy.'},
+  {id:'p4',utc:'2026-07-31T09:00:00Z',cur:'EUR',imp:3,name:'Eurozone GDP q/q (Flash)',period:'Q2',actual:'0.4%',forecast:'0.2%',previous:'0.3%',vol:50,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[0.2,0.3,0.1,0.4,0.2,0.3,0.4,0.4],desc:'Double the forecast. Combined with a divided Fed this pushed EURUSD back above 1.15 and started the market pricing ECB hikes rather than cuts.'},
+  {id:'p5',utc:'2026-07-31T12:30:00Z',cur:'USD',imp:3,name:'Core PCE Price Index m/m',period:'Jun',actual:'0.3%',forecast:'0.3%',previous:'0.2%',vol:60,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BEA',hist:[0.2,0.3,0.2,0.2,0.3,0.3,0.2,0.3],desc:'In line, but the annual rate stayed above target — which is precisely the argument the three hawkish dissenters made two days earlier.'},
+
+  {id:'m1',utc:'2026-08-03T01:45:00Z',cur:'CNY',imp:2,name:'RatingDog Manufacturing PMI',period:'Jul',actual:'50.6',forecast:'51.2',previous:'51.7',vol:26,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'Caixin Insight / S&P Global',hist:[49.9,50.6,51.2,50.1,52.1,52.2,51.7,50.6],desc:'The private survey still shows expansion but fell 1.1 points — the sharpest drop this year, and a second confirmation of the weak official print.'},
+  {id:'m2',utc:'2026-08-03T06:00:00Z',cur:'EUR',imp:2,name:'German Retail Sales m/m',period:'Jun',actual:'0.4%',forecast:'0.3%',previous:'1.1%',vol:22,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[1.7,-1.1,-0.4,-0.1,-0.4,1.1,0.4,0.4],desc:'A modest beat after a strong May. Adds to the run of euro-area data that has surprised on the upside since the Q2 GDP flash.'},
+  {id:'m3',utc:'2026-08-03T06:30:00Z',cur:'CHF',imp:3,name:'Consumer Price Index m/m',period:'Jul',actual:'-0.1%',forecast:'-0.1%',previous:'0.0%',vol:35,better:'higher',pairs:['USDCHF','EURCHF'],src:'Federal Statistical Office',hist:[0.0,-0.1,0.6,0.6,0.2,0.0,0.0,-0.1],desc:'In line at -0.1% m/m, pulling the annual rate to 0.4% from 0.5% — below consensus and below the SNB’s own 0.7% Q3 path. Lower airfares and fuel did most of the work; core held at 0.3% y/y, and imported prices fell 1.1% m/m. Franc-negative at the margin, but nowhere near forcing the SNB off 0.00%.'},
+  {id:'m4',utc:'2026-08-03T13:45:00Z',cur:'USD',imp:1,name:'S&P Global Manufacturing PMI (Final)',period:'Jul',actual:'53.9',forecast:'53.8',previous:'53.9',vol:12,better:'higher',pairs:['EURUSD'],src:'S&P Global',hist:[51.2,51.8,52.1,52.9,53.9,53.9,53.8,53.9],desc:'Flat on the month and openly at odds with ISM — the release warned its own headline "masks softer production and sales growth", with sentiment at a nine-month low.'},
+  {id:'m5',utc:'2026-08-03T14:00:00Z',cur:'USD',imp:3,name:'ISM Manufacturing PMI',period:'Jul',actual:'55.6',forecast:'54.0',previous:'53.3',vol:45,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Institute for Supply Management',hist:[47.9,52.6,52.4,52.7,52.7,54.0,53.3,55.6],desc:'A genuine upside shock: 55.6, the highest since May 2022 and 1.6 above consensus. Production jumped to 58.5 and employment finally broke into expansion at 52.8 after 33 straight months of contraction. Prices paid eased to 71.1 but remain above 70 for a sixth month. This is the print that hardened September hike pricing.'},
+  {id:'m6',utc:'2026-08-03T14:00:00Z',cur:'USD',imp:1,name:'Construction Spending m/m',period:'Jun',actual:'0.2%',forecast:'0.2%',previous:'0.1%',vol:8,better:'higher',pairs:['EURUSD'],src:'Census Bureau',hist:[-0.4,0.2,-0.1,0.3,0.0,0.1,0.2,0.2],desc:'Second-tier housing input; matters only for GDP-tracking revisions.'},
+
+  {id:'t1b',utc:'2026-08-04T07:00:00Z',cur:'EUR',imp:3,unverified:true,impBy:{mf:3,ff:1,inv:2},name:'Spanish Unemployment Change',period:'Jul',forecast:'-20.3K',previous:'-28.7K',vol:15,better:'lower',pairs:['EURUSD','EURGBP'],src:'Ministerio de Trabajo',ratings:'Impact — Myfxbook: high · ForexFactory: low · Investing.com: medium',hist:[38.7,-6.0,-13.3,-67.4,-57.7,-48.9,-28.7,-20.3],desc:'Registered unemployment, and the first euro-area labour print of the month. Spain has run the strongest labour market in the bloc — Q2 unemployment fell to 9.87%, the lowest since 2008. Consensus looks for a smaller July decline. Myfxbook flags this as high impact; ForexFactory rates it low, so expect the reaction to be confined to EUR crosses rather than the broad dollar.'},
+  {id:'t1c',utc:'2026-08-04T08:00:00Z',cur:'EUR',imp:3,unverified:true,impBy:{mf:3,ff:1,inv:2},name:'Italian Retail Sales y/y',period:'Jun',forecast:'1.4%',previous:'2.2%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Istat',ratings:'Impact — Myfxbook: high · ForexFactory: low · Investing.com: medium',hist:[0.9,1.3,1.6,1.1,1.9,2.5,2.2,1.4],desc:'Consensus looks for annual growth to nearly halve from 2.2%. Italy is the bloc’s third-largest consumer market, and this lands two days before the euro-area aggregate on Thursday — a big miss here front-runs that number.'},
+  {id:'t1d',utc:'2026-08-04T08:00:00Z',cur:'EUR',imp:3,unverified:true,impBy:{mf:3,ff:1,inv:2},name:'Italian Retail Sales m/m',period:'Jun',forecast:'0.1%',previous:'0.2%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Istat',ratings:'Impact — Myfxbook: high · ForexFactory: low · Investing.com: medium',hist:[-0.1,0.3,0.5,-0.2,0.4,0.1,0.2,0.1],desc:'Released in the same minute as the annual figure. The monthly series is the cleaner read on momentum; with ECB hike pricing building off the Q2 GDP beat, soft consumption is the main counter-argument.'},
+  {id:'t2',utc:'2026-08-04T12:30:00Z',cur:'USD',imp:2,unverified:true,name:'Trade Balance',period:'Jun',forecast:'-61.2B',previous:'-60.3B',vol:18,better:'higher',pairs:['EURUSD','USDCNH'],src:'BEA / Census',hist:[-68.5,-61.6,-60.2,-59.8,-62.1,-60.3,-61.2,-61.2],desc:'Feeds net exports in the Q3 GDP tracker. Tariff distortions have made this series noisier than usual.'},
+  {id:'t3',utc:'2026-08-04T14:00:00Z',cur:'USD',imp:3,name:'JOLTS Job Openings',period:'Jun',actual:'7.359M',forecast:'7.40M',previous:'7.537M',revised:true,vol:38,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',hist:[6.88,7.24,6.88,7.618,7.594,7.537,7.537,7.359],desc:'A modest miss: 7.359M against 7.40M expected, and May was revised down to 7.537M from 7.594M. The rates told the real story — hiring steady at 3.4%, quits at 2.0%, layoffs at 1.1%, all unchanged. That is the low-hire, low-fire market intact rather than deteriorating, so it neither confirms nor kills the September hike case.'},
+  {id:'t4',utc:'2026-08-04T14:00:00Z',cur:'USD',imp:1,unverified:true,name:'Factory Orders m/m',period:'Jun',forecast:'-0.4%',previous:'8.2%',vol:8,better:'higher',pairs:['EURUSD'],src:'Census Bureau',hist:[-3.7,4.4,-0.8,2.1,-1.2,8.2,-0.4,-0.4],desc:'Aircraft orders make the headline volatile; core capital goods is the signal.'},
+  {id:'t5',utc:'2026-08-04T22:45:00Z',cur:'NZD',imp:3,unverified:true,name:'Employment Change q/q',period:'Q2',forecast:'0.3%',previous:'0.2%',vol:52,better:'higher',pairs:['NZDUSD','AUDNZD'],src:'Stats NZ',hist:[-0.4,-0.6,0.1,-0.1,0.0,0.5,0.2,0.3],desc:'Released with the unemployment rate. The headline employment change has not yet been cross-checked across all three sources, so no actual is shown rather than an unverified one — the companion jobless rate at 5.6% tells the direction. Underutilisation jumped to 13.8% from 12.9%, and 166,500 people were unemployed, 19% of them for over a year, so the employment line is very unlikely to have been positive.'},
+  {id:'t6',utc:'2026-08-04T22:45:00Z',cur:'NZD',imp:3,name:'Unemployment Rate',period:'Q2',actual:'5.6%',forecast:'5.5%',previous:'5.4%',revised:true,vol:52,better:'lower',pairs:['NZDUSD','AUDNZD'],src:'Stats NZ',hist:[4.4,4.7,4.9,5.1,5.2,5.3,5.4,5.6],desc:'A clear miss — 5.6% against 5.4–5.5% expected, and the highest jobless rate since September 2015. The March quarter was restated at 5.4%. Underutilisation rose to 13.8% from 12.9%, and long-term unemployment is up about 8,000 on the year. This cements the RBNZ’s easing bias against a Fed now flirting with hikes — the widest policy divergence on the board, and it puts the 19 August meeting firmly in play.'},
+
+  {id:'w1',utc:'2026-08-05T01:45:00Z',cur:'CNY',imp:3,name:'RatingDog Services PMI',period:'Jul',actual:'50.4',forecast:'53.7',previous:'54.1',vol:32,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'Caixin Insight / S&P Global',hist:[52.9,52.6,52.0,52.3,56.7,52.1,54.4,50.4],desc:'A severe miss — 50.4 against 53.7 expected, and barely above the contraction line. Services had been carrying Chinese activity while factories stalled; that support is now gone, which removes the last domestic prop under AUD and NZD and puts the weight on Friday’s trade data.'},
+  {id:'w2',utc:'2026-08-05T12:15:00Z',cur:'USD',imp:3,name:'ADP Employment Change',period:'Jul',actual:'44K',forecast:'70K',previous:'95K',revised:true,vol:42,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'ADP Research',hist:[-29,47,-29,-3,106,122,95,44],desc:'A heavy miss: 44K against 70K expected, and June was revised down to 95K from 98K. Poorly correlated with the official report, but it sets the prior two days early — and after June’s 57K shock the market trades it harder than the correlation justifies. Consensus for Friday’s payrolls is 80K; this argues the risk sits below that.'},
+  {id:'w3',utc:'2026-08-05T13:45:00Z',cur:'USD',imp:3,impBy:{mf:2,ff:1,inv:3},name:'S&P Global Services PMI (Final)',period:'Jul',forecast:'53.6',previous:'51.2',vol:24,better:'higher',pairs:['EURUSD','USDJPY'],src:'S&P Global',ratings:'Impact — Investing.com: high · Myfxbook: medium · ForexFactory: low',hist:[52.3,53.1,53.8,54.0,54.6,54.4,51.2,53.6],desc:'Investing.com rates this three-star; previous 51.2 was the weakest of the year and a rebound to 53.6 was expected. As of the 17:35 UTC sync none of the three sites had posted an actual — the release is late rather than missed, so no figure is shown here. ISM fifteen minutes later has already printed 54.1.'},
+  {id:'w4',utc:'2026-08-05T14:00:00Z',cur:'USD',imp:3,name:'ISM Services PMI',period:'Jul',actual:'54.1',forecast:'54.5',previous:'54.0',vol:44,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Institute for Supply Management',hist:[53.8,56.1,54.0,53.6,54.5,54.0,54.0,54.1],desc:'54.1 against 54.5 expected — a marginal miss, and the 25th straight month of expansion. The headline is the least interesting part of this report. Business activity jumped to 59.1 and new orders to 57.2, but employment collapsed to 47.4 and prices paid leapt to 70.3. Strong demand, shrinking payrolls, re-accelerating costs — the stagflationary mix, and the hardest possible read for a Fed that has already withdrawn guidance.'},
+  {id:'w4b',utc:'2026-08-05T14:00:00Z',cur:'USD',imp:3,impBy:{mf:2,ff:1,inv:3},name:'ISM Non-Manufacturing Prices',period:'Jul',actual:'70.3',forecast:'66.2',previous:'67.7',vol:30,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Institute for Supply Management',ratings:'Impact — Investing.com: high · Myfxbook: medium · ForexFactory: low',hist:[63.0,65.1,69.4,71.3,71.3,67.7,67.7,70.3],desc:'Back above 70 — 70.3 against 66.2 expected, a 2.6-point jump that erases June’s decline entirely and marks twenty straight months above 60. With guidance withdrawn and three hawks dissenting, this is the most hawkish number on the board today, and it landed in the same minute as an employment sub-index in outright contraction. Read it against next Wednesday’s CPI.'},
+  {id:'w4c',utc:'2026-08-05T14:30:00Z',cur:'USD',imp:3,impBy:{mf:1,ff:2,inv:3},name:'EIA Crude Oil Inventories',period:'wk 31 Jul',actual:'+2.479M',forecast:'-1.500M',previous:'-7.167M',vol:20,better:'lower',pairs:['USDCAD','XAUUSD'],src:'Energy Information Administration',ratings:'Impact — Investing.com: high · ForexFactory: medium · Myfxbook: low',hist:[3.4,-1.8,5.1,-3.2,1.6,-4.4,-7.167,2.479],desc:'A 2.479M build against an expected 1.5M draw — a four-million-barrel swing from consensus and a full reversal of last week’s 7.167M drawdown. The product side is tighter than the crude headline suggests: gasoline stocks fell 1.643M and distillates drew 3.473M. Matters for CAD through crude and for the inflation path through pump prices, with Iran/Hormuz still unresolved.'},
+  {id:'w4d',utc:'2026-08-05T14:00:00Z',cur:'USD',imp:3,promoted:true,impBy:{mf:1,ff:1,inv:2},name:'ISM Non-Manufacturing Employment',period:'Jul',actual:'47.4',forecast:'52.0',previous:'51.2',vol:34,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Institute for Supply Management',ratings:'Impact — Investing.com: medium · Myfxbook: low · ForexFactory: low. Promoted to high here: two days before payrolls it is the cleanest labour signal on the board.',hist:[49.1,50.3,47.2,48.6,50.9,51.2,51.2,47.4],desc:'47.4 against 52.0 expected — straight back into contraction after a single month above water, and the sharpest fall in the series this year. All three sites rate this low because it is a sub-index. On a Wednesday two days before payrolls, with ADP at 44K the same morning, it is the most informative labour print of the week: two independent surveys now say July hiring stalled.'},
+  {id:'w5',utc:'2026-08-05T20:05:00Z',cur:'USD',imp:2,name:'Fed Governor Cook Speaks',period:'—',forecast:'—',previous:'—',vol:22,better:'higher',pairs:['EURUSD','USDJPY'],src:'Federal Reserve Board',hist:[],desc:'First Fed voice on the tape after a day that delivered 44K on ADP, services employment at 47.4 and prices paid at 70.3. How the Board weighs a stalling labour market against re-accelerating service costs is exactly the September question.'},
+  {id:'w6',utc:'2026-08-05T09:00:00Z',cur:'EUR',imp:1,name:'Eurozone PPI y/y',period:'Jun',actual:'4.6%',forecast:'4.6%',previous:'5.9%',vol:10,better:'higher',pairs:['EURUSD'],src:'Eurostat',hist:[7.1,6.8,6.2,5.4,6.1,5.9,5.9,4.6],desc:'In line at 4.6%, down sharply from 5.9%. Producer-price disinflation continuing in the euro area is the mirror image of the US services-cost picture — a quiet argument against the ECB hike bets that have been building.'},
+
+  {id:'h1',utc:'2026-08-06T01:30:00Z',cur:'AUD',imp:3,name:'Balance of Trade',period:'Jun',forecast:'-1.10B',previous:'-3.02B',vol:32,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[5.16,2.26,5.03,-1.02,1.38,-3.02,-3.02,-1.1],desc:'Rated high-impact by Myfxbook, and my previous build had both the rating and the forecast wrong. May’s A$3.018B deficit was the worst in years on soft iron-ore shipments; consensus looks for the gap to narrow to A$1.1B, not to swing back to surplus. With Chinese services PMI now at 50.4, a third weak month compounds the China read directly.'},
+  {id:'h2',utc:'2026-08-06T03:00:00Z',cur:'NZD',imp:2,name:'RBNZ Inflation Expectations',period:'Q3',forecast:'2.55%',previous:'2.53%',vol:20,better:'higher',pairs:['NZDUSD','AUDNZD'],src:'RBNZ',hist:[2.03,2.12,2.06,2.29,2.28,2.37,2.53,2.55],desc:'Two-year-ahead expectations have crept up four quarters running. Drift above the mid-point complicates the easing path.'},
+  {id:'h3',utc:'2026-08-06T07:00:00Z',cur:'CHF',imp:3,name:'Unemployment Rate',period:'Jul',forecast:'2.9%',previous:'2.9%',vol:26,better:'lower',pairs:['USDCHF','EURCHF'],src:'SECO',hist:[2.6,2.7,2.7,2.8,2.8,2.9,2.9,2.9],desc:'Rated high-impact by Myfxbook and missing from my previous build entirely. Swiss unemployment has ground higher six months running; with the SNB already at zero and no easing room left, a further rise is the clearest argument for intervention talk rather than rate cuts.'},
+  {id:'h8',utc:'2026-08-06T06:00:00Z',cur:'EUR',imp:2,name:'German Factory Orders m/m',period:'Jun',forecast:'0.3%',previous:'1.9%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[-1.4,3.2,-0.8,1.1,-0.6,1.9,1.9,0.3],desc:'Order books are the leading edge of German industry and May’s 1.9% was the strongest in months. Consensus expects the pace to fade to 0.3%; a negative print would undercut the euro-area recovery narrative the day before German trade data.'},
+  {id:'h9',utc:'2026-08-06T09:30:00Z',cur:'USD',imp:2,name:'Challenger Job Cuts',period:'Jul',forecast:'59.0K',previous:'45.8K',vol:14,better:'lower',pairs:['EURUSD'],src:'Challenger, Gray & Christmas',hist:[62.1,105.4,76.3,93.8,48.9,45.8,45.8,59.0],desc:'Announced layoffs, expected to jump back to 59K from 45.8K. Rated low everywhere, but it is the third independent labour series in two days — after ADP at 44K and ISM services employment at 47.4, a spike here makes the stall look structural rather than seasonal.'},
+  {id:'h4',utc:'2026-08-06T09:00:00Z',cur:'EUR',imp:3,name:'Eurozone Retail Sales m/m',period:'Jun',forecast:'0.1%',previous:'0.2%',vol:26,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[0.2,0.0,-0.5,0.8,-0.3,0.2,0.2,0.1],desc:'Rated high-impact by Myfxbook on both the monthly and annual lines — my previous build had it as medium. Consumption read for the bloc, with the year-on-year expected to slow to 1.0% from 1.6%. With ECB hike bets building, a firm number extends the euro’s recovery off 1.1368.'},
+  {id:'h5',utc:'2026-08-06T12:30:00Z',cur:'USD',imp:3,name:'Initial Jobless Claims',period:'wk 1 Aug',forecast:'202K',previous:'197K',vol:34,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',hist:[221,233,229,218,226,224,197,202],desc:'Corrected: claims are running at 197K, not the 224K my previous build carried, and all three sites rate this high. This is the low-fire half of the low-hire, low-fire market and the strongest counter to today’s 44K ADP — the last labour reading before payrolls, and the one that decides whether the market treats the ADP miss as noise or signal.'},
+  {id:'h5b',utc:'2026-08-06T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Continuing Jobless Claims',period:'wk 25 Jul',forecast:'1790K',previous:'1782K',vol:26,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',ratings:'Impact — Myfxbook: high · Investing.com: medium · ForexFactory: medium',hist:[1840,1866,1821,1798,1805,1782,1782,1790],desc:'Continuing claims are where a low-hire market shows up: people who lose a job take longer to find the next. Expected to edge up to 1.79M. Read it with the four-week average, forecast to fall to 198K — the two together separate a hiring freeze from actual job destruction.'},
+  {id:'h6',utc:'2026-08-06T12:30:00Z',cur:'USD',imp:1,name:'Unit Labour Costs q/q',period:'Q2',forecast:'2.1%',previous:'1.8%',vol:8,better:'higher',pairs:['EURUSD'],src:'BLS',hist:[3.1,1.9,2.6,1.4,2.0,1.8,1.8,2.1],desc:'Released with productivity, which is expected to double to 0.6%. The cost side matters more for the inflation debate than the headline productivity figure — and after prices paid at 70.3 today, an acceleration to 2.1% tells the same story from a second direction.'},
+  {id:'h7',utc:'2026-08-06T21:30:00Z',cur:'USD',imp:2,name:'FOMC Member Musalem Speaks',period:'—',forecast:'—',previous:'—',vol:25,better:'higher',pairs:['EURUSD','USDJPY'],src:'St. Louis Fed',hist:[],desc:'First voter on the tape since guidance was dropped, and the night before payrolls. Any hint on September framing lands in thin post-close liquidity.'},
+
+  {id:'f1',utc:'2026-08-07T12:30:00Z',cur:'USD',imp:3,name:'Nonfarm Payrolls',period:'Jul',forecast:'80K',previous:'57K',vol:120,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[-17,160,-156,214,148,129,57,80],desc:'The week’s decisive number, and consensus has come down to 80K — my previous build carried 100K. Today made the risk asymmetric: ADP printed 44K and ISM services employment fell to 47.4, so two independent surveys point below the Street. Revisions have been negative all year, so the headline alone rarely tells the story. Under 50K opens EURUSD 1.1600–1.1650; above 120K with prices paid at 70.3 drags it to 1.1400–1.1350.'},
+  {id:'f2',utc:'2026-08-07T12:30:00Z',cur:'USD',imp:3,name:'Unemployment Rate',period:'Jul',forecast:'4.2%',previous:'4.2%',vol:120,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[4.4,4.3,4.4,4.3,4.3,4.3,4.2,4.2],desc:'June’s fall to 4.2% came from participation dropping to 61.5%, not hiring. Watch the participation line before trading the headline.'},
+  {id:'f3',utc:'2026-08-07T12:30:00Z',cur:'USD',imp:3,name:'Average Hourly Earnings m/m',period:'Jul',forecast:'0.3%',previous:'0.3%',vol:120,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',hist:[0.1,0.4,0.4,0.2,0.2,0.3,0.3,0.3],desc:'Annual earnings ticked up to 3.5% in June. Hot wages with weak payrolls is the stagflationary mix that hurts the dollar and equities together.'},
+  {id:'f1b',utc:'2026-08-07T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Nonfarm Payrolls Private',period:'Jul',forecast:'79K',previous:'49K',vol:60,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',ratings:'Impact — Myfxbook: high · Investing.com: low · ForexFactory: low',hist:[-32,140,-170,196,131,49,49,79],desc:'Strips out government hiring, so it is the cleaner read on private demand for labour and the direct comparison with ADP’s 44K. Consensus is 79K of the 80K headline, implying almost no government contribution.'},
+  {id:'f2b',utc:'2026-08-07T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'U-6 Underemployment Rate',period:'Jul',forecast:'7.9%',previous:'7.9%',vol:40,better:'lower',pairs:['EURUSD','USDJPY'],src:'BLS',ratings:'Impact — Myfxbook: high · Investing.com: low · ForexFactory: low',hist:[8.0,8.1,8.0,7.9,8.0,7.9,7.9,7.9],desc:'Includes discouraged workers and involuntary part-timers, so it catches the deterioration a falling headline rate can hide — exactly the participation-driven drop that produced June’s 4.2%. Watch it with the participation rate, forecast to rise to 61.6% from 61.5%.'},
+  {id:'f4',utc:'2026-08-07T12:30:00Z',cur:'CAD',imp:3,name:'Employment Change',period:'Jul',forecast:'15.0K',previous:'18.2K',vol:55,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[-33,7.4,60,-1.4,22,18.2,18.2,15],desc:'Lands in the same minute as the US report, so USDCAD absorbs two shocks at once — the widest spread and worst slippage of the week. Consensus 15.0K after 18.2K, with the mix expected to reverse: 21K full-time against 4K part-time, after June’s 0.6K/17.5K split.'},
+  {id:'f5',utc:'2026-08-07T12:30:00Z',cur:'CAD',imp:3,name:'Unemployment Rate',period:'Jul',forecast:'6.5%',previous:'6.5%',vol:55,better:'lower',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[6.9,7.1,6.8,6.7,6.9,6.6,6.5,6.5],desc:'Drifted down two straight months to 6.5% and consensus looks for it to hold there. A move back above 6.6% puts a September BoC cut firmly on the table against a Fed the market still has hiking.'},
+  {id:'f8',utc:'2026-08-07T03:00:00Z',cur:'CNY',imp:3,name:'Exports y/y',period:'Jul',forecast:'22.7%',previous:'27.0%',vol:38,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'China Customs',hist:[8.1,12.4,6.0,14.8,19.3,27.0,27.0,22.7],desc:'Exports have run hot for three months on front-loading ahead of tariff deadlines; consensus looks for 22.7%. With services PMI now at 50.4, external demand is the only pillar left standing — this decides whether AUD and NZD get any support into next week.'},
+  {id:'f8b',utc:'2026-08-07T03:00:00Z',cur:'CNY',imp:3,name:'Balance of Trade',period:'Jul',forecast:'108B',previous:'125.62B',vol:30,better:'higher',pairs:['AUDUSD','USDCNH'],src:'China Customs',hist:[82.6,96.2,103.2,114.8,119.1,125.62,125.62,108],desc:'Imports are expected to slow to 28.6% from 36%, narrowing the surplus to $108B. A wide surplus built on collapsing imports is the bad combination for commodity currencies: it means Chinese domestic demand, not foreign demand, is what is failing.'},
+  {id:'f9',utc:'2026-08-07T06:00:00Z',cur:'EUR',imp:3,name:'German Balance of Trade',period:'Jun',forecast:'17.4B',previous:'19.1B',vol:22,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[21.4,17.7,24.2,18.4,20.1,19.1,19.1,17.4],desc:'Rated high-impact by Myfxbook. Exports are expected to slow to 0.2% from 0.9% while imports rebound 1.0%, narrowing the surplus to €17.4B. Germany’s external surplus has been the euro’s structural support, so erosion here matters more for the currency than the industrial print released alongside it.'},
+  {id:'f10',utc:'2026-08-07T06:00:00Z',cur:'EUR',imp:2,name:'German Industrial Production m/m',period:'Jun',forecast:'0.1%',previous:'0.9%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[1.4,-1.6,2.2,-0.8,0.6,0.9,0.9,0.1],desc:'Date and figures corrected — this releases Friday alongside trade, not Thursday, and May rose 0.9% rather than falling 1.0%. Consensus expects the pace to flatten to 0.1%.'},
+  {id:'f11',utc:'2026-08-07T14:00:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Ivey PMI (s.a.)',period:'Jul',forecast:'55.5',previous:'56.2',vol:24,better:'higher',pairs:['USDCAD','CADJPY'],src:'Ivey Business School',ratings:'Impact — Myfxbook: high · Investing.com: medium · ForexFactory: low',hist:[48.3,51.9,53.2,54.8,55.1,56.2,56.2,55.5],desc:'Canada’s broadest activity survey, ninety minutes after the jobs report — in practice the confirmation or contradiction of whatever the employment number implied. Rated high by Myfxbook alone.'},
+  {id:'f6',utc:'2026-08-07T14:00:00Z',cur:'USD',imp:2,name:'FOMC Member Barkin Speaks',period:'—',forecast:'—',previous:'—',vol:22,better:'higher',pairs:['EURUSD','USDJPY'],src:'Richmond Fed',hist:[],desc:'Ninety minutes after payrolls — effectively the first official reaction function on the number.'},
+  {id:'f7',utc:'2026-08-07T19:00:00Z',cur:'USD',imp:1,name:'Consumer Credit',period:'Jun',forecast:'10.5B',previous:'7.8B',vol:6,better:'higher',pairs:['EURUSD'],src:'Federal Reserve',hist:[8.9,17.9,10.2,6.1,11.4,7.8,10.5,10.5],desc:'Late-Friday second tier; useful for the consumer-stress narrative, not for FX.'},
+  {id:'s1',utc:'2026-08-09T01:30:00Z',cur:'CNY',imp:3,name:'Inflation Rate y/y',period:'Jul',forecast:'0.9%',previous:'1.0%',vol:28,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[-0.1,0.2,0.4,0.6,0.8,1.0,1.0,0.9],desc:'A Sunday release, so it prices into the Monday Asia open before most desks are back. China spent 2025 in deflation and has only just clawed back to 1%; a slip to 0.9% with services PMI at 50.4 revives the deflation-export narrative that weighs on AUD and NZD.'},
+  {id:'s2',utc:'2026-08-09T23:50:00Z',cur:'JPY',imp:2,name:'BoJ Summary of Opinions',period:'Jul',forecast:'—',previous:'—',vol:24,better:'higher',pairs:['USDJPY','EURJPY'],src:'Bank of Japan',hist:[],desc:'Board members’ unattributed views from the July meeting, released with the June current account. With USDJPY near 150 and the policy rate still under 1%, any hawkish shift in the language is the intervention-risk trigger to watch.'},
+  {id:'m0',utc:'2026-08-11T04:30:00Z',cur:'AUD',imp:3,name:'RBA Interest Rate Decision',period:'Aug',forecast:'4.35%',previous:'4.35%',vol:65,better:'higher',pairs:['AUDUSD','AUDJPY','AUDNZD'],src:'Reserve Bank of Australia',hist:[],desc:'Corrected date and level — my previous build had this on 4 August at 3.35%, both wrong. The Board meets 10–11 August and announces Tuesday 11 August at 2:30pm AEST, and the cash rate is 4.35% after three hikes in February, March and May took it up from 3.60%. All four major banks now expect a hold following the softer June quarter CPI at 3.8% headline and 3.6% trimmed mean. This is a quarterly SMP meeting, so the full Statement on Monetary Policy lands in the same minute and Bullock holds a press conference an hour later — the projections, not the decision, are what move AUD. With Chinese services PMI at 50.4 the China-demand language is where the risk sits.'},
+
+  {id:'n1',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Consumer Price Index m/m',period:'Jul',forecast:'0.3%',previous:'0.2%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[0.4,0.2,0.3,0.2,0.3,0.2,0.3,0.3],desc:'With guidance withdrawn and three hawks already dissenting, an upside surprise here converts September hike pricing from probable to consensus. Confirmed by the BLS for Wednesday 12 August, 08:30 ET.'},
+  {id:'n2',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Core CPI y/y',period:'Jul',forecast:'3.0%',previous:'3.0%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[3.3,3.2,3.1,3.1,3.0,3.0,3.0,3.0],desc:'Core has been stuck at 3.0% for three months. Breaking that stall in either direction is the single biggest FX catalyst of the month.'},
+  {id:'n3',utc:'2026-08-12T06:00:00Z',cur:'GBP',imp:3,name:'GDP q/q (Prelim)',period:'Q2',forecast:'0.2%',previous:'0.3%',vol:60,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[0.1,0.4,0.0,0.7,0.3,0.3,0.2,0.2],desc:'Follows a July MPC that set a high bar for September. Sub-0.2% growth reopens the easing debate and pressures sterling on both legs.'},
+  {id:'n4',utc:'2026-08-13T01:30:00Z',cur:'AUD',imp:3,name:'Employment Change',period:'Jul',forecast:'20.0K',previous:'16.4K',vol:58,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[44,-6.4,89,-52,26,16.4,20,20],desc:'Australia’s most volatile monthly release; the full-time/part-time split usually matters more than the headline.'},
+  {id:'n5',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,name:'Producer Price Index m/m',period:'Jul',forecast:'0.2%',previous:'0.3%',vol:55,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',hist:[0.1,0.4,0.2,0.1,0.3,0.3,0.2,0.2],desc:'Pipeline inflation, and a direct input to the PCE estimate two weeks later. ISM prices-paid above 70 for six months says the risk is upside.'},
+  {id:'n6',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,name:'Retail Sales m/m',period:'Jul',forecast:'0.4%',previous:'0.6%',vol:70,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[-0.9,0.5,1.4,-0.2,0.7,0.6,0.4,0.4],desc:'The control group is what the Street trades. Consumer resilience has been the main argument for the hawks.'},
+  {id:'n7',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:2,name:'UoM Consumer Sentiment (Prelim)',period:'Aug',forecast:'62.0',previous:'61.7',vol:28,better:'higher',pairs:['EURUSD'],src:'University of Michigan',hist:[55.1,57.0,58.6,60.5,61.1,61.7,62.0,62.0],desc:'The five-year inflation-expectations component inside this survey has become a genuine market mover in its own right.'}
+];
+
+const MRDN_SPOT = {
+  EURUSD:[1.1528,0.0001], GBPUSD:[1.3412,0.0001], USDJPY:[149.85,0.01], USDCHF:[0.8032,0.0001],
+  AUDUSD:[0.6538,0.0001], NZDUSD:[0.5942,0.0001], USDCAD:[1.3721,0.0001], XAUUSD:[3348.0,0.1],
+  EURGBP:[0.8595,0.0001], EURCHF:[0.9259,0.0001], AUDJPY:[97.95,0.01], CADJPY:[109.20,0.01],
+  AUDNZD:[1.1002,0.0001], USDCNH:[7.1620,0.0001], GBPJPY:[200.95,0.01]
+};
+const MRDN_PAIRLIST = ['EURUSD','GBPUSD','USDJPY','USDCHF','AUDUSD','NZDUSD','USDCAD','XAUUSD','EURGBP','AUDNZD'];
+
+const MRDN_BRIEF = [
+  {k:'September Fed hike priced', v:'≈65%', tone:'red'},
+  {k:'Fed funds target · guidance withdrawn 29 Jul', v:'3.50–3.75%', tone:''},
+  {k:'EURUSD last week close', v:'1.1528', tone:'grn'},
+  {k:'Unscheduled risk · Iran / Hormuz', v:'UNRESOLVED', tone:'amb'},
+  {k:'JOLTS Jun · openings, hiring rate steady', v:'7.359M MISS', tone:'red'},
+  {k:'NZ Q2 jobless · highest since Sep 2015', v:'5.6% MISS', tone:'red'},
+  {k:'ADP Jul · Jun revised down to 95K', v:'44K MISS', tone:'red'},
+  {k:'ISM services employment · back in contraction', v:'47.4', tone:'red'},
+  {k:'ISM services prices paid · 20th month above 60', v:'70.3 HOT', tone:'red'},
+  {k:'China services PMI · near contraction', v:'50.4 MISS', tone:'red'},
+  {k:'Payrolls consensus Friday · cut from 100K', v:'80K', tone:'amb'},
+  {k:'RBA · next decision 11 Aug, SMP meeting', v:'4.35% HOLD EXP', tone:''}
+];
+
+const MRDN_SPEAKERS = [
+  {cur:'USD',who:'Alberto Musalem',role:'President, Federal Reserve Bank of St. Louis · 2026 voter',utc:'2026-08-06T21:30:00Z',topic:'Economic outlook remarks the evening before the July jobs report — the first voter on the tape since the committee withdrew forward guidance.',stance:'Recent stance: inflation-focused, open to further tightening',tag:'SCHEDULED'},
+  {cur:'USD',who:'Thomas Barkin',role:'President, Federal Reserve Bank of Richmond',utc:'2026-08-07T14:00:00Z',topic:'Speaks ninety minutes after payrolls — in practice the first official read on the number.',stance:'Recent stance: data-dependent centrist',tag:'SCHEDULED'},
+  {cur:'USD',who:'Kevin Warsh',role:'Chair, Federal Reserve',utc:'2026-08-06T00:00:00Z',topic:'Nothing scheduled this week. Held rates for a fifth meeting on 29 July over three dissents in favour of a hike, and dropped forward guidance.',stance:'Last message: jobs data "moving in a good direction"',tag:'NO EVENT'},
+  {cur:'AUD',who:'Michele Bullock',role:'Governor, Reserve Bank of Australia',utc:'2026-08-11T04:30:00Z',topic:'Decision, quarterly Statement on Monetary Policy and a press conference an hour later. A hold at 4.35% is priced by all four major banks after June quarter CPI came in at 3.8% headline; the SMP projections and the China-demand language carry the risk after Chinese services PMI fell to 50.4.',stance:'Recent stance: three hikes to 4.35%, held in June, hike bias retained',tag:'NEXT WEEK'},
+  {cur:'EUR',who:'Christine Lagarde',role:'President, European Central Bank',utc:'2026-08-06T00:00:00Z',topic:'No appearance this week. Q2 GDP at double forecast has shifted the market from ECB cut pricing to hike pricing.',stance:'Last message: patient, data-dependent',tag:'NO EVENT'},
+  {cur:'CHF',who:'Martin Schlegel',role:'Chairman, Swiss National Bank',utc:'2026-08-06T00:00:00Z',topic:'No appearance this week. July CPI at 0.4% y/y sits under the SNB’s own Q3 path; intervention language was qualified to "if necessary" in June.',stance:'Last message: policy remains expansionary',tag:'NO EVENT'}
+];
+
+const MRDN_RATES = [
+  {cur:'USD',bank:'Federal Reserve · FOMC',rate:'3.50–3.75%',last:'HELD · 29 Jul',next:'15–16 Sep · hike priced',dir:0},
+  {cur:'EUR',bank:'European Central Bank',rate:'2.40%',last:'HELD · 23 Jul',next:'10 Sep',dir:0},
+  {cur:'GBP',bank:'Bank of England',rate:'3.75%',last:'HELD · 30 Jul',next:'17 Sep',dir:0},
+  {cur:'JPY',bank:'Bank of Japan',rate:'0.75%',last:'HELD · 31 Jul',next:'18 Sep',dir:0},
+  {cur:'AUD',bank:'Reserve Bank of Australia',rate:'4.35%',last:'HELD · 16 Jun',next:'11 Aug · hold expected',dir:0},
+  {cur:'CAD',bank:'Bank of Canada',rate:'2.25%',last:'HELD · 29 Jul',next:'9 Sep',dir:0},
+  {cur:'NZD',bank:'Reserve Bank of New Zealand',rate:'2.50%',last:'CUT · 8 Jul',next:'19 Aug · cut in play',dir:-1},
+  {cur:'CHF',bank:'Swiss National Bank',rate:'0.00%',last:'HELD · 18 Jun',next:'24 Sep',dir:0}
+];
+
+const MRDN_CITIES = [
+  ['UTC','UTC / GMT'],['America/New_York','New York'],['America/Chicago','Chicago'],['America/Denver','Denver'],['America/Los_Angeles','Los Angeles'],['America/Toronto','Toronto'],['America/Mexico_City','Mexico City'],['America/Sao_Paulo','São Paulo'],['America/Bogota','Bogotá'],['America/Buenos_Aires','Buenos Aires'],['Europe/London','London'],['Europe/Dublin','Dublin'],['Europe/Lisbon','Lisbon'],['Europe/Madrid','Madrid'],['Europe/Paris','Paris'],['Europe/Frankfurt','Frankfurt'],['Europe/Zurich','Zurich'],['Europe/Amsterdam','Amsterdam'],['Europe/Brussels','Brussels'],['Europe/Rome','Rome'],['Europe/Vienna','Vienna'],['Europe/Stockholm','Stockholm'],['Europe/Oslo','Oslo'],['Europe/Copenhagen','Copenhagen'],['Europe/Warsaw','Warsaw'],['Europe/Prague','Prague'],['Europe/Budapest','Budapest'],['Europe/Bucharest','Bucharest'],['Europe/Sofia','Sofia'],['Europe/Athens','Athens'],['Europe/Istanbul','Istanbul'],['Europe/Kyiv','Kyiv'],['Europe/Moscow','Moscow'],['Africa/Lagos','Lagos'],['Africa/Johannesburg','Johannesburg'],['Africa/Cairo','Cairo'],['Africa/Nairobi','Nairobi'],['Asia/Jerusalem','Tel Aviv'],['Asia/Riyadh','Riyadh'],['Asia/Dubai','Dubai'],['Asia/Karachi','Karachi'],['Asia/Kolkata','Mumbai'],['Asia/Dhaka','Dhaka'],['Asia/Bangkok','Bangkok'],['Asia/Jakarta','Jakarta'],['Asia/Singapore','Singapore'],['Asia/Kuala_Lumpur','Kuala Lumpur'],['Asia/Manila','Manila'],['Asia/Hong_Kong','Hong Kong'],['Asia/Shanghai','Shanghai'],['Asia/Taipei','Taipei'],['Asia/Seoul','Seoul'],['Asia/Tokyo','Tokyo'],['Australia/Perth','Perth'],['Australia/Brisbane','Brisbane'],['Australia/Sydney','Sydney'],['Australia/Melbourne','Melbourne'],['Pacific/Auckland','Auckland']
+];
+
+/* Sessions in LOCAL exchange time — converted to UTC per day so DST is automatic. */
+const MRDN_SESSIONS = [
+  {name:'Sydney', zone:'Australia/Sydney', open:8, close:17, bar:'var(--blu)'},
+  {name:'Tokyo', zone:'Asia/Tokyo', open:9, close:18, bar:'var(--acc)'},
+  {name:'London', zone:'Europe/London', open:8, close:17, bar:'var(--grn)'},
+  {name:'New York', zone:'America/New_York', open:8, close:17, bar:'var(--amb)'}
+];
+
+const MRDN_HOLIDAYS = { '2026-08-04': [] };
+
+const MRDN_SNAP_ISO = '2026-08-05T17:35:00Z';
+const MRDN_SNAPSHOT = (function(){
+  const d = new Date(MRDN_SNAP_ISO);
+  const day = new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(d);
+  const hm = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}).format(d);
+  return day+' · '+hm+' UTC';
+})();
+const MRDN_LS = 'mrdn.fx.v2';
+
+const MrdnCount = function(props){
+  const [v, setV] = React.useState(props.from);
+  React.useEffect(function(){
+    let raf, t0 = null;
+    const step = function(ts){
+      if(t0===null) t0 = ts;
+      const p = Math.min(1, (ts-t0)/460);
+      const e = 1-Math.pow(1-p, 3);
+      setV(props.from + (props.to-props.from)*e);
+      if(p<1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return function(){ cancelAnimationFrame(raf); };
+  }, [props.from, props.to]);
+  const d = props.dp === undefined ? 1 : props.dp;
+  return React.createElement('span', null, v.toFixed(d) + (props.unit||''));
+};
+
+class Component extends DCLogic {
+  constructor(p){
+    super(p);
+    let tzAuto = 'UTC';
+    try { tzAuto = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch(e){}
+    this.state = {
+      now: Date.now(), view:'today', tz:tzAuto, tzAuto, query:'', impact:[3,2,1], curs:[], watchOnly:false,
+      open:null, watch:{}, notes:{}, rep:{}, moved:{}, alerts:false, sound:true, toasts:[], fired:{},
+      client:'', secs:{ahead:true,recap:true,cur:true,notes:true}, apiUrl:'', feedMsg:'', feedOk:null,
+      autoSync:true, syncEvery:5, lastSync:0, syncing:false, syncFails:0,
+      theme:(p && p.theme) || 'dark', density:'comfortable', extra:null, perm:'default',
+      cursor:-1, lastSeen:0, newIds:{}, diffText:'', hasDiff:false,
+      ratingSrc:'mf', pair:'EURUSD', copyLabel:'COPY AS TEXT',
+      canInstall:false, swState:'starting…', triggers:null
+    };
+  }
+
+  componentDidMount(){
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem(MRDN_LS) || '{}'); } catch(e){}
+    const patch = {};
+    ['tz','query','watchOnly','client','apiUrl','theme','view','density','plan','ratingSrc','pair','autoSync','syncEvery','lastSync'].forEach(k=>{ if(s[k]!==undefined) patch[k]=s[k]; });
+    ['watch','notes','rep','secs','moved'].forEach(k=>{ if(s[k]) patch[k]=s[k]; });
+    if(Array.isArray(s.impact)) patch.impact=s.impact;
+    if(Array.isArray(s.curs)) patch.curs=s.curs;
+    if(typeof s.alerts==='boolean') patch.alerts=s.alerts;
+    if(typeof s.sound==='boolean') patch.sound=s.sound;
+    if(s.lastSeen) patch.lastSeen=s.lastSeen;
+
+    if(patch.view==='live'||patch.view==='calendar') patch.view='today';
+
+    /* migrate v1 freeform notes into the bias field */
+    if(patch.notes){
+      const n = {};
+      Object.keys(patch.notes).forEach(k=>{
+        const val = patch.notes[k];
+        n[k] = (typeof val==='string') ? {bias:val, level:'', inval:''} : val;
+      });
+      patch.notes = n;
+    }
+
+    const seen = patch.lastSeen || 0;
+    if(seen){
+      const printed = MRDN_EVENTS.filter(e=>e.actual && Date.parse(e.utc)>seen && Date.parse(e.utc)<=Date.now());
+      if(printed.length){
+        const ids = {}; printed.forEach(e=>{ ids[e.id]=1; });
+        patch.newIds = ids;
+        patch.hasDiff = true;
+        patch.diffText = printed.length+' release'+(printed.length>1?'s':'')+' printed while you were away — '+printed.slice(0,3).map(e=>e.cur+' '+e.name+' '+e.actual).join('; ')+(printed.length>3?', and '+(printed.length-3)+' more':'')+'.';
+      }
+    }
+
+    this.setState(patch);
+    this.applyTheme(patch.theme || this.state.theme);
+    this.applyDensity(patch.density || this.state.density);
+    this.applyAccent();
+
+    try { if(typeof Notification!=='undefined') this.setState({perm:Notification.permission}); } catch(e){}
+
+    this.onKey = this.handleKey.bind(this);
+    document.addEventListener('keydown', this.onKey);
+
+    this.onInstall = e=>{ e.preventDefault(); this.installEvt = e; this.setState({canInstall:true}); };
+    window.addEventListener('beforeinstallprompt', this.onInstall);
+
+    this.auditData();
+    this.auditPromotions();
+    this.measureChrome();
+    this.registerSW();
+    this.timer = setInterval(()=>{ this.setState({now:Date.now()}); this.checkAlerts(); }, 1000);
+    this.seenTimer = setInterval(()=>this.persist({lastSeen:Date.now()}), 30000);
+    this.startAutoSync();
+  }
+
+  componentDidUpdate(prev){ if(prev.accent!==this.props.accent) this.applyAccent(); }
+
+  /* Missing keys fail silently in the template — surface them loudly instead. */
+  auditData(){
+    const bad = [];
+    this.events().forEach(e=>{
+      const miss = ['id','utc','cur','name'].filter(k=>!e[k] || !String(e[k]).trim());
+      if(miss.length) bad.push((e.id||'?')+' missing '+miss.join(', '));
+      else if(isNaN(Date.parse(e.utc))) bad.push(e.id+' has an unparseable utc: '+e.utc);
+      else if([1,2,3].indexOf(e.imp)<0) bad.push(e.id+' has no valid impact');
+    });
+    if(bad.length) console.error('[Meridian] dataset integrity — '+bad.length+' bad event(s):\n'+bad.join('\n'));
+    return bad;
+  }
+
+  /* Header height is content-dependent — it wraps to 2-3 rows on narrow screens.
+     Measure it and feed the sticky offsets, so pinned headers never hide behind it. */
+  measureChrome(){
+    const read = ()=>{
+      try {
+        const h = document.querySelector('header');
+        if(!h) return;
+        document.documentElement.style.setProperty('--hdr', Math.round(h.offsetHeight)+'px');
+        const c = document.querySelector('[data-colhead]');
+        if(c) document.documentElement.style.setProperty('--colh', Math.round(c.offsetHeight)+'px');
+      } catch(e){}
+    };
+    read();
+    try {
+      if(window.ResizeObserver){
+        this.ro = new ResizeObserver(read);
+        const h = document.querySelector('header'); if(h) this.ro.observe(h);
+        const c = document.querySelector('[data-colhead]'); if(c) this.ro.observe(c);
+      }
+    } catch(e){}
+    this.onResize = read;
+    window.addEventListener('resize', read);
+    window.addEventListener('orientationchange', read);
+    this.chromeTimer = setInterval(read, 1500);
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.timer); clearInterval(this.seenTimer); clearInterval(this.chromeTimer); clearInterval(this.syncTimer);
+    try { document.removeEventListener('visibilitychange', this.onWake); window.removeEventListener('focus', this.onWake); } catch(e){}
+    try { if(this.ro) this.ro.disconnect(); } catch(e){}
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('orientationchange', this.onResize);
+    if(this.onWake){
+      document.removeEventListener('visibilitychange', this.onWake);
+      window.removeEventListener('pageshow', this.onWake);
+      window.removeEventListener('focus', this.onWake);
+    }
+    document.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('beforeinstallprompt', this.onInstall);
+    try { localStorage.setItem(MRDN_LS, JSON.stringify(this.snap({lastSeen:Date.now()}))); } catch(e){}
+  }
+
+  registerSW(){
+    if(!('serviceWorker' in navigator)){ this.setState({swState:'this browser has no background worker — alerts fire only while the app is open'}); return; }
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      this.swReg = reg;
+      navigator.serviceWorker.addEventListener('message', e=>{
+        const d = e.data || {};
+        if(d.type==='rearm') this.armSW();
+        if(d.type==='armed') this.setState({triggers: d.mode==='triggers', swState: d.scheduled+' alert'+(d.scheduled===1?'':'s')+' scheduled'});
+      });
+      return navigator.serviceWorker.ready.then(()=>{ this.setState({swState:'background worker ready'}); this.armSW(); });
+    }).catch(err=>{
+      this.setState({swState:'worker blocked here ('+(err && err.message ? err.message.slice(0,44) : 'unknown')+') — in-app alerts still work'});
+    });
+
+    this.onWake = ()=>{ if(document.visibilityState==='visible') this.armSW(); };
+    document.addEventListener('visibilitychange', this.onWake);
+    window.addEventListener('pageshow', this.onWake);
+    window.addEventListener('focus', this.onWake);
+  }
+
+  /* Hand the whole upcoming schedule to the worker. Re-armed on every open,
+     focus and tab-return, so the OS always holds a current list. */
+  armSW(){
+    if(!this.swReg) return;
+    if(!this.state.alerts){
+      try { if(navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage({type:'clear'}); } catch(e){}
+      this.setState({swState:'alerts off — nothing scheduled'});
+      return;
+    }
+    const now = Date.now(), alerts = [];
+    this.events().forEach(e=>{
+      if(this.impOf(e) < 3) return;
+      const t = Date.parse(e.utc);
+      [15,5,1].forEach(m=>{
+        const at = t - m*60e3;
+        if(at > now) alerts.push({at, tag:e.id+':'+m, head:m+' MIN — '+e.cur+' '+e.name, body:'Consensus '+(e.forecast||'n/a')+' · previous '+(e.previous||'n/a')+'. Expected move ±'+(e.vol||0)+' pips.', critical:m===1});
+      });
+      if(t > now) alerts.push({at:t, tag:e.id+':0', head:'RELEASING NOW — '+e.cur+' '+e.name, body:'Consensus was '+(e.forecast||'n/a')+'. Open Meridian for the print.', critical:true});
+    });
+    alerts.sort((a,b)=>a.at-b.at);
+    const post = ()=>{ try { if(navigator.serviceWorker.controller) navigator.serviceWorker.controller.postMessage({type:'schedule', alerts}); } catch(e){} };
+    post();
+    if(!navigator.serviceWorker.controller) setTimeout(post, 1200);
+    try { if(this.swReg.periodicSync) this.swReg.periodicSync.register('mrdn-calendar',{minInterval:6*3600e3}).catch(()=>{}); } catch(e){}
+  }
+
+  handleKey(ev){
+    const tag = (ev.target && ev.target.tagName || '').toLowerCase();
+    if(tag==='input'||tag==='textarea'||tag==='select') { if(ev.key==='Escape') ev.target.blur(); return; }
+    if(ev.metaKey||ev.ctrlKey||ev.altKey) return;
+    const k = ev.key, rows = this.rows || [];
+    const move = d=>{
+      ev.preventDefault();
+      const n = Math.max(0, Math.min(rows.length-1, this.state.cursor + d));
+      this.setState({cursor:n});
+      try {
+        const el = document.querySelector('[data-row="'+rows[n]+'"]');
+        if(el){ const r = el.getBoundingClientRect(); if(r.top < 130 || r.bottom > window.innerHeight-40) window.scrollBy({top: r.top-220, behavior:'smooth'}); }
+      } catch(e){}
+    };
+    if(k==='j'||k==='J'||k==='ArrowDown') return move(1);
+    if(k==='k'||k==='K'||k==='ArrowUp') return move(-1);
+    if(k===' '||k==='Enter'){ const id = rows[this.state.cursor]; if(id){ ev.preventDefault(); this.setState(s=>({open: s.open===id ? null : id})); } return; }
+    if(k==='s'||k==='S'){ const id = rows[this.state.cursor]; if(id){ const w={...this.state.watch}; if(w[id]) delete w[id]; else w[id]=1; this.persist({watch:w}); } return; }
+    if(k==='/'){ ev.preventDefault(); try{ const i=document.querySelector('input[placeholder^="Search events"]'); if(i) i.focus(); }catch(e){} return; }
+    if(k==='t'||k==='T') return this.persist({view:'today', open:null, cursor:-1});
+    if(k==='w'||k==='W') return this.go('week');
+    if(k==='d'||k==='D') return this.toggleDensity();
+    if(k==='1'||k==='2'||k==='3'){
+      const n = k==='1'?3:k==='2'?2:1;
+      const s=[...this.state.impact], i=s.indexOf(n); if(i>=0) s.splice(i,1); else s.push(n);
+      return this.persist({impact: s.length?s:[3]});
+    }
+    if(k==='Escape') this.setState({open:null});
+  }
+
+  snap(extra){
+    const s = this.state;
+    return Object.assign({tz:s.tz,query:s.query,watchOnly:s.watchOnly,client:s.client,apiUrl:s.apiUrl,theme:s.theme,view:s.view,
+      density:s.density,ratingSrc:s.ratingSrc,pair:s.pair,autoSync:s.autoSync,syncEvery:s.syncEvery,lastSync:s.lastSync,
+      watch:s.watch,notes:s.notes,rep:s.rep,moved:s.moved,secs:s.secs,impact:s.impact,curs:s.curs,alerts:s.alerts,sound:s.sound,lastSeen:s.lastSeen}, extra||{});
+  }
+  persist(patch, done){
+    this.setState(patch, ()=>{ try { localStorage.setItem(MRDN_LS, JSON.stringify(this.snap())); } catch(e){} if(done) done(); });
+  }
+
+  applyAccent(){ if(this.props.accent){ try{ document.documentElement.style.setProperty('--acc', this.props.accent); }catch(e){} } }
+  applyTheme(t){ try{ document.documentElement.setAttribute('data-theme', t==='light'?'light':'dark'); }catch(e){} }
+  applyDensity(d){ try{ document.documentElement.setAttribute('data-density', d==='compact'?'compact':'comfortable'); }catch(e){} }
+
+  go(v){ this.persist({view:v, open:null, cursor:-1}); }
+
+  /* Effective impact. `promoted` is an explicit editorial override that beats the
+     per-site ratings — without it, any event all three sites underrate can never
+     reach HIGH under any ratingSrc setting, so a deliberate promotion would sit
+     invisible behind the default HIGH-only filter. */
+  impOf(e){
+    if(e.promoted) return e.imp;
+    const src = this.state.ratingSrc;
+    if(src==='any' && e.impBy) return Math.max(e.impBy.mf||0, e.impBy.ff||0, e.impBy.inv||0);
+    if(e.impBy && e.impBy[src]) return e.impBy[src];
+    return e.imp;
+  }
+
+  /* Guard the invariant: anything whose desc or brief claims high impact must
+     actually resolve to 3, whatever the rating source. */
+  auditPromotions(){
+    const srcs = ['any','mf','ff','inv'], real = this.state.ratingSrc, bad = [];
+    this.events().forEach(e=>{
+      if(e.imp !== 3 || !e.impBy) return;
+      const worst = srcs.map(s=>{ this.state.ratingSrc = s; return this.impOf(e); });
+      if(Math.max.apply(null, worst) < 3) bad.push(e.id+' — '+e.name+' is authored imp:3 but resolves to '+Math.max.apply(null,worst)+' under every rating source; add promoted:true or lower imp');
+    });
+    this.state.ratingSrc = real;
+    if(bad.length) console.error('[Meridian] unreachable promotions:\n'+bad.join('\n'));
+    return bad;
+  }
+
+  events(){ return this.state.extra && this.state.extra.length ? this.state.extra : MRDN_EVENTS; }
+
+  /* Auto-resync. Polls the connected feed on an interval, on regaining focus and on
+     reconnect, so the calendar refreshes itself without anyone pressing anything.
+     Backs off after repeated failures rather than hammering a dead endpoint. */
+  startAutoSync(){
+    clearInterval(this.syncTimer);
+    const tick = (why)=>{
+      const s = this.state;
+      if(!s.apiUrl || !s.autoSync || s.syncing) return;
+      if(typeof navigator!=='undefined' && navigator.onLine===false) return;
+      if(this.feedProblem(s.apiUrl)) return;
+      const every = Math.max(1, s.syncEvery||5) * 60000;
+      const backoff = s.syncFails ? Math.min(8, Math.pow(2, s.syncFails)) : 1;
+      if(why==='timer' && s.lastSync && Date.now() - s.lastSync < every * backoff) return;
+      this.fetchFeed(s.apiUrl, true);
+    };
+    this.syncTick = tick;
+    if(this.state.apiUrl && this.state.autoSync) tick('mount');
+    else if(this.state.apiUrl) this.fetchFeed(this.state.apiUrl, true);
+    this.syncTimer = setInterval(()=>tick('timer'), 20000);
+    if(!this.syncBound){
+      this.syncBound = true;
+      this.onWake = ()=>{ if(!document.hidden) tick('focus'); };
+      document.addEventListener('visibilitychange', this.onWake);
+      window.addEventListener('focus', this.onWake);
+      window.addEventListener('online', ()=>tick('online'));
+    }
+  }
+
+  feedProblem(url){
+    const u = (url||'').trim();
+    if(!u) return 'Paste a feed URL first.';
+    if(!/^https?:\/\//i.test(u)) return 'That is not a URL — it must start with https://';
+    if(/forexfactory\.com|investing\.com|myfxbook\.com/i.test(u))
+      return 'That is a web page, not a data feed. Those three sites return HTML and block cross-origin requests, so no browser app can read them directly — this is a restriction they set, not a fault here. You need a JSON endpoint: a calendar API (Trading Economics, FMP, Finnhub) or your own scraper that publishes JSON.';
+    if(/\.(html?|php|aspx)(\?|$)/i.test(u))
+      return 'That looks like a web page, not JSON. The endpoint must return a JSON array of events.';
+    return '';
+  }
+
+  fetchFeed(url, silent){
+    const bad = this.feedProblem(url);
+    if(bad){ this.setState({feedMsg:bad, feedOk:false, syncing:false, syncFails:6}); return; }
+    if(this.state.syncing) return;
+    this.setState({syncing:true});
+    if(!silent) this.setState({feedMsg:'fetching…', feedOk:null});
+    const bust = url + (url.indexOf('?')>=0 ? '&' : '?') + '_t=' + Date.now();
+    fetch(bust, {cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }).then(j=>{
+      const arr = Array.isArray(j) ? j : (j.events || j.data || []);
+      const mapped = arr.map((e,i)=>({
+        id: e.id || ('x'+i), utc: e.utc || e.date || e.time, cur: e.cur || e.currency || e.country,
+        imp: e.imp || (e.importance===3||e.impact==='High'?3:(e.importance===2||e.impact==='Medium'?2:1)),
+        name: e.name || e.event || e.title, period: e.period || '', actual: e.actual, forecast: e.forecast || e.estimate,
+        previous: e.previous || e.prev, revised: e.revised, vol: e.vol || 30, better: e.better || 'higher',
+        pairs: e.pairs || [], src: e.src || e.source || 'feed', hist: e.hist || [], desc: e.desc || ''
+      })).filter(e=>e.utc && e.name);
+      if(!mapped.length) throw new Error('no events in payload');
+      const sig = a => a.map(e=>e.id+'|'+e.utc+'|'+(e.actual||'')+'|'+(e.forecast||'')+'|'+(e.revised||'')).join(';');
+      const changed = sig(mapped) !== sig(this.state.extra || []);
+      const t = Date.now();
+      this.setState({extra:mapped, syncing:false, syncFails:0, lastSync:t,
+        feedMsg:(changed?'updated ':'no change · ')+mapped.length+' events · '+this.syncClock(t), feedOk:true},
+        ()=>{ this.armSW(); this.persist({lastSync:t}); });
+      if(changed && silent && this.state.extra) this.notify('Calendar updated','The live feed changed — actuals, consensus or schedule have moved.', false);
+    }).catch(err=>{
+      const m = err && err.message ? err.message : '';
+      const msg = /failed to fetch|networkerror|load failed/i.test(m)
+        ? 'Could not reach that URL. Either it is offline, or it does not allow cross-origin requests — the endpoint must send an Access-Control-Allow-Origin header.'
+        : /json|unexpected token/i.test(m)
+          ? 'That URL responded, but not with JSON. Check it returns a JSON array of events, not a web page.'
+          : 'Failed: ' + (m || 'unknown error');
+      this.setState(s=>({syncing:false, syncFails:Math.min(6, s.syncFails+1), feedMsg:msg, feedOk:false}));
+    });
+  }
+
+  syncClock(t){
+    try { return new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:this.state.tz}).format(new Date(t)); }
+    catch(e){ return new Date(t).toTimeString().slice(0,5); }
+  }
+
+  beep(critical){
+    if(!this.state.sound) return;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+      this.ac = this.ac || new AC();
+      if(this.ac.state==='suspended') this.ac.resume();
+      const pattern = critical ? [0,0.2,0.4] : [0,0.22];
+      pattern.forEach((off,i)=>{
+        const o=this.ac.createOscillator(), g=this.ac.createGain(), t=this.ac.currentTime+off;
+        o.type='sine'; o.frequency.value = i===0 ? 880 : (i===1 ? 1180 : 1480);
+        g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.17,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+0.19);
+        o.connect(g); g.connect(this.ac.destination); o.start(t); o.stop(t+0.2);
+      });
+      if(navigator.vibrate) navigator.vibrate(critical?[90,60,90,60,160]:[70,50,70]);
+    } catch(e){}
+  }
+
+  notify(head, body, critical){
+    this.beep(critical);
+    const t = {k:head+body+Date.now(), head, body};
+    this.setState(s=>({toasts:[...s.toasts, t].slice(-3)}));
+    setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.k!==t.k)})), 9000);
+    try {
+      if(this.swReg && this.swReg.showNotification && Notification.permission==='granted'){
+        this.swReg.showNotification(head,{body, icon:'icons/icon-192.png', badge:'icons/icon-192.png', tag:head+body, renotify:true, vibrate:critical?[90,60,90]:[70,50,70]});
+      } else if(typeof Notification!=='undefined' && Notification.permission==='granted'){
+        new Notification(head,{body});
+      }
+    } catch(e){}
+  }
+
+  /* Plain-language delivery check. Deliberately does NOT imitate a release alert —
+     the message has to be unmistakably a test, and the readout has to say which
+     route actually carried it, since that is the thing that differs per device. */
+  runSelfTest(){
+    const stamp = ()=>{
+      try { return new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',timeZone:this.state.tz}).format(new Date()); }
+      catch(e){ return new Date().toTimeString().slice(0,8); }
+    };
+    const say = (tone, msg)=>{
+      this.setState({testTone:tone, testMsg:msg});
+      clearTimeout(this.testTimer);
+      this.testTimer = setTimeout(()=>this.setState({testMsg:'', testTone:''}), 30000);
+    };
+    const HEAD = 'Hello — the notifications are working';
+    const BODY = 'This is a test from Meridian FX. Real alerts arrive 15, 5 and 1 minute before each high-impact release, and again when the number prints.';
+
+    const fire = ()=>{
+      this.beep(false);
+      const t = {k:'selftest'+Date.now(), head:HEAD, body:BODY};
+      this.setState(s=>({toasts:[...s.toasts, t].slice(-3)}));
+      setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(x=>x.k!==t.k)})), 9000);
+
+      if(typeof Notification==='undefined'){
+        say('warn','Sent as an in-app banner and ping at '+stamp()+'. This browser has no system notification support, so nothing will reach your lock screen — install the app to your home screen from Chrome or Edge.');
+        return;
+      }
+      if(Notification.permission==='denied'){
+        say('warn','Sent as an in-app banner and ping at '+stamp()+'. System notifications are blocked, so nothing reached your lock screen — Android: Settings ▸ Apps ▸ Meridian FX ▸ Notifications ▸ allow. Desktop: the padlock icon beside the address bar.');
+        return;
+      }
+      if(Notification.permission!=='granted'){ say('warn','Permission was not granted, so only the in-app banner and ping fired at '+stamp()+'.'); return; }
+
+      let route = '';
+      try {
+        if(this.swReg && this.swReg.showNotification){
+          this.swReg.showNotification(HEAD, {body:BODY, icon:'icons/icon-192.png', badge:'icons/icon-192.png', tag:'meridian-selftest', renotify:true, vibrate:[70,50,70], requireInteraction:false});
+          route = 'through the background scheduler — the same route the timed alerts use, so those will reach you too';
+        } else {
+          new Notification(HEAD, {body:BODY, icon:'icons/icon-192.png'});
+          route = 'direct from the page. The background scheduler is not registered, so alerts will only fire while the app is open — open it over https:// and reload to fix that';
+        }
+      } catch(e){ say('warn','The browser refused the notification at '+stamp()+': '+(e && e.message ? e.message : 'unknown error')+'.'); return; }
+      say('ok','Sent at '+stamp()+' '+route+'. Check your lock screen or notification shade — if nothing appeared there, the operating system is filtering it.');
+    };
+
+    try {
+      if(Notification.permission==='default'){
+        say('', 'Waiting for you to allow notifications…');
+        const r = Notification.requestPermission(p=>{ this.setState({perm:p}); fire(); });
+        if(r && r.then) r.then(p=>{ this.setState({perm:p}); fire(); }).catch(fire);
+      } else fire();
+    } catch(e){ fire(); }
+  }
+
+  checkAlerts(){
+    if(!this.state.alerts) return;
+    const now = this.state.now, fired = this.state.fired, hits = [];
+    this.events().forEach(e=>{
+      if(this.impOf(e) < 3) return;
+      const t = Date.parse(e.utc), mins = (t-now)/60000;
+      [15,5,1].forEach(m=>{
+        const k = e.id+':'+m;
+        if(!fired[k] && mins <= m && mins > m-1.02){ fired[k]=1; hits.push([m+' MIN TO RELEASE', e.cur+' · '+e.name+' — consensus '+(e.forecast||'n/a'), m===1]); }
+      });
+      const k0 = e.id+':0';
+      if(!fired[k0] && mins <= 0 && mins > -1.02){ fired[k0]=1; hits.push(['RELEASING NOW', e.cur+' · '+e.name, true]); }
+    });
+    if(hits.length){ this.setState({fired}); hits.forEach(h=>this.notify(h[0],h[1],h[2])); }
+  }
+
+  toggleAlerts(){
+    const on = !this.state.alerts;
+    this.persist({alerts:on});
+    if(!on){ setTimeout(()=>this.armSW(), 40); return; }
+    this.beep();
+    const after = p=>{ this.setState({perm:p}); this.armSW(); };
+    try {
+      if(typeof Notification==='undefined'){ this.armSW(); return; }
+      if(Notification.permission==='granted'){ after('granted'); return; }
+      if(Notification.permission==='denied'){ after('denied'); return; }
+      const r = Notification.requestPermission(after);
+      if(r && r.then) r.then(after).catch(()=>this.armSW());
+    } catch(e){ this.armSW(); }
+  }
+
+  toggleDensity(){ const d = this.state.density==='compact'?'comfortable':'compact'; this.applyDensity(d); this.persist({density:d}); }
+
+  fmtTime(utc){
+    try { return new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:this.state.tz}).format(new Date(utc)); }
+    catch(e){ return new Date(utc).toISOString().slice(11,16); }
+  }
+  fmtDay(utc){
+    try { return new Intl.DateTimeFormat('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:this.state.tz}).format(new Date(utc)); }
+    catch(e){ return new Date(utc).toDateString(); }
+  }
+  fmtDayShort(utc){
+    try { return new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short',timeZone:this.state.tz}).format(new Date(utc)); }
+    catch(e){ return new Date(utc).toDateString(); }
+  }
+  dayKey(utc){
+    try { return new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:this.state.tz}).format(new Date(utc)); }
+    catch(e){ return new Date(utc).toISOString().slice(0,10); }
+  }
+  zoneOffset(zone, at){
+    try {
+      const p = new Intl.DateTimeFormat('en-US',{timeZone:zone,hour12:false,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(at);
+      const g = {}; p.forEach(x=>{ g[x.type]=x.value; });
+      const asUTC = Date.UTC(+g.year, +g.month-1, +g.day, +(g.hour==='24'?'0':g.hour), +g.minute);
+      return Math.round((asUTC - at.getTime()) / 3600e3);
+    } catch(e){ return 0; }
+  }
+  num(v){
+    if(v===undefined||v===null||v==='') return null;
+    const s = String(v).replace(/,/g,'');
+    const m = s.match(/-?\d+(\.\d+)?/); if(!m) return null;
+    return parseFloat(m[0]);
+  }
+  unitOf(v){
+    const s = String(v==null?'':v).trim();
+    if(s.indexOf('%')>=0) return '%';
+    if(/k$/i.test(s)) return 'K';
+    if(/b$/i.test(s)) return 'B';
+    if(/m$/i.test(s)) return 'M';
+    return '';
+  }
+  sd(arr){
+    if(!arr || arr.length<4) return null;
+    const d = []; for(let i=1;i<arr.length;i++) d.push(arr[i]-arr[i-1]);
+    const m = d.reduce((a,b)=>a+b,0)/d.length;
+    const v = d.reduce((a,b)=>a+(b-m)*(b-m),0)/d.length;
+    const s = Math.sqrt(v);
+    return s > 0.0001 ? s : null;
+  }
+  impColor(i){ return i>=3 ? 'var(--red)' : i===2 ? 'var(--amb)' : 'var(--blu)'; }
+
+  bracketFor(e){
+    const p = (e.pairs||[])[0]; if(!p || !MRDN_SPOT[p] || !e.vol) return null;
+    const sp = MRDN_SPOT[p][0], pip = MRDN_SPOT[p][1], d = e.vol*pip;
+    const dp = pip===0.01 ? 2 : (pip===0.1 ? 1 : 4);
+    return {pair:p, spot:sp.toFixed(dp), lo:(sp-d).toFixed(dp), hi:(sp+d).toFixed(dp)};
+  }
+
+  enrich(e){
+    const st = this.state, now = st.now, t = Date.parse(e.utc);
+    const past = t <= now;
+    const imp = this.impOf(e);
+    const a = this.num(e.actual), f = this.num(e.forecast);
+    let sur = past && e.actual ? 'in line' : '—', surFg = 'var(--fg3)', sigma = '';
+    if(a!==null && f!==null){
+      const d = a-f, u = this.unitOf(e.actual) || this.unitOf(e.forecast);
+      const mag = Math.abs(d) < 0.0005 ? 0 : d;
+      if(mag===0){ sur='in line'; surFg='var(--fg2)'; }
+      else {
+        sur = (mag>0?'+':'') + (Math.abs(mag)>=10 ? mag.toFixed(0) : mag.toFixed(Math.abs(mag)<0.1?2:1)) + u;
+        const good = e.better==='lower' ? mag<0 : mag>0;
+        surFg = good ? 'var(--grn)' : 'var(--red)';
+      }
+      const s = this.sd(e.hist);
+      if(s && mag!==0) sigma = (Math.abs(d/s)).toFixed(1)+'σ';
+    }
+    const hv = (e.hist||[]).slice(-8);
+    const mn = Math.min.apply(null, hv.length?hv:[0]), mx = Math.max.apply(null, hv.length?hv:[1]);
+    const span = (mx-mn)||1;
+    const col = this.impColor(imp);
+    const bars = hv.map((v,i)=>({h:(12+86*((v-mn)/span)).toFixed(0)+'%', bg: i===hv.length-1 ? col : 'var(--rule2)', v:String(v)}));
+    const impLetter = imp>=3?'H':imp===2?'M':'L';
+    const overdue = past && !e.actual && !e.unverified && (now-t) > 3*60e3 && imp>=2;
+    let flag = '', flagFg = 'var(--amb)';
+    if(e.unverified && past){ flag='UNVERIFIED'; flagFg='var(--blu)'; }
+    else if(overdue){ flag='AWAITING'; flagFg='var(--amb)'; }
+    else if(e.tentative){ flag='TENT'; flagFg='var(--amb)'; }
+    else if(e.revised){ flag='REV'; flagFg='var(--blu)'; }
+    else if(e.impBy){ flag='SPLIT'; flagFg='var(--blu)'; }
+
+    const br = this.bracketFor(e);
+    const isNew = !!st.newIds[e.id] && a!==null && f!==null;
+    const nt = st.notes[e.id] || {};
+    const mv = st.moved[e.id] || '';
+    const mvN = this.num(mv);
+    let outLabel = '', outFg = 'var(--fg3)';
+    if(mvN!==null && e.vol){
+      const ratio = mvN/e.vol;
+      outLabel = ratio>1.25 ? 'OVERSHOT' : ratio<0.7 ? 'UNDERSHOT' : 'AS EXPECTED';
+      outFg = ratio>1.25 ? 'var(--red)' : ratio<0.7 ? 'var(--blu)' : 'var(--grn)';
+    }
+    const setNote = (field)=>ev=>{
+      const n = {...this.state.notes};
+      n[e.id] = Object.assign({bias:'',level:'',inval:''}, n[e.id], {[field]: ev.target.value});
+      this.persist({notes:n});
+    };
+    return {
+      id:e.id, e, t, past, imp,
+      time:this.fmtTime(e.utc), cur:e.cur,
+      impLetter, impFg: imp>=3?'#fff':col, impBd: col, impBg: imp>=3?col:'transparent',
+      edge: (!past && imp>=3) ? col : 'transparent',
+      bg: st.cursor>=0 && (this.rows||[])[st.cursor]===e.id ? 'var(--pane2)' : 'transparent',
+      dim: past ? '.62' : '1',
+      name:e.name, period:e.period||'', flag, flagFg,
+      pairsText:(e.pairs||[]).join('  ·  '), pairs:e.pairs||[],
+      actual: e.actual || (e.unverified && past ? 'not synced' : overdue?'awaiting':past?'pending':'—'),
+      actFg: e.actual ? 'var(--fg)' : (e.unverified && past ? 'var(--blu)' : overdue?'var(--amb)':'var(--fg3)'),
+      isNew, notNew: !isNew,
+      actualEl: isNew ? React.createElement(MrdnCount,{from:f, to:a, dp:(Math.abs(a)>=10?0:(Math.abs(a)<1?2:1)), unit:this.unitOf(e.actual)}) : null,
+      flashAnim: isNew ? 'mFlash 2.6s ease-out both' : 'none',
+      forecast: e.forecast || '—', previous: e.previous || '—',
+      surprise: sur, surFg, sigma,
+      volText: e.vol ? '±'+e.vol : '—', volRaw: e.vol||0,
+      volFg: e.vol>=70?'var(--red)':e.vol>=35?'var(--amb)':'var(--fg3)',
+      spark: bars, hist: bars,
+      histNote: hv.length ? 'Oldest to newest; latest highlighted.' : 'No series for this event type.',
+      desc: e.desc || '', source: e.src || '—', ratings: e.ratings || '',
+      bracket: br ? br.lo+' – '+br.hi : '', bracketPair: br?br.pair:'', spot: br?br.spot:'',
+      utcLabel: new Date(e.utc).toISOString().slice(0,16).replace('T',' ')+' UTC',
+      timeFg: past ? 'var(--fg3)' : (imp>=3?'var(--red)':'var(--fg)'),
+      starFg: st.watch[e.id] ? 'var(--amb)' : 'var(--rule2)',
+      bias: nt.bias||'', level: nt.level||'', inval: nt.inval||'',
+      onBias: setNote('bias'), onLevel: setNote('level'), onInval: setNote('inval'),
+      moved: mv, outLabel, outFg,
+      onMoved: ev=>{ const m={...this.state.moved}; m[e.id]=ev.target.value; this.persist({moved:m}); },
+      open: st.open===e.id,
+      chev: st.open===e.id ? '–' : '+',
+      repLabel: st.rep[e.id] ? '✓ IN REPORT' : 'ADD TO REPORT',
+      repBd: st.rep[e.id] ? 'var(--acc)' : 'var(--rule2)',
+      repFg: st.rep[e.id] ? 'var(--acc)' : 'var(--fg2)',
+      star: ()=>{ const w={...this.state.watch}; if(w[e.id]) delete w[e.id]; else w[e.id]=1; this.persist({watch:w}); },
+      toggle: ()=>this.setState(s=>({open: s.open===e.id ? null : e.id})),
+      report: ()=>{ const r={...this.state.rep}; if(r[e.id]) delete r[e.id]; else r[e.id]=1; this.persist({rep:r}); }
+    };
+  }
+
+  buildText(){
+    const now = this.state.now;
+    const lines = [this.props.brandName || 'Meridian', 'MACRO CALENDAR BRIEF', 'Prepared for: '+(this.state.client||'Internal desk'),
+      this.fmtDayShort(now)+' '+this.fmtTime(now)+' · '+this.state.tz, '', 'LOOK-AHEAD — HIGH IMPACT', ''];
+    this.events().filter(e=>this.impOf(e)>=3 && Date.parse(e.utc)>now).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc)).slice(0,12)
+      .forEach(e=>lines.push(this.fmtDayShort(e.utc)+' '+this.fmtTime(e.utc)+'  '+e.cur+'  '+e.name+'  fcst '+(e.forecast||'—')+'  prev '+(e.previous||'—')+'  ±'+(e.vol||0)+' pips'));
+    lines.push('', 'Cross-checked against ForexFactory, Investing.com and Myfxbook. Snapshot '+MRDN_SNAPSHOT+'. Not investment advice.');
+    return lines.join('\n');
+  }
+
+  renderVals(){
+    const st = this.state, now = st.now, all = this.events();
+    const tzLong = st.tz.replace(/_/g,' ');
+
+    let clock='--:--:--', utcNow='--:--';
+    try { clock = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:st.tz}).format(now); } catch(e){}
+    try { utcNow = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}).format(now); } catch(e){}
+    let tzShort = st.tz.split('/').pop().replace(/_/g,' ');
+    try { tzShort = new Intl.DateTimeFormat('en-GB',{timeZone:st.tz,timeZoneName:'short'}).formatToParts(now).filter(p=>p.type==='timeZoneName')[0].value; } catch(e){}
+
+    const snapMs = Date.parse(MRDN_SNAP_ISO);
+    const ageH = (now - Math.max(snapMs, st.lastSync||0))/3600e3;
+    const stale = ageH > 18;
+    const staleAge = ageH >= 48 ? Math.floor(ageH/24)+' DAYS' : Math.floor(ageH)+' HOURS';
+
+    const view = st.view.indexOf('locked:')===0 ? st.view.slice(7) : (st.view==='pricing' ? 'settings' : st.view);
+
+    const todayKey = this.dayKey(now);
+    const filt = all.filter(e=>{
+      if(st.impact.indexOf(this.impOf(e))<0) return false;
+      if(st.curs.length && st.curs.indexOf(e.cur)<0) return false;
+      if(st.watchOnly && !st.watch[e.id]) return false;
+      if(st.query){ const q=st.query.toLowerCase(); if((e.name+' '+e.cur+' '+(e.src||'')).toLowerCase().indexOf(q)<0) return false; }
+      return true;
+    }).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc));
+
+    let shown, oneDay = false;
+    if(view==='today'){ shown = filt.filter(e=>this.dayKey(e.utc)===todayKey); oneDay = true; }
+    else if(view==='archive'){ shown = filt.filter(e=>Date.parse(e.utc)<=now).reverse(); }
+    else { shown = filt.filter(e=>{ const d=Date.parse(e.utc)-now; return d > -30*3600e3 && d < 8*24*3600e3; }); }
+
+    this.rows = shown.map(e=>e.id);
+
+    const gmap = [];
+    shown.forEach(e=>{
+      const k = this.dayKey(e.utc);
+      let g = gmap.filter(x=>x.k===k)[0];
+      if(!g){ g={k, label:this.fmtDay(e.utc), items:[], isToday:k===todayKey}; gmap.push(g); }
+      g.items.push(this.enrich(e));
+    });
+    const groups = gmap.map(g=>{
+      const hi = g.items.filter(i=>i.imp>=3).length;
+      return {label:g.label+(g.isToday?' · today':''), sub: g.items.length+' releases, '+hi+' high impact', showHead: !oneDay,
+        fg: g.isToday?'var(--fg)':'var(--fg2)', items:g.items};
+    });
+
+    const upcomingHi = all.filter(e=>this.impOf(e)>=3 && Date.parse(e.utc)>now).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc));
+    const nx = upcomingHi[0];
+    let countdown='—', nextAt='', nextName='No high-impact release scheduled', nextCur='', nextFc='—', nextPrev='—', nextPairs='',
+        nextColor='var(--fg3)', nextImpact='', drainScale=0, nextBracket='—', nextBracketLabel='EXPECTED RANGE';
+    if(nx){
+      const d = Math.max(0, Date.parse(nx.utc)-now), h=Math.floor(d/3600e3), m=Math.floor(d%3600e3/60e3), s=Math.floor(d%60e3/1000);
+      countdown = (h>0? String(h).padStart(2,'0')+':' : '') + String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+      nextAt = this.fmtDayShort(nx.utc)+' · '+this.fmtTime(nx.utc)+' '+tzShort;
+      nextName = nx.name+(nx.period?' — '+nx.period:''); nextCur = nx.cur;
+      nextFc = nx.forecast||'—'; nextPrev = nx.previous||'—';
+      nextPairs = (nx.pairs||[]).join('  ·  ');
+      nextColor = d < 60e3 ? 'var(--red)' : d < 15*60e3 ? 'var(--red)' : 'var(--fg)';
+      nextImpact = d < 60e3 ? 'SECONDS' : d < 15*60e3 ? 'IMMINENT' : (d < 3600e3 ? 'WITHIN THE HOUR' : 'HIGH IMPACT');
+      drainScale = Math.min(1, d/(60*60e3));
+      const br = this.bracketFor(nx);
+      if(br){ nextBracket = br.lo+' – '+br.hi; nextBracketLabel = 'BRACKET · '+br.pair; }
+      else if(nx.vol){ nextBracket = '±'+nx.vol+' pips'; }
+    }
+
+    const sessions = MRDN_SESSIONS.map(s=>{
+      const off = this.zoneOffset(s.zone, new Date(now));
+      const o = ((s.open - off) % 24 + 24) % 24, c = ((s.close - off) % 24 + 24) % 24;
+      const wrap = c <= o;
+      const segs = wrap ? [{l:(o/24*100)+'%', w:((24-o)/24*100)+'%'},{l:'0%', w:(c/24*100)+'%'}]
+                        : [{l:(o/24*100)+'%', w:((c-o)/24*100)+'%'}];
+      let hUTC = 0, mUTC = 0;
+      try {
+        const p = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}).format(now).split(':');
+        hUTC = +p[0]; mUTC = +p[1];
+      } catch(e){}
+      const nowH = hUTC + mUTC/60;
+      const dow = new Date(now).getUTCDay();
+      const weekend = (dow===6) || (dow===0 && nowH < 21);
+      const open = !weekend && (wrap ? (nowH>=o || nowH<c) : (nowH>=o && nowH<c));
+      let u = open ? (wrap ? (nowH>=o ? 24-nowH+c : c-nowH) : c-nowH)
+                   : (nowH < o ? o-nowH : 24-nowH+o);
+      const hh=Math.floor(u), mm=Math.round((u-hh)*60);
+      return {name:s.name, bar:s.bar, segs, fg: open?'var(--fg)':'var(--fg3)',
+        status: weekend ? 'WEEKEND' : (open?'CLOSES ':'OPENS ')+hh+'h'+String(mm).padStart(2,'0')};
+    });
+    let nowH2 = 0;
+    try { const p = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'UTC'}).format(now).split(':'); nowH2 = +p[0] + (+p[1])/60; } catch(e){}
+
+    const curBtns = ['USD','EUR','GBP','JPY','CHF','AUD','NZD','CAD','CNY'].map(c=>{
+      const on = st.curs.indexOf(c)>=0;
+      return {label:c, bd: on?'var(--acc)':'transparent', fg: on?'var(--acc)':'var(--fg3)',
+        go: ()=>{ const s=[...this.state.curs], i=s.indexOf(c); if(i>=0) s.splice(i,1); else s.push(c); this.persist({curs:s}); }};
+    });
+    const impactBtns = [[3,'HIGH','var(--red)'],[2,'MED','var(--amb)'],[1,'LOW','var(--blu)']].map(([n,l,c])=>{
+      const on = st.impact.indexOf(n)>=0;
+      return {label:l, dot: on?c:'transparent', bd:c, fg: on?'var(--fg)':'var(--fg3)',
+        go: ()=>{ const s=[...this.state.impact], i=s.indexOf(n); if(i>=0) s.splice(i,1); else s.push(n); this.persist({impact: s.length?s:[3]}); }};
+    });
+
+    const todayHi = all.filter(e=>this.impOf(e)>=3 && this.dayKey(e.utc)===todayKey).length;
+    const tabs = [['today','TODAY',String(todayHi)],['week','WEEK',''],['archive','ARCHIVE',''],['pairs','BY PAIR',''],['speakers','CENTRAL BANKS',''],['report','REPORT',String(Object.keys(st.rep).length||'')],['settings','DATA','']].map(([id,label,count])=>{
+      const active = view===id;
+      return {label, count, lock:false,
+        bd: active?'var(--acc)':'transparent', fg: active?'var(--fg)':'var(--fg3)', go:()=>this.go(id)};
+    });
+
+    const cities = MRDN_CITIES.map(([v,l])=>({v, label:l}));
+    [[st.tzAuto,' · detected'],[st.tz,'']].forEach(([z,suf])=>{
+      if(z && !cities.some(c=>c.v===z)) cities.unshift({v:z, label:z.split('/').pop().replace(/_/g,' ')+suf});
+    });
+
+    const aheadRows = all.filter(e=>this.impOf(e)>=3 && Date.parse(e.utc)>now).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc)).slice(0,14)
+      .map(e=>({when:this.fmtDayShort(e.utc)+'  '+this.fmtTime(e.utc), cur:e.cur, name:e.name+(e.period?' — '+e.period:''), fc:e.forecast||'—', prev:e.previous||'—', vol:'±'+(e.vol||0)}));
+
+    const recapSrc = all.filter(e=>Date.parse(e.utc)<=now && e.actual && Date.parse(e.utc) > now-10*24*3600e3).sort((x,y)=>Date.parse(y.utc)-Date.parse(x.utc));
+    const recapRows = recapSrc.map(e=>{ const r=this.enrich(e); return {when:this.fmtDayShort(e.utc)+'  '+this.fmtTime(e.utc), cur:e.cur, name:e.name+(e.period?' — '+e.period:''), actual:r.actual, fc:r.forecast, sur:r.surprise, sigma:r.sigma, fg:r.surFg}; });
+
+    const byCur = {};
+    recapSrc.forEach(e=>{
+      const a=this.num(e.actual), f=this.num(e.forecast); if(a===null||f===null) return;
+      const good = e.better==='lower' ? a<f : a>f;
+      const tie = Math.abs(a-f) < 0.0005;
+      byCur[e.cur] = byCur[e.cur] || {n:0,pos:0,neg:0,tie:0};
+      byCur[e.cur].n++;
+      if(tie) byCur[e.cur].tie++; else byCur[e.cur][good?'pos':'neg']++;
+    });
+    const curRead = Object.keys(byCur).map(c=>{
+      const d = byCur[c], net = d.pos-d.neg;
+      const tone = net>0?'FIRMER':net<0?'SOFTER':'MIXED';
+      const fg = net>0?'var(--grn)':net<0?'var(--red)':'var(--amb)';
+      return {cur:c, tone, fg, line: d.n+' scored release'+(d.n>1?'s':'')+' — '+d.pos+' beat, '+d.neg+' missed'+(d.tie?', '+d.tie+' in line':'')+'. '+(net>0?'Data ran ahead of consensus; supportive for '+c+'.':net<0?'Consensus proved too optimistic; a headwind for '+c+'.':'No clean directional signal — positioning likely dominates.')};
+    });
+
+    const noteRows = Object.keys(st.notes).map(k=>{
+      const nt = st.notes[k] || {};
+      if(!(nt.bias||nt.level||nt.inval)) return null;
+      const e = all.filter(x=>x.id===k)[0]; if(!e) return null;
+      return {head: e.cur+' · '+e.name+' — '+this.fmtDayShort(e.utc)+' '+this.fmtTime(e.utc), bias:nt.bias||'', level:nt.level||'', inval:nt.inval||''};
+    }).filter(Boolean);
+
+    /* by-pair */
+    const legsOf = p => p==='XAUUSD' ? ['USD'] : [p.slice(0,3), p.slice(3,6)];
+    const pl = legsOf(st.pair);
+    const pairSrc = all.filter(e=>{
+      const d = Date.parse(e.utc)-now;
+      if(d < -18*3600e3 || d > 9*24*3600e3) return false;
+      return pl.indexOf(e.cur)>=0 || (e.pairs||[]).indexOf(st.pair)>=0;
+    }).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc));
+    const pairRows = pairSrc.map(e=>{
+      const imp = this.impOf(e), col = this.impColor(imp);
+      const isBase = e.cur===pl[0], isQuote = pl.length>1 && e.cur===pl[1];
+      return {when:this.fmtDayShort(e.utc)+'  '+this.fmtTime(e.utc), cur:e.cur, name:e.name+(e.period?' — '+e.period:''),
+        fc:e.forecast||'—', vol:'±'+(e.vol||0), dim: Date.parse(e.utc)<=now ? '.6':'1',
+        impLetter: imp>=3?'H':imp===2?'M':'L', impFg: imp>=3?'#fff':col, impBd:col, impBg: imp>=3?col:'transparent',
+        leg: isBase?'BASE':isQuote?'QUOTE':'CROSS', legFg: isBase?'var(--grn)':isQuote?'var(--blu)':'var(--fg3)'};
+    });
+    const spotInfo = MRDN_SPOT[st.pair];
+    const hiPair = pairSrc.filter(e=>this.impOf(e)>=3 && Date.parse(e.utc)>now);
+    const totalVol = hiPair.reduce((a,e)=>a+(e.vol||0),0);
+
+    const toneMap = {red:'var(--red)', amb:'var(--amb)', grn:'var(--grn)', '':'var(--fg)'};
+
+    return {
+      brand: this.props.brandName || 'Meridian',
+      clock, utcNow, tzShort, tzLong, tzValue: st.tz, tzAuto: st.tzAuto, snapshot: MRDN_SNAPSHOT,
+      editionLine: this.fmtDay(now),
+      nowMark: (nowH2/24*100)+'%',
+      stale, staleAge,
+      hasDiff: st.hasDiff, diffText: st.diffText,
+      clearDiff: ()=>this.setState({hasDiff:false, newIds:{}}),
+
+      vCal: view==='today'||view==='week'||view==='archive',
+      vPairs: view==='pairs', vSpeakers: view==='speakers', vReport: view==='report',
+      vSettings: view==='settings', vGuide: view==='guide',
+      goGuide: ()=>this.persist({view:'guide'}),
+      guideSteps: [
+        {n:'1', title:'Put the app on a real HTTPS address', tag:'REQUIRED FIRST',
+         body:'Android only installs apps served over HTTPS, and the alert scheduler needs the same. Upload the app files to the GitHub repository, then turn on GitHub Pages: Settings ▸ Pages ▸ Build and deployment ▸ Source “Deploy from a branch” ▸ Branch “main” ▸ folder “/ (root)” ▸ Save. A minute or two later the app is live at https://<your-username>.github.io/Calendar/ — that is the address you open on your phone.',
+         detail:'The files must sit at the repository ROOT, not inside a subfolder, and icons/ must stay a folder:\nindex.html\napp.dc.html\nsupport.js\nsw.js\nmanifest.webmanifest\n.nojekyll\nicons/\n\nDo not use the single-file offline copy for this — it cannot register the service worker, so alerts and offline mode will not work.\n\nAny other static host works the same way (Cloudflare Pages, Vercel, Netlify) — the only requirement is HTTPS.'},
+        {n:'2', title:'Open that link in Chrome on your phone',
+         body:'Chrome specifically, not Samsung Internet, Firefox or an in-app browser. Only Chrome and Edge support the scheduled triggers that make closed-app alerts work. Wait for the calendar to finish loading before moving on — the worker registers on first load.',
+         detail:'Fastest way to get the link across: email it to yourself, or on your computer open Chrome ▸ Share ▸ Send to your devices.'},
+        {n:'3', title:'Install it to your home screen',
+         body:'Tap the three-dot menu, top right. Choose “Install app”, or “Add to Home screen” if that is the wording you see, then confirm. The Meridian icon appears on your home screen and it now opens full-screen with no browser bar.',
+         detail:'If neither option is in the menu, step 1 is not finished — Pages has not published yet, the address is not HTTPS, or a file is missing from the repository root.'},
+        {n:'4', title:'Open it from the home-screen icon, not from Chrome',
+         body:'This matters. Launched from the icon it runs as an installed app, which is what earns it reliable background time from Android. Launched from a Chrome tab it behaves like any other page.'},
+        {n:'5', title:'Turn on alerts and accept the permission', tag:'DO THIS ONCE',
+         body:'Tap ALERTS OFF in the top bar so it turns green. Android asks whether to allow notifications — tap Allow. Nothing is scheduled until you do; the app cannot ask twice on its own.',
+         detail:'If you tapped Block by mistake: Android Settings ▸ Apps ▸ Meridian FX ▸ Notifications ▸ allow.'},
+        {n:'6', title:'Confirm it reaches your lock screen',
+         body:'Go to the DATA tab and tap TEST NOTIFICATION. One should appear in your notification shade within a second or two. Then check the three status lines just above it — you want “granted”, a count of scheduled alerts, and closed-app delivery reading “yes — OS-scheduled” in green.',
+         detail:'Green “yes — OS-scheduled” is the confirmation that the whole week of alerts now sits with Android itself.'},
+        {n:'7', title:'Exempt it from battery optimisation', tag:'RECOMMENDED',
+         body:'Android aggressively suspends apps it thinks are idle, which can delay an alert by minutes — the difference between a warning and a surprise. Settings ▸ Apps ▸ Meridian FX ▸ Battery ▸ Unrestricted.',
+         detail:'Samsung, Xiaomi and OnePlus are the strictest here. On Samsung also turn off Settings ▸ Battery ▸ Background usage limits ▸ Put unused apps to sleep for this app.'},
+        {n:'8', title:'Close it completely and wait for the next release',
+         body:'Swipe the app away entirely. The next high-impact release should still ping you at fifteen, five and one minute out, and again the moment the number prints. If it does, the setup is done.',
+         detail:'To keep the numbers current, connect a JSON feed URL under DATA — the app then refreshes on every open with no further work. Otherwise edit the MRDN_EVENTS array inside app.dc.html and re-upload it to the repository.'}
+      ].map((s,i)=>({...s, numFg: i===0 ? 'var(--amb)' : 'var(--fg3)', tagFg: s.tag==='REQUIRED FIRST' ? 'var(--red)' : s.tag==='RECOMMENDED' ? 'var(--blu)' : 'var(--amb)'})),
+
+      tabs, cities, curBtns, impactBtns, groups, sessions,
+      sessionNote: 'Session windows follow each exchange’s local clock, converted for today — DST included.',
+      brief: MRDN_BRIEF.map(b=>({k:b.k, v:b.v, fg: toneMap[b.tone]||'var(--fg)'})),
+      empty: groups.length===0,
+      emptyTitle: view==='today' ? 'Nothing left on the tape today' : 'No releases match these filters',
+      emptyHint: view==='today' ? 'Switch to WEEK for the full schedule, or widen the impact filter.' : 'Clear a currency or impact filter to see more.',
+      listTitle: view==='archive' ? 'Release archive' : view==='week' ? 'This week' : this.fmtDay(now),
+      listSub: shown.length+' of '+all.length+' releases'+(st.watchOnly?' · watchlist only':''),
+      countdown, nextAt, nextName, nextCur, nextFc, nextPrev, nextPairs, nextColor, nextImpact,
+      nextBracket, nextBracketLabel, drainScale: String(drainScale),
+      tickAnim: (new Date(now).getSeconds() % 2 === 0) ? 'mTickA' : 'mTickB',
+
+      query: st.query, onQuery: e=>this.persist({query:e.target.value}),
+      onTz: e=>this.persist({tz:e.target.value}),
+      useAuto: ()=>this.persist({tz:st.tzAuto}),
+      toggleWatchOnly: ()=>this.persist({watchOnly:!st.watchOnly}),
+      watchLabel: st.watchOnly?'★ WATCHLIST ONLY':'★ WATCHLIST',
+      watchFg: st.watchOnly?'var(--amb)':'var(--fg3)',
+      densityLabel: st.density==='compact'?'COMFY':'COMPACT',
+      toggleDensity: ()=>this.toggleDensity(),
+
+      alertLabel: st.alerts?'ALERTS ON':'ALERTS OFF',
+      alertBg: st.alerts?'var(--grn)':'transparent',
+      alertBd: st.alerts?'var(--grn)':'var(--rule2)',
+      alertFg: st.alerts?'#fff':'var(--fg2)',
+      soundLabel: st.sound?'♪ ON':'♪ OFF',
+      soundBd: st.sound?'var(--rule2)':'var(--rule)', soundFg: st.sound?'var(--fg)':'var(--fg3)',
+      toggleAlerts: ()=>this.toggleAlerts(),
+      toggleSound: ()=>this.persist({sound:!st.sound}),
+      testAlert: ()=>this.runSelfTest(),
+      testMsg: st.testMsg || '',
+      testFg: st.testTone==='ok' ? 'var(--grn)' : st.testTone==='warn' ? 'var(--amb)' : 'var(--fg3)',
+      permLabel: st.perm==='granted'?'granted — system notifications on':st.perm==='denied'?'blocked in browser settings — in-app banner and ping only':'not requested yet — turn alerts on to grant',
+      swLabel: st.swState,
+      closedLabel: !st.alerts ? 'off' : st.perm!=='granted' ? 'needs permission' : st.triggers===true ? 'yes — OS-scheduled' : st.triggers===false ? 'while backgrounded' : 'checking…',
+      closedFg: !st.alerts || st.perm!=='granted' ? 'var(--amb)' : st.triggers===true ? 'var(--grn)' : 'var(--amb)',
+      closedNote: st.triggers===true
+        ? 'Your browser supports scheduled notification triggers, so the whole week of alerts is handed to the operating system — they fire on time even with the app and browser fully closed.'
+        : 'This browser has no scheduled-trigger support, so alerts fire while the app is open or backgrounded, and the schedule is re-armed every time you open it. Install to the home screen and keep it backgrounded for the most reliable delivery. Firing with the app fully closed — iPhone especially — requires server-side Web Push, which is not configured in this build; Chrome and Edge on Android need none of that and schedule everything with the operating system.',
+      themeLabel: st.theme==='light'?'DARK':'LIGHT',
+      toggleTheme: ()=>{ const t = st.theme==='light'?'dark':'light'; this.applyTheme(t); this.persist({theme:t}); },
+      toasts: st.toasts,
+      goSettings: e=>{ if(e&&e.preventDefault) e.preventDefault(); this.persist({view:'settings'}); },
+
+      canInstall: st.canInstall,
+      doInstall: ()=>{ if(this.installEvt){ this.installEvt.prompt(); this.installEvt = null; this.setState({canInstall:false}); } },
+      installText: st.canInstall ? 'Your browser can install this now — it runs full-screen from your home screen, keeps working offline, and delivers alerts through the system tray.'
+        : 'Add it to your home screen and it runs full-screen, offline-capable, with system notifications. Your browser handles the install from its own menu.',
+
+      speakers: MRDN_SPEAKERS.map(s=>({cur:s.cur, who:s.who, role:s.role, topic:s.topic, stance:s.stance, tag:s.tag,
+        color: s.tag==='TODAY'?'var(--red)':s.tag==='SCHEDULED'?'var(--amb)':'var(--fg3)',
+        when: s.tag==='NO EVENT' ? 'Nothing scheduled in window' : this.fmtDayShort(s.utc)+' · '+this.fmtTime(s.utc)+' '+tzShort})),
+      rates: MRDN_RATES.map(r=>({cur:r.cur, bank:r.bank, rate:r.rate, last:r.last, next:r.next, fg: r.dir<0?'var(--red)':r.dir>0?'var(--grn)':'var(--fg2)'})),
+
+      pairBtns: MRDN_PAIRLIST.map(p=>({label:p, bd: p===st.pair?'var(--acc)':'transparent', fg: p===st.pair?'var(--fg)':'var(--fg3)', go:()=>this.persist({pair:p})})),
+      pairSpot: spotInfo ? spotInfo[0].toFixed(spotInfo[1]===0.01?2:(spotInfo[1]===0.1?1:4)) : '—',
+      pairName: st.pair, pairRows, pairEmpty: pairRows.length===0,
+      pairRisk: hiPair.length ? hiPair.length+' high-impact ahead · ±'+totalVol+' pips cumulative' : 'no high-impact events ahead',
+
+      client: st.client, clientOut: st.client || 'Internal desk',
+      onClient: e=>this.persist({client:e.target.value}),
+      reportRange: 'Week of 3–7 August 2026, look-ahead to 14 August',
+      generatedAt: this.fmtDayShort(now)+' '+this.fmtTime(now),
+      secAhead: st.secs.ahead, secRecap: st.secs.recap, secCur: st.secs.cur, secNotes: st.secs.notes,
+      secBtns: [['ahead','LOOK-AHEAD'],['recap','RECAP'],['cur','PER-CCY'],['notes','NOTES']].map(([k,l])=>{
+        const on = !!st.secs[k];
+        return {label:l, bd: on?'var(--acc)':'transparent', fg: on?'var(--acc)':'var(--fg3)',
+          go: ()=>{ const s={...this.state.secs}; s[k]=!s[k]; this.persist({secs:s}); }};
+      }),
+      aheadRows, recapRows, curRead, noteRows, noNotes: noteRows.length===0,
+      doPrint: ()=>{ try{ window.print(); }catch(e){} },
+      copyLabel: st.copyLabel,
+      doCopy: ()=>{
+        const txt = this.buildText();
+        const done = ()=>{ this.setState({copyLabel:'✓ COPIED'}); setTimeout(()=>this.setState({copyLabel:'COPY AS TEXT'}), 2200); };
+        try { navigator.clipboard.writeText(txt).then(done).catch(done); } catch(e){ done(); }
+      },
+      doEmail: ()=>{
+        const subj = encodeURIComponent((this.props.brandName||'Meridian')+' — macro calendar brief, '+this.fmtDayShort(now));
+        const body = encodeURIComponent(this.buildText().slice(0,1600));
+        try { window.location.href = 'mailto:?subject='+subj+'&body='+body; } catch(e){}
+      },
+      ratingSrcLabel: st.ratingSrc==='mf'?'Myfxbook':st.ratingSrc==='ff'?'ForexFactory':st.ratingSrc==='inv'?'Investing.com':'the highest of the three',
+      ratingBtns: [['mf','MYFXBOOK'],['ff','FOREXFACTORY'],['inv','INVESTING'],['any','HIGHEST OF THE THREE']].map(([k,l])=>({
+        label:l, bd: st.ratingSrc===k?'var(--acc)':'transparent', fg: st.ratingSrc===k?'var(--fg)':'var(--fg3)',
+        go: ()=>this.persist({ratingSrc:k})})),
+      splitCount: String(all.filter(e=>e.impBy).length),
+
+      apiUrl: st.apiUrl, onApi: e=>this.persist({apiUrl:e.target.value, feedMsg:'', feedOk:null, syncFails:0}),
+      doFetch: ()=>{ if(this.state.apiUrl) this.fetchFeed(this.state.apiUrl); else this.setState({feedMsg:'paste a URL first', feedOk:false}); },
+      autoOn: st.autoSync,
+      autoLabel: st.autoSync ? 'AUTO-RESYNC ON' : 'AUTO-RESYNC OFF',
+      autoBg: st.autoSync ? 'var(--grn)' : 'none',
+      autoFg: st.autoSync ? '#0a0a0c' : 'var(--fg3)',
+      autoBd: st.autoSync ? 'var(--grn)' : 'var(--rule)',
+      toggleAuto: ()=>{ this.persist({autoSync:!st.autoSync}, ()=>this.startAutoSync()); },
+      syncEvery: String(st.syncEvery),
+      onEvery: e=>{ const v = Math.max(1, Math.min(180, parseInt(e.target.value,10)||5)); this.persist({syncEvery:v}, ()=>this.startAutoSync()); },
+      syncState: !st.apiUrl ? 'no feed connected — auto-resync idle'
+        : st.syncing ? 'checking the feed now…'
+        : st.lastSync ? 'last synced '+this.syncClock(st.lastSync)+(st.autoSync?' · rechecking every '+st.syncEvery+' min':' · auto-resync is off')
+        : 'waiting for the first successful sync',
+      syncFg: !st.apiUrl ? 'var(--fg3)' : st.syncFails ? 'var(--amb)' : st.lastSync ? 'var(--grn)' : 'var(--fg3)',
+      feedMsg: st.feedMsg, feedFg: st.feedOk===true?'var(--grn)':st.feedOk===false?'var(--red)':'var(--fg3)',
+      sources: [
+        {name:'ForexFactory', role:'impact ratings, revisions, schedule', checked:'checked '+MRDN_SNAPSHOT, dot:'var(--grn)'},
+        {name:'Investing.com', role:'consensus, actuals', checked:'checked '+MRDN_SNAPSHOT, dot:'var(--grn)'},
+        {name:'Myfxbook', role:'affected pairs, expected range', checked:'checked '+MRDN_SNAPSHOT, dot:'var(--grn)'},
+        {name:'Live JSON feed', role:'optional, your endpoint', checked: st.extra?'active':'not connected', dot: st.extra?'var(--grn)':'var(--rule2)'}
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
