@@ -57,6 +57,13 @@ button{border-radius:0;-webkit-tap-highlight-color:transparent}
 @keyframes mDrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 @keyframes mOpen{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
 @keyframes mFlash{0%{background:color-mix(in oklab,var(--acc) 34%,transparent)}100%{background:transparent}}
+@keyframes mRiseA{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes mRiseB{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes mPalIn{from{opacity:0;transform:translateY(-10px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes mVeil{from{opacity:0}to{opacity:1}}
+@keyframes mCreep{from{opacity:.35}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+@media(max-width:760px){[data-nextbar-meta]{display:none!important}}
 @media(max-width:1180px){[data-c-trend]{display:none!important}}
 @media(max-width:1060px){[data-c-vol]{display:none!important}}
 @media(max-width:900px){[data-c-prev]{display:none!important}[data-lede]{grid-template-columns:1fr!important}[data-lede]>div{border-right:none!important;padding-left:0!important}}
@@ -120,13 +127,51 @@ button{border-radius:0;-webkit-tap-highlight-color:transparent}
       <select value="{{ tzValue }}" onChange="{{ onTz }}" style="background:transparent;border:1px solid var(--rule2);color:var(--fg);font:500 11px var(--ui);letter-spacing:.02em;padding:5px 6px;max-width:150px">
         <sc-for list="{{ cities }}" as="c" hint-placeholder-count="6"><option value="{{ c.v }}">{{ c.label }}</option></sc-for>
       </select>
-      <button onClick="{{ toggleDensity }}" title="Row density" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.1em;padding:6px 8px;cursor:pointer" style-hover="color:var(--fg)">{{ densityLabel }}</button>
-      <button onClick="{{ toggleAlerts }}" title="Notification + ping at 15 / 5 / 1 min before high-impact releases" style="background:{{ alertBg }};border:1px solid {{ alertBd }};color:{{ alertFg }};font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer">{{ alertLabel }}</button>
+      <button onClick="{{ toggleDensity }}" title="Row density" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.1em;padding:6px 8px;cursor:pointer;white-space:nowrap" style-hover="color:var(--fg)">{{ densityLabel }}</button>
+      <button onClick="{{ toggleAlerts }}" title="Notification + ping at 15 / 5 / 1 min before high-impact releases" style="background:{{ alertBg }};border:1px solid {{ alertBd }};color:{{ alertFg }};font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer;white-space:nowrap">{{ alertLabel }}</button>
       <button onClick="{{ toggleSound }}" style="background:transparent;border:1px solid {{ soundBd }};color:{{ soundFg }};font:600 10px var(--mn);letter-spacing:.1em;padding:6px 8px;cursor:pointer">{{ soundLabel }}</button>
-      <button onClick="{{ toggleTheme }}" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer" style-hover="color:var(--fg)">{{ themeLabel }}</button>
+      <button onClick="{{ toggleTheme }}" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.12em;padding:6px 8px;cursor:pointer;white-space:nowrap" style-hover="color:var(--fg)">{{ themeLabel }}</button>
+      <button onClick="{{ openPal }}" title="Command palette — ⌘K" style="background:transparent;border:1px solid var(--rule2);color:var(--fg2);font:600 10px var(--mn);letter-spacing:.1em;padding:6px 9px;cursor:pointer;display:flex;align-items:center;gap:6px" style-hover="color:var(--fg);border-color:var(--acc)">
+        <span>SEARCH</span><span data-kbd style="font:500 9px var(--mn);color:var(--fg3);border:1px solid var(--rule);padding:0 3px">⌘K</span>
+      </button>
     </div>
   </div>
+  <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}">
+    <div style="border-top:1px solid var(--rule)">
+      <div style="max-width:1460px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:13px;height:41px">
+        <svg viewBox="0 0 50 50" style="width:22px;height:22px;flex:none;transform:rotate(-90deg)" aria-hidden="true">
+          <circle cx="25" cy="25" r="22" fill="none" stroke="var(--rule)" stroke-width="3"></circle>
+          <circle cx="25" cy="25" r="22" fill="none" stroke="{{ ringFg }}" stroke-width="3" stroke-linecap="butt" stroke-dasharray="{{ ringDash }}"></circle>
+        </svg>
+        <span style="font:600 8.5px var(--mn);letter-spacing:.2em;color:var(--fg3);flex:none">NEXT</span>
+        <span style="font:500 13px var(--mn);letter-spacing:.04em;flex:none">{{ nextCur }}</span>
+        <button onClick="{{ goNext }}" style="background:none;border:none;padding:0;cursor:pointer;text-align:left;font:400 13.5px/1.2 var(--ui);color:var(--fg);border-bottom:1px solid transparent;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" style-hover="border-bottom-color:var(--acc);color:var(--acc)">{{ nextShort }}</button>
+        <span data-nextbar-meta style="font:400 10.5px var(--mn);color:var(--fg3);flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ nextAt }} · fcst {{ nextFc }} · prev {{ nextPrev }}</span>
+        <span style="font:500 15px var(--mn);letter-spacing:-.01em;color:{{ ringFg }};flex:none;margin-left:auto">{{ countdown }}</span>
+      </div>
+    </div>
+  </sc-if>
 </header>
+
+<sc-if value="{{ palOpen }}">
+  <div data-noprint style="position:fixed;inset:0;z-index:90;background:color-mix(in oklab,var(--ink) 72%,transparent);animation:mVeil .13s ease both" onClick="{{ closePal }}">
+    <div onClick="{{ stopPal }}" style="max-width:620px;margin:9vh auto 0 auto;background:var(--pane);border:1px solid var(--rule2);box-shadow:var(--lift);animation:mPalIn .17s cubic-bezier(.2,.9,.3,1) both">
+      <input data-pal-input value="{{ palQ }}" onInput="{{ onPalQ }}" placeholder="Jump to an event, currency, view or action…" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--rule2);padding:15px 18px;font:400 16px var(--ui);color:var(--fg)">
+      <div style="max-height:52vh;overflow-y:auto">
+        <sc-for list="{{ palItems }}" as="p" hint-placeholder-count="6">
+          <button onClick="{{ p.pick }}" onMouseEnter="{{ p.hover }}" style="width:100%;background:{{ p.bg }};border:none;border-left:2px solid {{ p.bd }};border-bottom:1px solid var(--rule);padding:10px 18px;cursor:pointer;display:flex;align-items:baseline;gap:12px;text-align:left">
+            <span style="font:600 8.5px var(--mn);letter-spacing:.14em;color:{{ p.kindFg }};width:38px;flex:none">{{ p.kind }}</span>
+            <span style="flex:1 1 auto;min-width:0;font:400 13.5px/1.35 var(--ui);color:var(--fg);overflow:hidden;text-overflow:ellipsis">{{ p.label }}</span>
+            <span style="font:400 10.5px var(--mn);color:var(--fg3);flex:none;white-space:nowrap">{{ p.sub }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:16px;padding:8px 18px;font:400 9.5px var(--mn);letter-spacing:.1em;color:var(--fg3)">
+        <span>↑↓ MOVE</span><span>↵ OPEN</span><span>ESC CLOSE</span>
+      </div>
+    </div>
+  </div>
+</sc-if>
 
 <div data-noprint style="position:fixed;right:0;bottom:20px;z-index:60;display:flex;flex-direction:column;gap:1px;align-items:flex-end;pointer-events:none">
   <sc-for list="{{ toasts }}" as="n" hint-placeholder-count="0">
@@ -163,6 +208,46 @@ button{border-radius:0;-webkit-tap-highlight-color:transparent}
         <div style="padding:9px 20px 0 0"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">FORECAST</div><div style="font:500 16px var(--mn);margin-top:3px">{{ nextFc }}</div></div>
         <div style="padding:9px 20px 0 20px;border-left:1px solid var(--rule)"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">PREVIOUS</div><div style="font:400 16px var(--mn);margin-top:3px;color:var(--fg2)">{{ nextPrev }}</div></div>
         <div style="padding:9px 0 0 20px;border-left:1px solid var(--rule)"><div style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3)">{{ nextBracketLabel }}</div><div style="font:500 16px var(--mn);margin-top:3px;color:var(--amb)">{{ nextBracket }}</div></div>
+      </div>
+
+      <div data-noprint style="margin-top:22px;border-top:1px solid var(--rule2);padding-top:11px">
+        <div style="display:flex;align-items:baseline;gap:16px;row-gap:20px;flex-wrap:wrap">
+          <span style="font:600 9.5px var(--mn);letter-spacing:.2em;color:var(--fg3)">LIVE PRICE · {{ tvSymLabel }}</span>
+          <div style="display:flex;gap:15px;row-gap:20px;flex-wrap:wrap;flex:1 1 auto;align-items:baseline">
+            <sc-for list="{{ tvTabs }}" as="t" hint-placeholder-count="4">
+              <span style="display:flex;align-items:baseline;gap:7px">
+                <button onClick="{{ t.go }}" style="background:none;border:none;padding:11px 2px 9px 2px;margin:-11px -2px -7px -2px;border-bottom:2px solid {{ t.bd }};color:{{ t.fg }};font:600 11px var(--mn);letter-spacing:.04em;cursor:pointer" style-hover="color:var(--fg)">{{ t.label }}</button>
+                <button onClick="{{ t.pin }}" title="Pin this symbol to the tabs" aria-label="Pin symbol" style="background:none;border:none;padding:11px 10px 11px 3px;margin:-11px -10px -11px -3px;cursor:pointer;font:400 9px var(--ui);color:{{ t.isFav }};line-height:1">●</button>
+              </span>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <sc-for list="{{ tvInts }}" as="i" hint-placeholder-count="5">
+              <button onClick="{{ i.go }}" style="background:none;border:1px solid {{ i.bd }};padding:9px 10px;color:{{ i.fg }};font:500 9.5px var(--mn);letter-spacing:.06em;cursor:pointer;min-width:34px" style-hover="color:var(--fg)">{{ i.label }}</button>
+            </sc-for>
+          </div>
+          <button onClick="{{ toggleTv }}" style="background:none;border:none;padding:11px 8px;margin:-11px -8px;color:var(--fg3);font:600 9px var(--mn);letter-spacing:.12em;cursor:pointer" style-hover="color:var(--fg)">{{ tvLabel }}</button>
+        </div>
+        <sc-if value="{{ tvOn }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:10px;position:relative;height:326px;border:1px solid var(--rule);background:var(--pane2)">
+            <iframe src="{{ tvUrl }}" key="{{ tvKey }}" title="Live price chart" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:none;display:block"></iframe>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap;position:relative">
+            <span style="font:600 8.5px var(--mn);letter-spacing:.16em;color:var(--fg3);flex:none">SYMBOL</span>
+            <span style="position:relative;flex:1 1 190px;min-width:150px">
+              <input value="{{ tvQ }}" onInput="{{ onTvQ }}" onKeyDown="{{ onTvKey }}" placeholder="Any pair — EURNZD, XAGUSD, NAS100, BTCUSD…" style="width:100%;background:transparent;border:none;border-bottom:1px solid var(--rule2);padding:11px 0;font:500 11.5px var(--mn);letter-spacing:.04em;color:var(--fg)">
+              <sc-if value="{{ hasTvSuggest }}">
+                <span style="position:absolute;left:0;right:0;top:100%;z-index:30;background:var(--pane);border:1px solid var(--rule2);box-shadow:var(--lift);display:flex;flex-direction:column;animation:mOpen .13s ease both">
+                  <sc-for list="{{ tvSuggest }}" as="g" hint-placeholder-count="0">
+                    <button onClick="{{ g.go }}" style="background:none;border:none;border-bottom:1px solid var(--rule);padding:7px 10px;text-align:left;cursor:pointer;font:500 11.5px var(--mn);letter-spacing:.04em;color:var(--fg2)" style-hover="background:var(--pane2);color:var(--fg)">{{ g.label }}</button>
+                  </sc-for>
+                </span>
+              </sc-if>
+            </span>
+            <button onClick="{{ tvGo }}" style="background:none;border:1px solid var(--rule2);color:var(--fg2);font:600 9px var(--mn);letter-spacing:.12em;padding:11px 13px;cursor:pointer;flex:none" style-hover="color:var(--fg);border-color:var(--acc)">LOAD</button>
+            <span style="font:400 9.5px/1.5 var(--mn);color:var(--fg3);flex:1 1 100%">Chart by TradingView · the dot beside a symbol pins it to the tabs · needs a connection, and will not draw offline</span>
+          </div>
+        </sc-if>
       </div>
     </div>
 
@@ -242,6 +327,12 @@ button{border-radius:0;-webkit-tap-highlight-color:transparent}
     <span style="width:42px;flex:none"></span>
   </div>
 
+  <sc-if value="{{ hiddenN }}">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding:9px 11px;border:1px solid var(--rule2);background:var(--pane)">
+      <span style="font:400 11px/1.5 var(--ui);color:var(--fg2);flex:1 1 200px">{{ hiddenMsg }}</span>
+      <button onClick="{{ showHidden }}" style="background:none;border:1px solid var(--rule2);color:var(--fg2);font:600 9px var(--mn);letter-spacing:.12em;padding:9px 12px;cursor:pointer;flex:none" style-hover="color:var(--fg);border-color:var(--acc)">SHOW ALL</button>
+    </div>
+  </sc-if>
   <sc-for list="{{ groups }}" as="grp" hint-placeholder-count="1">
     <div>
       <sc-if value="{{ grp.showHead }}">
@@ -251,13 +342,20 @@ button{border-radius:0;-webkit-tap-highlight-color:transparent}
         </div>
       </sc-if>
       <sc-for list="{{ grp.items }}" as="r" hint-placeholder-count="6">
-        <div>
-          <div data-row="{{ r.id }}" style="display:flex;gap:12px;align-items:baseline;padding:var(--rowpad) 0;border-bottom:1px solid var(--rule);border-left:2px solid {{ r.edge }};padding-left:10px;margin-left:-12px;background:{{ r.bg }};opacity:{{ r.dim }}" style-hover="background:var(--pane2)">
+        <div style="animation:{{ riseName }} .34s cubic-bezier(.2,.9,.3,1) both;animation-delay:{{ r.riseDelay }}">
+          <sc-if value="{{ r.isNowMark }}">
+            <div style="display:flex;align-items:center;gap:9px;margin:3px 0 3px -12px;padding-left:10px;animation:mCreep .5s ease both">
+              <span style="font:600 8px var(--mn);letter-spacing:.2em;color:var(--acc);flex:none">NOW</span>
+              <span style="flex:1;height:1px;background:linear-gradient(to right,var(--acc),transparent)"></span>
+            </div>
+          </sc-if>
+          <div data-row="{{ r.id }}" style="position:relative;display:flex;gap:12px;align-items:baseline;padding:var(--rowpad) 0;border-bottom:1px solid var(--rule);border-left:2px solid {{ r.edge }};padding-left:10px;margin-left:-12px;background:{{ r.bg }};opacity:{{ r.dim }}" style-hover="background:var(--pane2)">
+            <span aria-hidden="true" style="position:absolute;left:0;bottom:-1px;height:1px;width:{{ r.volFrac }};background:{{ r.volLineFg }};opacity:.5;pointer-events:none"></span>
             <span style="width:44px;flex:none;font:500 12.5px var(--mn);color:{{ r.timeFg }}">{{ r.time }}</span>
             <span style="width:32px;flex:none;font:600 12px var(--mn);letter-spacing:.04em">{{ r.cur }}</span>
             <span style="width:16px;flex:none;font:600 9.5px var(--mn);letter-spacing:.02em;color:{{ r.impFg }};border:1px solid {{ r.impBd }};background:{{ r.impBg }};text-align:center;line-height:14px">{{ r.impLetter }}</span>
             <span style="flex:1 1 170px;min-width:130px;display:flex;flex-direction:column;gap:1px">
-              <span style="font:400 var(--rowfs)/1.35 var(--ui)">{{ r.name }} <span style="color:var(--fg3);font:400 11px var(--mn)">{{ r.period }}</span> <sc-if value="{{ r.flag }}"><span style="font:600 8.5px var(--mn);letter-spacing:.12em;color:{{ r.flagFg }};border:1px solid {{ r.flagFg }};padding:0 3px">{{ r.flag }}</span></sc-if></span>
+              <span style="font:400 var(--rowfs)/1.35 var(--ui)">{{ r.name }} <span style="color:var(--fg3);font:400 11px var(--mn)">{{ r.period }}</span> <sc-if value="{{ r.flag }}"><span style="font:600 8.5px var(--mn);letter-spacing:.12em;color:{{ r.flagFg }};border:1px solid {{ r.flagFg }};padding:0 3px">{{ r.flag }}</span></sc-if><sc-if value="{{ r.split }}"><span title="{{ r.splitTitle }}" style="font:600 8.5px var(--mn);letter-spacing:.12em;color:var(--blu);border:1px solid var(--blu);padding:0 3px;margin-left:4px">SPLIT</span></sc-if></span>
               <span data-c-pairs style="display:var(--sub);font:400 var(--subfs) var(--mn);letter-spacing:.03em;color:var(--fg3)">{{ r.pairsText }}</span>
             </span>
             <span style="width:60px;flex:none;text-align:right;font:500 var(--numfs) var(--mn);color:{{ r.actFg }};animation:{{ r.flashAnim }}">
@@ -710,7 +808,7 @@ const MRDN_EVENTS = [
   {id:'w6',utc:'2026-08-05T09:00:00Z',cur:'EUR',imp:1,name:'Eurozone PPI y/y',period:'Jun',actual:'4.6%',forecast:'4.6%',previous:'5.9%',vol:10,better:'higher',pairs:['EURUSD'],src:'Eurostat',hist:[7.1,6.8,6.2,5.4,6.1,5.9,5.9,4.6],desc:'In line at 4.6%, down sharply from 5.9%. Producer-price disinflation continuing in the euro area is the mirror image of the US services-cost picture — a quiet argument against the ECB hike bets that have been building.'},
 
   {id:'h1',utc:'2026-08-06T01:30:00Z',cur:'AUD',imp:3,name:'Balance of Trade',period:'Jun',forecast:'-1.10B',previous:'-3.02B',vol:32,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[5.16,2.26,5.03,-1.02,1.38,-3.02,-3.02,-1.1],desc:'Rated high-impact by Myfxbook, and my previous build had both the rating and the forecast wrong. May’s A$3.018B deficit was the worst in years on soft iron-ore shipments; consensus looks for the gap to narrow to A$1.1B, not to swing back to surplus. With Chinese services PMI now at 50.4, a third weak month compounds the China read directly.'},
-  {id:'h2',utc:'2026-08-06T03:00:00Z',cur:'NZD',imp:2,name:'RBNZ Inflation Expectations',period:'Q3',forecast:'2.55%',previous:'2.53%',vol:20,better:'higher',pairs:['NZDUSD','AUDNZD'],src:'RBNZ',hist:[2.03,2.12,2.06,2.29,2.28,2.37,2.53,2.55],desc:'Two-year-ahead expectations have crept up four quarters running. Drift above the mid-point complicates the easing path.'},
+  {id:'h2',utc:'2026-08-06T03:00:00Z',cur:'NZD',imp:2,name:'RBNZ Inflation Expectations',period:'Q3',forecast:'2.55%',previous:'2.53%',vol:20,better:'lower',pairs:['NZDUSD','AUDNZD'],src:'RBNZ',hist:[2.03,2.12,2.06,2.29,2.28,2.37,2.53,2.55],desc:'Two-year-ahead expectations have crept up four quarters running. Drift above the mid-point complicates the easing path.'},
   {id:'h3',utc:'2026-08-06T07:00:00Z',cur:'CHF',imp:3,name:'Unemployment Rate',period:'Jul',forecast:'2.9%',previous:'2.9%',vol:26,better:'lower',pairs:['USDCHF','EURCHF'],src:'SECO',hist:[2.6,2.7,2.7,2.8,2.8,2.9,2.9,2.9],desc:'Rated high-impact by Myfxbook and missing from my previous build entirely. Swiss unemployment has ground higher six months running; with the SNB already at zero and no easing room left, a further rise is the clearest argument for intervention talk rather than rate cuts.'},
   {id:'h8',utc:'2026-08-06T06:00:00Z',cur:'EUR',imp:2,name:'German Factory Orders m/m',period:'Jun',forecast:'0.3%',previous:'1.9%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[-1.4,3.2,-0.8,1.1,-0.6,1.9,1.9,0.3],desc:'Order books are the leading edge of German industry and May’s 1.9% was the strongest in months. Consensus expects the pace to fade to 0.3%; a negative print would undercut the euro-area recovery narrative the day before German trade data.'},
   {id:'h9',utc:'2026-08-06T09:30:00Z',cur:'USD',imp:2,name:'Challenger Job Cuts',period:'Jul',forecast:'59.0K',previous:'45.8K',vol:14,better:'lower',pairs:['EURUSD'],src:'Challenger, Gray & Christmas',hist:[62.1,105.4,76.3,93.8,48.9,45.8,45.8,59.0],desc:'Announced layoffs, expected to jump back to 59K from 45.8K. Rated low everywhere, but it is the third independent labour series in two days — after ADP at 44K and ISM services employment at 47.4, a spike here makes the stall look structural rather than seasonal.'},
@@ -730,21 +828,156 @@ const MRDN_EVENTS = [
   {id:'f8',utc:'2026-08-07T03:00:00Z',cur:'CNY',imp:3,name:'Exports y/y',period:'Jul',forecast:'22.7%',previous:'27.0%',vol:38,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'China Customs',hist:[8.1,12.4,6.0,14.8,19.3,27.0,27.0,22.7],desc:'Exports have run hot for three months on front-loading ahead of tariff deadlines; consensus looks for 22.7%. With services PMI now at 50.4, external demand is the only pillar left standing — this decides whether AUD and NZD get any support into next week.'},
   {id:'f8b',utc:'2026-08-07T03:00:00Z',cur:'CNY',imp:3,name:'Balance of Trade',period:'Jul',forecast:'108B',previous:'125.62B',vol:30,better:'higher',pairs:['AUDUSD','USDCNH'],src:'China Customs',hist:[82.6,96.2,103.2,114.8,119.1,125.62,125.62,108],desc:'Imports are expected to slow to 28.6% from 36%, narrowing the surplus to $108B. A wide surplus built on collapsing imports is the bad combination for commodity currencies: it means Chinese domestic demand, not foreign demand, is what is failing.'},
   {id:'f9',utc:'2026-08-07T06:00:00Z',cur:'EUR',imp:3,name:'German Balance of Trade',period:'Jun',forecast:'17.4B',previous:'19.1B',vol:22,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[21.4,17.7,24.2,18.4,20.1,19.1,19.1,17.4],desc:'Rated high-impact by Myfxbook. Exports are expected to slow to 0.2% from 0.9% while imports rebound 1.0%, narrowing the surplus to €17.4B. Germany’s external surplus has been the euro’s structural support, so erosion here matters more for the currency than the industrial print released alongside it.'},
-  {id:'f10',utc:'2026-08-07T06:00:00Z',cur:'EUR',imp:2,name:'German Industrial Production m/m',period:'Jun',forecast:'0.1%',previous:'0.9%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[1.4,-1.6,2.2,-0.8,0.6,0.9,0.9,0.1],desc:'Date and figures corrected — this releases Friday alongside trade, not Thursday, and May rose 0.9% rather than falling 1.0%. Consensus expects the pace to flatten to 0.1%.'},
-  {id:'f11',utc:'2026-08-07T14:00:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Ivey PMI (s.a.)',period:'Jul',forecast:'55.5',previous:'56.2',vol:24,better:'higher',pairs:['USDCAD','CADJPY'],src:'Ivey Business School',ratings:'Impact — Myfxbook: high · Investing.com: medium · ForexFactory: low',hist:[48.3,51.9,53.2,54.8,55.1,56.2,56.2,55.5],desc:'Canada’s broadest activity survey, ninety minutes after the jobs report — in practice the confirmation or contradiction of whatever the employment number implied. Rated high by Myfxbook alone.'},
+  {id:'f10',utc:'2026-08-07T06:00:00Z',cur:'EUR',imp:2,name:'German Industrial Production m/m',period:'Jun',forecast:'0.1%',previous:'0.9%',vol:18,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[],desc:'Date and figures corrected — this releases Friday alongside trade, not Thursday, and May rose 0.9% rather than falling 1.0%. Consensus expects the pace to flatten to 0.1%.'},
+  {id:'f11',utc:'2026-08-07T14:00:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Ivey PMI (s.a.)',period:'Jul',forecast:'55.5',previous:'56.2',vol:24,better:'higher',pairs:['USDCAD','CADJPY'],src:'Ivey Business School',ratings:'Impact — Myfxbook: high · Investing.com: medium · ForexFactory: low',hist:[],desc:'Canada’s broadest activity survey, ninety minutes after the jobs report — in practice the confirmation or contradiction of whatever the employment number implied. Rated high by Myfxbook alone.'},
   {id:'f6',utc:'2026-08-07T14:00:00Z',cur:'USD',imp:2,name:'FOMC Member Barkin Speaks',period:'—',forecast:'—',previous:'—',vol:22,better:'higher',pairs:['EURUSD','USDJPY'],src:'Richmond Fed',hist:[],desc:'Ninety minutes after payrolls — effectively the first official reaction function on the number.'},
   {id:'f7',utc:'2026-08-07T19:00:00Z',cur:'USD',imp:1,name:'Consumer Credit',period:'Jun',forecast:'10.5B',previous:'7.8B',vol:6,better:'higher',pairs:['EURUSD'],src:'Federal Reserve',hist:[8.9,17.9,10.2,6.1,11.4,7.8,10.5,10.5],desc:'Late-Friday second tier; useful for the consumer-stress narrative, not for FX.'},
   {id:'s1',utc:'2026-08-09T01:30:00Z',cur:'CNY',imp:3,name:'Inflation Rate y/y',period:'Jul',forecast:'0.9%',previous:'1.0%',vol:28,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[-0.1,0.2,0.4,0.6,0.8,1.0,1.0,0.9],desc:'A Sunday release, so it prices into the Monday Asia open before most desks are back. China spent 2025 in deflation and has only just clawed back to 1%; a slip to 0.9% with services PMI at 50.4 revives the deflation-export narrative that weighs on AUD and NZD.'},
   {id:'s2',utc:'2026-08-09T23:50:00Z',cur:'JPY',imp:2,name:'BoJ Summary of Opinions',period:'Jul',forecast:'—',previous:'—',vol:24,better:'higher',pairs:['USDJPY','EURJPY'],src:'Bank of Japan',hist:[],desc:'Board members’ unattributed views from the July meeting, released with the June current account. With USDJPY near 150 and the policy rate still under 1%, any hawkish shift in the language is the intervention-risk trigger to watch.'},
   {id:'m0',utc:'2026-08-11T04:30:00Z',cur:'AUD',imp:3,name:'RBA Interest Rate Decision',period:'Aug',forecast:'4.35%',previous:'4.35%',vol:65,better:'higher',pairs:['AUDUSD','AUDJPY','AUDNZD'],src:'Reserve Bank of Australia',hist:[],desc:'Corrected date and level — my previous build had this on 4 August at 3.35%, both wrong. The Board meets 10–11 August and announces Tuesday 11 August at 2:30pm AEST, and the cash rate is 4.35% after three hikes in February, March and May took it up from 3.60%. All four major banks now expect a hold following the softer June quarter CPI at 3.8% headline and 3.6% trimmed mean. This is a quarterly SMP meeting, so the full Statement on Monetary Policy lands in the same minute and Bullock holds a press conference an hour later — the projections, not the decision, are what move AUD. With Chinese services PMI at 50.4 the China-demand language is where the risk sits.'},
+  {id:'m0b',utc:'2026-08-11T14:00:00Z',cur:'USD',imp:3,name:'Existing Home Sales',period:'Jul',forecast:'4.05M',previous:'4.09M',vol:35,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'National Association of Realtors',hist:[],desc:'Investing.com rates this three-bull; ForexFactory carries it as medium. Consensus 4.05M against 4.09M in June, so a fourth straight month barely above the 4.0M floor. The annualised pace matters less than the months-of-supply and median-price lines that come with it — inventory has been rebuilding while the 30-year sits near 6.7%, and a sub-4.0M print would be the weakest since the 2024 trough. Rate-cut odds for September are the transmission channel into USD, which is why a housing release gets an outsized rating the day before CPI.'},
 
-  {id:'n1',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Consumer Price Index m/m',period:'Jul',forecast:'0.3%',previous:'0.2%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[0.4,0.2,0.3,0.2,0.3,0.2,0.3,0.3],desc:'With guidance withdrawn and three hawks already dissenting, an upside surprise here converts September hike pricing from probable to consensus. Confirmed by the BLS for Wednesday 12 August, 08:30 ET.'},
-  {id:'n2',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Core CPI y/y',period:'Jul',forecast:'3.0%',previous:'3.0%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[3.3,3.2,3.1,3.1,3.0,3.0,3.0,3.0],desc:'Core has been stuck at 3.0% for three months. Breaking that stall in either direction is the single biggest FX catalyst of the month.'},
-  {id:'n3',utc:'2026-08-12T06:00:00Z',cur:'GBP',imp:3,name:'GDP q/q (Prelim)',period:'Q2',forecast:'0.2%',previous:'0.3%',vol:60,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[0.1,0.4,0.0,0.7,0.3,0.3,0.2,0.2],desc:'Follows a July MPC that set a high bar for September. Sub-0.2% growth reopens the easing debate and pressures sterling on both legs.'},
-  {id:'n4',utc:'2026-08-13T01:30:00Z',cur:'AUD',imp:3,name:'Employment Change',period:'Jul',forecast:'20.0K',previous:'16.4K',vol:58,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[44,-6.4,89,-52,26,16.4,20,20],desc:'Australia’s most volatile monthly release; the full-time/part-time split usually matters more than the headline.'},
-  {id:'n5',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,name:'Producer Price Index m/m',period:'Jul',forecast:'0.2%',previous:'0.3%',vol:55,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',hist:[0.1,0.4,0.2,0.1,0.3,0.3,0.2,0.2],desc:'Pipeline inflation, and a direct input to the PCE estimate two weeks later. ISM prices-paid above 70 for six months says the risk is upside.'},
-  {id:'n6',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,name:'Retail Sales m/m',period:'Jul',forecast:'0.4%',previous:'0.6%',vol:70,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[-0.9,0.5,1.4,-0.2,0.7,0.6,0.4,0.4],desc:'The control group is what the Street trades. Consumer resilience has been the main argument for the hawks.'},
-  {id:'n7',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:2,name:'UoM Consumer Sentiment (Prelim)',period:'Aug',forecast:'62.0',previous:'61.7',vol:28,better:'higher',pairs:['EURUSD'],src:'University of Michigan',hist:[55.1,57.0,58.6,60.5,61.1,61.7,62.0,62.0],desc:'The five-year inflation-expectations component inside this survey has become a genuine market mover in its own right.'}
+  {id:'n1',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Consumer Price Index m/m',period:'Jul',actual:'0.1%',forecast:'0.1%',previous:'-0.4%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[0.4,0.2,0.3,0.2,0.3,-0.4,0.1,0.1],desc:'Consensus 0.1% against a -0.4% June print. With guidance withdrawn and three hawks already dissenting, an upside surprise here converts September hike pricing from probable to consensus. Confirmed by the BLS for Wednesday 12 August, 08:30 ET.'},
+  {id:'n2',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'Core CPI m/m',period:'Jul',actual:'0.2%',forecast:'0.2%',previous:'0.0%',vol:100,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[0.3,0.2,0.2,0.1,0.2,0.0,0.2,0.2],desc:'The line the desks trade. Consensus 0.2% after a flat June; 0.3% or higher puts a September hike back on the table with guidance already withdrawn.'},
+  {id:'n2b',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:3,name:'CPI y/y',period:'Jul',actual:'3.4%',forecast:'3.4%',previous:'3.5%',vol:95,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[],desc:'Headline annual inflation, expected to ease a tenth to 3.4%. Released in the same minute as the m/m pair — the three print together and the market reads them as one number.'},
+  {id:'n2d',utc:'2026-08-12T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2,ff:2,inv:2},name:'Core CPI y/y',period:'Jul',actual:'2.5%',forecast:'2.5%',previous:'2.6%',vol:40,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[],desc:'Core annual inflation eased a tenth to 2.5%, on consensus and the lowest since the cycle peak. Released with the m/m pair; the annual rate is what the Fed’s projections track.'},
+  {id:'n2e',utc:'2026-08-12T06:00:00Z',cur:'EUR',imp:2,impBy:{mf:2,ff:2,inv:2},name:'German CPI y/y (Final)',period:'Jul',actual:'2.8%',forecast:'2.8%',previous:'2.3%',vol:30,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[],desc:'Confirmed at 2.8%, a half-point jump from June and the highest since January. Feeds the euro-area HICP print and the ECB’s September projections.'},
+  {id:'n2f',utc:'2026-08-12T12:30:00Z',cur:'CAD',imp:2,impBy:{mf:2,ff:2,inv:2},name:'Building Permits m/m',period:'Jun',actual:'18.5%',forecast:'0.8%',previous:'-3.0%',vol:25,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'An 18.5% jump against a 0.8% consensus — one of the largest permit surprises on record, though the series is dominated by a handful of large multi-family projects and rarely holds. Released in the same minute as US CPI, so the CAD leg is usually drowned out.'},
+  {id:'n2c',utc:'2026-08-12T14:30:00Z',cur:'USD',imp:3,impBy:{mf:1,ff:2,inv:3},name:'EIA Crude Oil Inventories',period:'wk 7 Aug',forecast:'-1.700M',previous:'+2.479M',vol:20,better:'lower',pairs:['USOIL','USDCAD','USDNOK'],src:'EIA',hist:[],desc:'Investing.com rates this high impact; ForexFactory rates it medium and MyFxBook low. A -1.700M draw is expected after last week built 2.479M. It lands two hours after CPI, so the CAD and NOK legs often carry the dollar move rather than the barrel count.'},
+  {id:'n3',utc:'2026-08-12T06:00:00Z',cur:'EUR',imp:3,impBy:{mf:3,ff:3,inv:3},name:'German CPI m/m (Final)',period:'Jul',actual:'0.8%',forecast:'0.8%',previous:'-0.3%',vol:38,better:'higher',pairs:['EURUSD','EURGBP','EURJPY'],src:'Destatis',hist:[0.2,0.4,-0.1,0.3,0.1,-0.3,0.8,0.8],desc:'Released this morning at 0.8%, exactly on consensus and a sharp turn from June’s -0.3%. Final readings rarely move EUR when they confirm the flash, but this feeds the euro-area HICP print and gives the ECB’s September projections their German input.'},
+  {id:'n3c',utc:'2026-08-12T17:00:00Z',cur:'USD',imp:3,impBy:{mf:1,ff:1,inv:3},name:'10-Year Note Auction',period:'—',forecast:'—',previous:'4.580%',vol:25,better:'lower',pairs:['USDJPY','EURUSD','XAUUSD'],src:'US Treasury',hist:[],desc:'Investing.com rates Treasury auctions high impact; ForexFactory and MyFxBook do not list them at all. Watch the tail against the when-issued yield and the indirect bid — a weak auction on a hot CPI day is the combination that moves USDJPY hardest, since it questions demand for duration rather than the inflation number itself.'},
+
+  {id:'n3d',utc:'2026-08-12T18:00:00Z',cur:'USD',imp:2,impBy:{mf:1,ff:1,inv:2},name:'Federal Budget Balance',period:'Jul',forecast:'-348.3B',previous:'-120.0B',vol:15,better:'higher',pairs:['USDJPY','EURUSD'],src:'US Treasury',hist:[-316,-71,-258,-347,-120],desc:'A -348.3B consensus deficit for July. Rarely a same-day FX event, but it lands an hour after the 10-year auction and the two together are how the market reads the supply picture.'},
+  {id:'n3e',utc:'2026-08-12T23:50:00Z',cur:'JPY',imp:2,impBy:{mf:2,ff:2,inv:2},name:'PPI y/y',period:'Jul',forecast:'7.4%',previous:'7.1%',vol:28,better:'higher',pairs:['USDJPY','EURJPY'],src:'Bank of Japan',hist:[6.2,6.6,6.9,7.0,7.1],desc:'Corporate goods inflation expected to accelerate to 7.4%. With the BoJ having exited negative rates, a hot PPI feeds the pipeline-pressure case for the next hike and gives yen bulls something to work with in Tokyo hours.'},
+
+  {id:'f01',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:3,inv:3},name:'GDP q/q (Prelim)',period:'Q2',actual:'0.4%',forecast:'0.4%',previous:'0.6%',vol:60,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'Consensus looks for growth to slow to 0.4% from 0.6%. Follows a July MPC that set a high bar for September — a sub-0.3% print reopens the easing debate and pressures sterling on both legs.'},
+  {id:'f02',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:2,inv:2},name:'GDP m/m',period:'Jun',actual:'0.3%',forecast:'0.0%',previous:'0.0%',vol:35,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'The monthly profile released alongside the quarterly figure. A flat June is expected; the three-month average matters more to the MPC than any single month.'},
+  {id:'f03',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Goods Trade Balance',period:'Jun',actual:'-£23.01B',forecast:'-£20.5B',previous:'-£21.08B',vol:20,better:'higher',pairs:['GBPUSD'],src:'ONS',hist:[],desc:'Myfxbook rates the trade balance high; the other two do not. Released in the same batch as GDP, so it is almost never the driver of the sterling move.'},
+  {id:'g01',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Goods Trade Balance Non-EU',period:'Jun',actual:'-£10.45B',forecast:'-£9.3B',previous:'-£9.58B',vol:15,better:'higher',pairs:['GBPUSD'],src:'ONS',hist:[],desc:'The non-EU split of the trade account, expected to widen to -£9.3B. Myfxbook rates it high; the other two do not list it separately. Released in the same batch as GDP, so it is never the sterling driver.'},
+  {id:'g02',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:2,inv:2},name:'GDP Growth Rate y/y',period:'Q2',actual:'1.2%',forecast:'1.1%',previous:'0.9%',vol:35,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'Annual growth expected to pick up to 1.1% even as the quarterly rate slows to 0.4% — a base-effect divergence. The MPC weights the quarterly profile, so a strong annual number does not offset a weak quarter.'},
+  {id:'g03',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Jobless Claims 4-Week Average',period:'wk 8 Aug',forecast:'197K',previous:'198.75K',vol:20,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',hist:[],desc:'The smoothed series, expected to fall to 197K. With weekly claims below 200K for the first time this cycle, the four-week average is the cleaner read on whether that is signal or a holiday distortion.'},
+  {id:'f04',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Producer Price Index m/m',period:'Jul',forecast:'0.2%',previous:'-0.3%',vol:55,better:'higher',pairs:['EURUSD','USDJPY'],src:'BLS',hist:[],desc:'Pipeline inflation and a direct input to the PCE estimate two weeks later. June fell 0.3%; consensus expects a 0.2% rebound. ISM prices-paid above 70 for six months says the risk is upside.'},
+  {id:'f05',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Initial Jobless Claims',period:'wk 8 Aug',forecast:'202K',previous:'199K',vol:32,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Department of Labor',hist:[],desc:'Claims broke below 200K last week for the first time this cycle. With payrolls consensus cut to 80K, the weekly series is the highest-frequency read the market has on whether the labour market is actually cooling.'},
+  {id:'f06',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Continuing Jobless Claims',period:'wk 1 Aug',forecast:'1800K',previous:'1801K',vol:18,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',hist:[],desc:'The re-employment signal. Continuing claims have drifted down four weeks running, which argues against the soft-payrolls narrative.'},
+  {id:'f07',utc:'2026-08-13T12:15:00Z',cur:'USD',imp:2,name:'Fed Hammack Speaks',period:'—',forecast:'—',previous:'—',vol:20,better:'higher',pairs:['EURUSD','USDJPY'],src:'Federal Reserve',hist:[],desc:'Speaks 15 minutes before PPI and claims. One of the three dissenters — any framing of the CPI print carries weight given guidance was withdrawn.'},
+  {id:'f08',utc:'2026-08-13T12:40:00Z',cur:'USD',imp:2,name:'Fed Barkin Speaks',period:'—',forecast:'—',previous:'—',vol:18,better:'higher',pairs:['EURUSD','USDJPY'],src:'Federal Reserve',hist:[],desc:'Ten minutes after the data. Richmond has been the clearest voice on services pass-through, so the reaction to PPI is the part to listen for.'},
+  {id:'f09',utc:'2026-08-13T23:30:00Z',cur:'AUD',imp:2,name:'RBA Governor Bullock Speaks',period:'—',forecast:'—',previous:'—',vol:26,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'Reserve Bank of Australia',hist:[],desc:'First scheduled remarks after the 11 August hold and the quarterly Statement on Monetary Policy. Expect the China-demand language to be pressed.'},
+
+  {id:'f29',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Retail Sales m/m',period:'Jul',forecast:'0.1%',previous:'0.2%',vol:70,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Census Bureau',hist:[],desc:'The consumer is the last leg holding the expansion up. Consensus 0.1% after 0.2% in June — a negative print with CPI at 3.4% is the stagflation combination the dollar cannot absorb.'},
+  {id:'f30',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Retail Sales Control Group m/m',period:'Jul',forecast:'0.3%',previous:'0.5%',vol:55,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'The line that feeds directly into GDP. Strips autos, gas, building materials and food services — when the headline and the control group disagree, the desks trade the control group.'},
+  {id:'f12',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Retail Sales ex Autos m/m',period:'Jul',forecast:'0.2%',previous:'-0.2%',vol:40,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'Ex-autos fell 0.2% in June. A second negative month would be the first back-to-back decline since the pandemic reopening.'},
+  {id:'g19',utc:'2026-08-13T17:00:00Z',cur:'USD',imp:3,impBy:{mf:1,ff:1,inv:3},name:'30-Year Bond Auction',period:'—',forecast:'—',previous:'5.058%',vol:28,better:'lower',pairs:['USDJPY','EURUSD','XAUUSD'],src:'US Treasury',hist:[],desc:'The long-bond auction, in the same 17:00 UTC slot that carried yesterday’s 10-Year Note. Investing.com rates Treasury auctions high; Myfxbook and ForexFactory rate them low. Coming a day after CPI printed on consensus, the tail and the indirect bid are how the market tests appetite for duration at a 5.06% yield — a weak 30-year is the cleanest USDJPY catalyst of the session.'},
+  {id:'g20',utc:'2026-08-13T14:30:00Z',cur:'USD',imp:2,impBy:{mf:1,ff:1,inv:2},name:'EIA Natural Gas Stocks Change',period:'wk 7 Aug',forecast:'31B',previous:'33B',vol:12,better:'lower',pairs:['NATGAS','USDCAD'],src:'EIA',hist:[],desc:'The weekly gas build, expected at 31B against 33B. It occupies the same 14:30 UTC slot that carried crude inventories yesterday — gas on Thursdays, crude on Wednesdays.'},
+  {id:'g21',utc:'2026-08-13T15:30:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'8-Week Bill Auction',period:'—',forecast:'—',previous:'3.710%',vol:6,better:'lower',pairs:['USDJPY'],src:'US Treasury',hist:[],desc:'Short-bill auction. Bills price off the funds rate rather than growth expectations, so this is a liquidity read, not an FX event.'},
+  {id:'g22',utc:'2026-08-13T15:30:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'4-Week Bill Auction',period:'—',forecast:'—',previous:'3.640%',vol:5,better:'lower',pairs:['USDJPY'],src:'US Treasury',hist:[],desc:'The shortest Treasury tenor, auctioned in the same slot as the 8-week. Watched for money-market stress around debt-ceiling dates, not for direction.'},
+  {id:'g23',utc:'2026-08-13T16:00:00Z',cur:'EUR',imp:1,impBy:{mf:1},name:'New Car Registrations y/y',period:'Jul',forecast:'6.2%',previous:'11.4%',vol:8,better:'higher',pairs:['EURUSD'],src:'ACEA',hist:[],desc:'European car registrations expected to slow to 6.2% from 11.4%. A discretionary-spending indicator that rarely reaches the euro.'},
+  {id:'g24',utc:'2026-08-13T16:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'30-Year Mortgage Rate',period:'wk 13 Aug',forecast:'—',previous:'6.69%',vol:8,better:'lower',pairs:['EURUSD'],src:'Freddie Mac',hist:[],desc:'Freddie Mac’s weekly survey rate, at 6.69%. Runs a few basis points below the MBA series published Wednesdays; the gap is survey timing, not a discrepancy.'},
+  {id:'g25',utc:'2026-08-13T16:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'15-Year Mortgage Rate',period:'wk 13 Aug',forecast:'—',previous:'6.01%',vol:5,better:'lower',pairs:['EURUSD'],src:'Freddie Mac',hist:[],desc:'The 15-year survey rate at 6.01%. The spread to the 30-year is a refinancing-appetite signal for the housing data later this month.'},
+  {id:'g26',utc:'2026-08-13T20:30:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Fed Balance Sheet',period:'wk 12 Aug',forecast:'—',previous:'$6.749T',vol:10,better:'higher',pairs:['EURUSD','XAUUSD'],src:'Federal Reserve',hist:[],desc:'Weekly H.4.1 release. The balance sheet at $6.749T is the runoff pace made visible — a slow structural signal for the dollar and gold rather than a same-session mover.'},
+  {id:'g04',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Retail Sales y/y',period:'Jul',forecast:'6.0%',previous:'6.7%',vol:30,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'Annual retail growth expected to ease to 6.0%. Nominal and unadjusted for the 3.4% CPI, so roughly half of it is price rather than volume.'},
+  {id:'g05',utc:'2026-08-14T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Retail Sales ex Gas/Autos m/m',period:'Jul',forecast:'0.3%',previous:'0.4%',vol:28,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'Strips the two most price-volatile categories. Consensus 0.3% — consistent with the control group and a consumer that is slowing rather than cracking.'},
+  {id:'g06',utc:'2026-08-14T09:00:00Z',cur:'EUR',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Employment Change y/y',period:'Q2',forecast:'0.6%',previous:'0.5%',vol:20,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'Annual euro-area employment expected to firm to 0.6%. The labour market holding up is the ECB’s stated reason for taking cuts slowly.'},
+  {id:'f13',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:2},name:'UoM Consumer Sentiment (Prelim)',period:'Aug',forecast:'54.5',previous:'55.2',vol:28,better:'higher',pairs:['EURUSD','XAUUSD'],src:'University of Michigan',hist:[],desc:'Sentiment has been pinned near record lows all year. The 5-year inflation expectation buried in the same release — 3.2% expected against 3.3% — is what the Fed actually reads.'},
+  {id:'f14',utc:'2026-08-14T09:00:00Z',cur:'EUR',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Employment Change q/q',period:'Q2',forecast:'0.1%',previous:'0.1%',vol:22,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'Euro-area employment released with the second GDP estimate. Steady 0.1% expected — the labour market has been the ECB’s reason for patience on cuts.'},
+
+  {id:'h01',utc:'2026-08-14T01:30:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'Home Loans q/q',period:'Q2',forecast:'-2.3%',previous:'-4.3%',vol:14,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[],desc:'Housing finance commitments. Myfxbook rates it medium; the other two do not list it.'},
+  {id:'h02',utc:'2026-08-14T01:30:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'Investment Lending for Homes q/q',period:'Q2',forecast:'-6.4%',previous:'-3.0%',vol:12,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[],desc:'Investor mortgage lending — a read on the speculative end of Australian housing.'},
+  {id:'h03',utc:'2026-08-14T06:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Wholesale Prices y/y',period:'Jul',forecast:'5.4%',previous:'4.9%',vol:12,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[],desc:'German wholesale prices, a leading indicator for the CPI print.'},
+  {id:'h04',utc:'2026-08-14T06:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Wholesale Prices m/m',period:'Jul',forecast:'0.4%',previous:'-0.7%',vol:10,better:'higher',pairs:['EURUSD','EURGBP'],src:'Destatis',hist:[],desc:'Monthly German wholesale prices; a sharp turn from June’s -0.7%.'},
+  {id:'h05',utc:'2026-08-14T07:00:00Z',cur:'CHF',imp:2,impBy:{mf:2},name:'GDP Growth Rate q/q',period:'Q2',forecast:'0.5%',previous:'0.4%',vol:22,better:'higher',pairs:['USDCHF','EURCHF'],src:'SECO',hist:[],desc:'Swiss Q2 growth. CHF is thinly traded on data, but a miss feeds the SNB’s negative-rate debate.'},
+  {id:'h06',utc:'2026-08-14T09:00:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'New Yuan Loans',period:'Jul',forecast:'CNY45B',previous:'CNY1610B',vol:20,better:'higher',pairs:['AUDUSD','USDCNH'],src:'PBoC',hist:[],desc:'The July credit collapse is seasonal — June is quarter-end window dressing — but the scale of the drop is what AUD traders watch.'},
+  {id:'h07',utc:'2026-08-14T09:00:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'Current Account',period:'Q2',forecast:'$150B',previous:'$184.3B',vol:12,better:'higher',pairs:['AUDUSD','USDCNH'],src:'SAFE',hist:[],desc:'China’s quarterly external balance.'},
+  {id:'h08',utc:'2026-08-14T09:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Balance of Trade',period:'Jun',forecast:'-€2.2B',previous:'-€7.8B',vol:12,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'Euro-area goods trade. Myfxbook rates this one medium; several other EUR trade rows the same minute are national and rated low.'},
+  {id:'h09',utc:'2026-08-14T12:30:00Z',cur:'CAD',imp:1,impBy:{mf:1},name:'Manufacturing Sales m/m',period:'Jun',forecast:'-0.1%',previous:'1.3%',vol:8,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'Released in the same minute as US retail sales, so it is almost always drowned out.'},
+  {id:'h10',utc:'2026-08-14T12:30:00Z',cur:'CAD',imp:1,impBy:{mf:1},name:'Wholesale Sales m/m',period:'Jun',forecast:'2.7%',previous:'0.0%',vol:6,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'Wholesale trade; feeds the monthly GDP estimate.'},
+  {id:'h11',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Business Inventories m/m',period:'Jun',forecast:'0.1%',previous:'0.3%',vol:10,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Census Bureau',hist:[],desc:'Inventory build feeds directly into the GDP revision.'},
+  {id:'h12',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Michigan Consumer Expectations',period:'Aug',forecast:'55.2',previous:'55.4',vol:8,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'University of Michigan',hist:[],desc:'The forward-looking half of the sentiment survey — usually the half that moves.'},
+  {id:'h13',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Michigan Current Conditions',period:'Aug',forecast:'55.0',previous:'54.8',vol:7,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'University of Michigan',hist:[],desc:'How households rate conditions today.'},
+  {id:'h14',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Michigan 1-Year Inflation Expectations',period:'Aug',forecast:'4.1%',previous:'4.2%',vol:12,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'University of Michigan',hist:[],desc:'Still above 4% — the number FOMC members quote when arguing against cuts.'},
+  {id:'h15',utc:'2026-08-14T14:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Michigan 5-Year Inflation Expectations',period:'Aug',forecast:'3.2%',previous:'3.3%',vol:10,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'University of Michigan',hist:[],desc:'Long-run expectations; the anchoring measure the Fed treats as a red line.'},
+  {id:'h16',utc:'2026-08-14T17:00:00Z',cur:'USD',imp:1,impBy:{mf:1},name:'Baker Hughes Oil Rig Count',period:'wk 14 Aug',forecast:'—',previous:'454',vol:6,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Baker Hughes',hist:[],desc:'Weekly US drilling activity — an oil story, not an FX one.'},
+
+  {id:'f15',utc:'2026-08-16T23:50:00Z',cur:'JPY',imp:3,impBy:{mf:3,ff:3,inv:3},name:'GDP q/q (Prelim)',period:'Q2',forecast:'0.5%',previous:'0.5%',vol:45,better:'higher',pairs:['USDJPY','EURJPY'],src:'Cabinet Office',hist:[],desc:'Japan’s Q2 growth, released Sunday evening London time. With PPI running at 7.4% and the BoJ out of negative rates, a second consecutive 0.5% quarter strengthens the case for the next hike and gives yen bulls a Monday-open catalyst.'},
+
+  {id:'f16',utc:'2026-08-17T02:00:00Z',cur:'CNY',imp:3,impBy:{mf:3,ff:2,inv:3},name:'Retail Sales y/y',period:'Jul',forecast:'1.5%',previous:'1.0%',vol:30,better:'higher',pairs:['AUDUSD','NZDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[],desc:'Chinese consumption has decelerated for four straight months. AUD and NZD trade this as a proxy for commodity demand — the RBA’s China-demand language on 11 August makes it more relevant than usual.'},
+  {id:'f17',utc:'2026-08-17T02:00:00Z',cur:'CNY',imp:3,impBy:{mf:3,ff:2,inv:3},name:'Industrial Production y/y',period:'Jul',forecast:'5.0%',previous:'5.3%',vol:28,better:'higher',pairs:['AUDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[],desc:'Released in the same batch as retail sales and fixed-asset investment. Industrial output is the iron-ore demand read, so it moves AUD more than the consumption line does.'},
+  {id:'g07',utc:'2026-08-17T02:00:00Z',cur:'CNY',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Unemployment Rate',period:'Jul',forecast:'5.1%',previous:'5.0%',vol:22,better:'lower',pairs:['AUDUSD','USDCNH'],src:'National Bureau of Statistics',hist:[],desc:'Surveyed urban unemployment expected to tick up to 5.1%. The series is heavily managed and excludes migrant workers, so the market treats direction rather than level as the signal.'},
+  {id:'f18',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Inflation Rate y/y',period:'Jul',forecast:'2.6%',previous:'2.8%',vol:52,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'With the BoC on hold at 2.25%, a return toward target reopens the October cut. The trimmed-mean and median core measures released in the same minute are what the Bank actually targets.'},
+  {id:'f19',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'CPI Trimmed-Mean y/y',period:'Jul',forecast:'1.7%',previous:'1.8%',vol:35,better:'higher',pairs:['USDCAD'],src:'Bank of Canada',hist:[],desc:'The BoC’s preferred core measure, now below the 2% midpoint. Another tenth lower is a straightforward argument for easing in October.'},
+  {id:'g08',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'CPI Median y/y',period:'Jul',forecast:'1.8%',previous:'1.9%',vol:30,better:'higher',pairs:['USDCAD'],src:'Bank of Canada',hist:[],desc:'The second of the BoC’s two preferred core measures, expected at 1.8%. Median and trimmed-mean both below 2% is the cleanest argument for an October cut.'},
+  {id:'g09',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'CPI Common y/y',period:'Jul',forecast:'2.5%',previous:'2.6%',vol:22,better:'higher',pairs:['USDCAD'],src:'Bank of Canada',hist:[],desc:'The third core measure, which the Bank de-emphasised in 2022 but still publishes. At 2.5% it runs hotter than median and trimmed-mean, which is why it gets less weight.'},
+  {id:'f20',utc:'2026-08-17T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'NY Empire State Manufacturing Index',period:'Aug',forecast:'12.0',previous:'15.6',vol:25,better:'higher',pairs:['EURUSD','USDJPY'],src:'New York Fed',hist:[],desc:'First regional survey of the month and the earliest read on August activity. Volatile enough that the market discounts it, but it sets expectations for Philly Fed later in the week.'},
+
+  {id:'f21',utc:'2026-08-18T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Unemployment Rate',period:'Jun',forecast:'4.9%',previous:'4.9%',vol:45,better:'lower',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'Unemployment has risen four quarters running. Average earnings excluding bonuses in the same release — 3.3% expected against 3.4% — is the number the MPC weights for September.'},
+  {id:'f22',utc:'2026-08-18T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Employment Change 3m',period:'Jun',forecast:'200K',previous:'147K',vol:35,better:'higher',pairs:['GBPUSD'],src:'ONS',hist:[],desc:'Consensus looks for employment to accelerate to 200K from 147K — a strong print that sits awkwardly beside an unemployment rate stuck at 4.9%. The ONS labour survey has well-documented sampling problems, so the market discounts single quarters.'},
+  {id:'f23',utc:'2026-08-18T09:00:00Z',cur:'EUR',imp:3,impBy:{mf:3,ff:2,inv:2},name:'ZEW Economic Sentiment (Germany)',period:'Aug',forecast:'21.5',previous:'26.3',vol:28,better:'higher',pairs:['EURUSD','EURGBP'],src:'ZEW',hist:[],desc:'German investor expectations have fallen three months running. Sentiment surveys lead the hard data by roughly a quarter, so this is where a European slowdown shows up first.'},
+  {id:'f24',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Housing Starts',period:'Jul',forecast:'1.360M',previous:'1.427M',vol:24,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'June jumped 19%, which was multi-family noise. Consensus expects most of that to unwind. With the 30-year mortgage rate at 6.77%, the single-family component is the honest signal.'},
+  {id:'g10',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Building Permits',period:'Jul',forecast:'1.390M',previous:'1.374M',vol:22,better:'higher',pairs:['EURUSD','USDJPY'],src:'Census Bureau',hist:[],desc:'Permits lead starts by roughly a month and are the less noisy of the pair. A modest rise to 1.390M is expected against starts falling 4.7% — the divergence says June’s starts spike was multi-family timing.'},
+  {id:'g11',utc:'2026-08-18T12:15:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'ADP Employment Change (Weekly)',period:'wk 15 Aug',forecast:'—',previous:'—',vol:25,better:'higher',pairs:['EURUSD','USDJPY'],src:'ADP Research',hist:[],desc:'ADP’s weekly series, introduced after the payrolls reporting gaps. Myfxbook rates it high; it has a short history and no established relationship with the official print, so treat it as a directional check rather than a forecast.'},
+  {id:'f25',utc:'2026-08-18T00:30:00Z',cur:'AUD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Westpac Consumer Confidence',period:'Aug',forecast:'-2.6%',previous:'4.1%',vol:20,better:'higher',pairs:['AUDUSD'],src:'Westpac',hist:[],desc:'First confidence read after the RBA held at 4.35%. Myfxbook rates it high; the other two do not — it rarely moves AUD outside a policy week.'},
+
+  {id:'f26',utc:'2026-08-19T06:00:00Z',cur:'GBP',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Inflation Rate y/y',period:'Jul',forecast:'3.0%',previous:'2.6%',vol:75,better:'higher',pairs:['GBPUSD','EURGBP','GBPJPY'],src:'ONS',hist:[],desc:'A jump back to 3.0% is expected after four months of decline, driven by energy base effects. The MPC set a high bar for September easing; a 3-handle takes that off the table entirely and is the biggest sterling event of the month.'},
+  {id:'g12',utc:'2026-08-19T09:00:00Z',cur:'EUR',imp:3,impBy:{mf:3,ff:1,inv:1},name:'CPI Index',period:'Jul',forecast:'103.22',previous:'103.02',vol:15,better:'higher',pairs:['EURUSD'],src:'Eurostat',hist:[],desc:'The index level behind the euro-area inflation rate. Myfxbook rates it high; the rate itself, released in the same minute, is what the market trades.'},
+  {id:'f27',utc:'2026-08-19T18:00:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'FOMC Minutes',period:'Jul meeting',forecast:'—',previous:'—',vol:60,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Federal Reserve',hist:[],desc:'Minutes of the meeting that withdrew forward guidance with three dissents. The market wants the distribution of views on how many members wanted to hike, and whether the guidance withdrawal was a compromise or a signal.'},
+  {id:'g13',utc:'2026-08-20T01:30:00Z',cur:'AUD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Employment Change',period:'Jul',forecast:'25.0K',previous:'76.3K',vol:65,better:'higher',pairs:['AUDUSD','AUDJPY','AUDNZD'],src:'Australian Bureau of Statistics',hist:[],desc:'The month’s biggest AUD event. Consensus 25K after a 76.3K surge — the ABS series swings hard on part-time and the sample rotation, so the market reads the trend not the month. First labour read since the RBA held at 4.35%.'},
+  {id:'g14',utc:'2026-08-20T01:30:00Z',cur:'AUD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Unemployment Rate',period:'Jul',forecast:'4.5%',previous:'4.4%',vol:55,better:'lower',pairs:['AUDUSD','AUDJPY'],src:'Australian Bureau of Statistics',hist:[],desc:'Expected to tick up to 4.5%. With the RBA holding a hike bias at 4.35%, a rising unemployment rate is the one data point that would force the Board to soften its language in September.'},
+  {id:'g15',utc:'2026-08-20T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Initial Jobless Claims',period:'wk 15 Aug',forecast:'—',previous:'201K',vol:32,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',hist:[],desc:'The following week’s print. Claims hovering at the 200K line is the market’s highest-frequency read on the labour market while payrolls consensus sits at 80K.'},
+  {id:'g16',utc:'2026-08-20T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:2},name:'Continuing Jobless Claims',period:'wk 8 Aug',forecast:'—',previous:'1808K',vol:18,better:'lower',pairs:['EURUSD','USDJPY'],src:'Department of Labor',hist:[],desc:'The re-employment signal, released alongside initial claims. A rise back above 1.81M would break the four-week downtrend.'},
+  {id:'g17',utc:'2026-08-20T12:30:00Z',cur:'USD',imp:3,impBy:{mf:3,ff:1,inv:1},name:'Jobless Claims 4-Week Average',period:'wk 15 Aug',forecast:'—',previous:'200K',vol:16,better:'lower',pairs:['EURUSD'],src:'Department of Labor',hist:[],desc:'The smoothed series sitting exactly on 200K — the level that has separated a cooling labour market from a deteriorating one in past cycles.'},
+  {id:'g18',utc:'2026-08-20T23:30:00Z',cur:'JPY',imp:3,impBy:{mf:3,ff:3,inv:3},name:'Inflation Rate y/y',period:'Jul',forecast:'—',previous:'1.7%',vol:45,better:'higher',pairs:['USDJPY','EURJPY'],src:'Statistics Bureau',hist:[],desc:'National CPI, the print the BoJ targets. With PPI at 7.4% and headline at only 1.7%, the gap between producer and consumer inflation is the central question for whether the next hike comes this year.'},
+  {id:'f28',utc:'2026-08-19T23:50:00Z',cur:'JPY',imp:3,impBy:{mf:3,ff:2,inv:2},name:'Balance of Trade',period:'Jul',forecast:'—',previous:'-¥406.9B',vol:22,better:'higher',pairs:['USDJPY','EURJPY'],src:'Ministry of Finance',hist:[],desc:'Exports have run near 20% y/y on a weak yen. The trade balance is the mechanical link between the currency level and the current account the MoF cites when it discusses intervention.'},
+
+  {id:'k01',utc:'2026-08-13T00:15:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'RBA Kent Speech',period:'—',forecast:'—',previous:'—',vol:14,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'Reserve Bank of Australia',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k02',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Manufacturing Production m/m',period:'Jun',actual:'-0.5%',forecast:'-0.2%',previous:'-0.2%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k03',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Industrial Production m/m',period:'Jun',actual:'-0.2%',forecast:'0.1%',previous:'-0.7%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k04',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'GDP 3-Month Average',period:'Jun',actual:'0.4%',forecast:'0.4%',previous:'0.6%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k05',utc:'2026-08-13T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Business Investment q/q',period:'Q2',actual:'1.7%',forecast:'-0.5%',previous:'0.9%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k06',utc:'2026-08-13T09:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Industrial Production m/m',period:'Jun',actual:'0.0%',forecast:'-0.1%',previous:'0.3%',vol:14,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k07',utc:'2026-08-13T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Core PPI m/m',period:'Jul',forecast:'0.3%',previous:'0.2%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k08',utc:'2026-08-13T22:30:00Z',cur:'NZD',imp:2,impBy:{mf:2},name:'Business NZ PMI',period:'Jul',forecast:'58.4',previous:'59.7',vol:14,better:'higher',pairs:['NZDUSD','AUDNZD'],src:'BusinessNZ',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k09',utc:'2026-08-16T23:50:00Z',cur:'JPY',imp:2,impBy:{mf:2},name:'GDP Growth Annualized',period:'Q2',forecast:'2.0%',previous:'1.8%',vol:14,better:'higher',pairs:['USDJPY','EURJPY'],src:'Cabinet Office',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k10',utc:'2026-08-17T01:30:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'House Price Index y/y',period:'Jul',forecast:'—',previous:'-3.3%',vol:14,better:'higher',pairs:['AUDUSD','USDCNH'],src:'NBS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k11',utc:'2026-08-17T02:00:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'Fixed Asset Investment YTD y/y',period:'Jul',forecast:'-5.0%',previous:'-5.7%',vol:14,better:'higher',pairs:['AUDUSD','USDCNH'],src:'NBS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k12',utc:'2026-08-17T09:00:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'FDI YTD y/y',period:'Jul',forecast:'—',previous:'-5.0%',vol:14,better:'higher',pairs:['AUDUSD','USDCNH'],src:'MOFCOM',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k13',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:2,impBy:{mf:2},name:'Core Inflation Rate y/y',period:'Jul',forecast:'2.0%',previous:'2.1%',vol:14,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k14',utc:'2026-08-17T12:30:00Z',cur:'CAD',imp:2,impBy:{mf:2},name:'Inflation Rate m/m',period:'Jul',forecast:'0.1%',previous:'-0.4%',vol:14,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k15',utc:'2026-08-17T14:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'NAHB Housing Market Index',period:'Aug',forecast:'34',previous:'34',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'NAHB',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k16',utc:'2026-08-17T20:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Net Long-term TIC Flows',period:'Jun',forecast:'—',previous:'$232.7B',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'US Treasury',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k17',utc:'2026-08-18T00:30:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'Westpac Consumer Confidence Index',period:'Aug',forecast:'81.7',previous:'83.9',vol:14,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'Westpac',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k18',utc:'2026-08-18T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Average Earnings incl. Bonus 3m/y',period:'Jun',forecast:'3.9%',previous:'4.3%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k19',utc:'2026-08-18T06:30:00Z',cur:'CHF',imp:2,impBy:{mf:2},name:'Industrial Production y/y',period:'Q2',forecast:'-4.7%',previous:'-7.1%',vol:14,better:'higher',pairs:['USDCHF','EURCHF'],src:'FSO',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k20',utc:'2026-08-18T08:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Balance of Trade',period:'Jun',forecast:'-€6.3B',previous:'-€8.24B',vol:14,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k21',utc:'2026-08-18T09:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'ZEW Economic Sentiment (Euro Area)',period:'Aug',forecast:'20.0',previous:'23.4',vol:14,better:'higher',pairs:['EURUSD','EURGBP'],src:'ZEW',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k22',utc:'2026-08-18T12:15:00Z',cur:'CAD',imp:2,impBy:{mf:2},name:'Housing Starts',period:'Jul',forecast:'220K',previous:'239K',vol:14,better:'higher',pairs:['USDCAD','CADJPY'],src:'CMHC',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k23',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Building Permits m/m',period:'Jul',forecast:'1.2%',previous:'-2.6%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Census Bureau',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k24',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Housing Starts m/m',period:'Jul',forecast:'-4.7%',previous:'19.0%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Census Bureau',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k25',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Import Prices m/m',period:'Jul',forecast:'0.4%',previous:'0.3%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k26',utc:'2026-08-18T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Export Prices m/m',period:'Jul',forecast:'-0.2%',previous:'-0.6%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'BLS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k27',utc:'2026-08-18T13:15:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Industrial Production m/m',period:'Jul',forecast:'0.2%',previous:'0.1%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Federal Reserve',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k28',utc:'2026-08-18T14:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Pending Home Sales m/m',period:'Jul',forecast:'1.9%',previous:'-5.4%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'NAR',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k29',utc:'2026-08-18T14:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Pending Home Sales y/y',period:'Jul',forecast:'1.4%',previous:'-0.3%',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'NAR',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k30',utc:'2026-08-18T20:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'API Crude Oil Stock Change',period:'wk 14 Aug',forecast:'—',previous:'9.072M',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'API',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k31',utc:'2026-08-18T23:50:00Z',cur:'JPY',imp:2,impBy:{mf:2},name:'Machinery Orders m/m',period:'Jun',forecast:'—',previous:'-12.4%',vol:14,better:'higher',pairs:['USDJPY','EURJPY'],src:'Cabinet Office',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k32',utc:'2026-08-18T23:50:00Z',cur:'JPY',imp:2,impBy:{mf:2},name:'Machinery Orders y/y',period:'Jun',forecast:'—',previous:'-1.9%',vol:14,better:'higher',pairs:['USDJPY','EURJPY'],src:'Cabinet Office',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k33',utc:'2026-08-19T02:45:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'RBA Hauser Speech',period:'—',forecast:'—',previous:'—',vol:14,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'Reserve Bank of Australia',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k34',utc:'2026-08-19T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Inflation Rate m/m',period:'Jul',forecast:'0.3%',previous:'0.1%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k35',utc:'2026-08-19T06:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Core Inflation Rate y/y',period:'Jul',forecast:'2.7%',previous:'2.6%',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'ONS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k36',utc:'2026-08-19T11:00:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'MBA 30-Year Mortgage Rate',period:'wk 14 Aug',forecast:'—',previous:'6.77%',vol:14,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'MBA',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k37',utc:'2026-08-19T14:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'EIA Crude Oil Stocks Change',period:'wk 14 Aug',forecast:'—',previous:'17.422M',vol:14,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'EIA',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k38',utc:'2026-08-19T14:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'EIA Gasoline Stocks Change',period:'wk 14 Aug',forecast:'—',previous:'-0.968M',vol:14,better:'lower',pairs:['EURUSD','USDJPY','XAUUSD'],src:'EIA',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k39',utc:'2026-08-19T23:50:00Z',cur:'JPY',imp:2,impBy:{mf:2},name:'Exports y/y',period:'Jul',forecast:'—',previous:'19.3%',vol:14,better:'higher',pairs:['USDJPY','EURJPY'],src:'Ministry of Finance',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k40',utc:'2026-08-20T01:15:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'Loan Prime Rate 1Y',period:'Aug',forecast:'3.00%',previous:'3.00%',vol:14,better:'higher',pairs:['AUDUSD','USDCNH'],src:'PBoC',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k41',utc:'2026-08-20T01:15:00Z',cur:'CNY',imp:2,impBy:{mf:2},name:'Loan Prime Rate 5Y',period:'Aug',forecast:'3.50%',previous:'3.50%',vol:14,better:'higher',pairs:['AUDUSD','USDCNH'],src:'PBoC',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k42',utc:'2026-08-20T01:30:00Z',cur:'AUD',imp:2,impBy:{mf:2},name:'Full Time Employment Change',period:'Jul',forecast:'—',previous:'29.3K',vol:14,better:'higher',pairs:['AUDUSD','AUDJPY'],src:'ABS',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k43',utc:'2026-08-20T04:30:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'Unemployment Rate',period:'Jul',forecast:'3.9%',previous:'3.8%',vol:14,better:'lower',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k44',utc:'2026-08-20T06:00:00Z',cur:'EUR',imp:2,impBy:{mf:2},name:'PPI y/y',period:'Jul',forecast:'2.4%',previous:'1.8%',vol:14,better:'higher',pairs:['EURUSD','EURGBP'],src:'Eurostat',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k45',utc:'2026-08-20T06:00:00Z',cur:'CHF',imp:2,impBy:{mf:2},name:'Balance of Trade',period:'Jul',forecast:'CHF4.1B',previous:'CHF3.8B',vol:14,better:'higher',pairs:['USDCHF','EURCHF'],src:'FCA',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k46',utc:'2026-08-20T10:00:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'CBI Industrial Trends Orders',period:'Aug',forecast:'-42',previous:'-45',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'CBI',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k47',utc:'2026-08-20T12:30:00Z',cur:'USD',imp:2,impBy:{mf:2},name:'Philadelphia Fed Manufacturing Index',period:'Aug',forecast:'25.0',previous:'41.4',vol:14,better:'higher',pairs:['EURUSD','USDJPY','XAUUSD'],src:'Philadelphia Fed',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k48',utc:'2026-08-20T12:30:00Z',cur:'CAD',imp:2,impBy:{mf:2},name:'New Housing Price Index m/m',period:'Jul',forecast:'0.1%',previous:'-0.1%',vol:14,better:'higher',pairs:['USDCAD','CADJPY'],src:'Statistics Canada',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k49',utc:'2026-08-20T22:45:00Z',cur:'NZD',imp:2,impBy:{mf:2},name:'Balance of Trade',period:'Jul',forecast:'-NZ$0.6B',previous:'NZ$0.02B',vol:14,better:'higher',pairs:['NZDUSD','AUDNZD'],src:'Stats NZ',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k50',utc:'2026-08-20T23:01:00Z',cur:'GBP',imp:2,impBy:{mf:2},name:'Gfk Consumer Confidence',period:'Aug',forecast:'-18',previous:'-17',vol:14,better:'higher',pairs:['GBPUSD','EURGBP'],src:'GfK',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
+  {id:'k51',utc:'2026-08-20T23:30:00Z',cur:'JPY',imp:2,impBy:{mf:2},name:'Core Inflation Rate y/y',period:'Jul',forecast:'—',previous:'1.6%',vol:14,better:'higher',pairs:['USDJPY','EURJPY'],src:'Statistics Bureau',hist:[],desc:'From the Myfxbook board for this week. Only Myfxbook was consulted, so no ForexFactory or Investing.com rating is asserted.'},
 ];
 
 const MRDN_SPOT = {
@@ -766,8 +999,10 @@ const MRDN_BRIEF = [
   {k:'ISM services employment · back in contraction', v:'47.4', tone:'red'},
   {k:'ISM services prices paid · 20th month above 60', v:'70.3 HOT', tone:'red'},
   {k:'China services PMI · near contraction', v:'50.4 MISS', tone:'red'},
-  {k:'Payrolls consensus Friday · cut from 100K', v:'80K', tone:'amb'},
-  {k:'RBA · next decision 11 Aug, SMP meeting', v:'4.35% HOLD EXP', tone:''}
+  {k:'US CPI today · headline and core both on consensus', v:'3.4% y/y', tone:''},
+  {k:'RBA held 11 Aug after three hikes this year', v:'4.35% HELD', tone:''},
+  {k:'Jobless claims tomorrow · sub-200K first time this cycle', v:'202K EXP', tone:'amb'},
+  {k:'Retail sales Friday · consumer is the last leg', v:'0.1% EXP', tone:'amb'}
 ];
 
 const MRDN_SPEAKERS = [
@@ -802,9 +1037,40 @@ const MRDN_SESSIONS = [
   {name:'New York', zone:'America/New_York', open:8, close:17, bar:'var(--amb)'}
 ];
 
-const MRDN_HOLIDAYS = { '2026-08-04': [] };
+const MRDN_HOLIDAYS = { '2026-08-04': [], '2026-08-10': ['Singapore · National Day','South Africa · Women\'s Day'] };
 
-const MRDN_SNAP_ISO = '2026-08-05T17:35:00Z';
+const MRDN_TV = (function(){
+  const m = {};
+  const fx = ['USD','EUR','GBP','JPY','CHF','AUD','NZD','CAD'];
+  fx.forEach(a=>fx.forEach(b=>{ if(a!==b) m[a+b] = 'FX:'+a+b; }));
+  Object.assign(m, {
+    XAUUSD:'OANDA:XAUUSD', XAGUSD:'OANDA:XAGUSD', XPTUSD:'OANDA:XPTUSD',
+    XAUEUR:'OANDA:XAUEUR', XAUGBP:'OANDA:XAUGBP',
+    USDCNH:'FX_IDC:USDCNH', USDMXN:'FX_IDC:USDMXN', USDZAR:'FX_IDC:USDZAR',
+    USDTRY:'FX_IDC:USDTRY', USDSEK:'FX_IDC:USDSEK', USDNOK:'FX_IDC:USDNOK',
+    USDPLN:'FX_IDC:USDPLN', USDSGD:'FX_IDC:USDSGD', USDHKD:'FX_IDC:USDHKD',
+    EURSEK:'FX_IDC:EURSEK', EURNOK:'FX_IDC:EURNOK', EURPLN:'FX_IDC:EURPLN',
+    EURTRY:'FX_IDC:EURTRY', GBPSEK:'FX_IDC:GBPSEK',
+    DXY:'TVC:DXY', SPX:'SP:SPX', NAS100:'NASDAQ:NDX', US30:'DJ:DJI',
+    DE40:'XETR:DAX', UK100:'TVC:UKX', JP225:'TVC:NI225',
+    USOIL:'TVC:USOIL', UKOIL:'TVC:UKOIL', NATGAS:'TVC:NATGAS',
+    US10Y:'TVC:US10Y', US02Y:'TVC:US02Y',
+    BTCUSD:'BITSTAMP:BTCUSD', ETHUSD:'BITSTAMP:ETHUSD'
+  });
+  return m;
+})();
+
+/* Anything the user types that we can still resolve sensibly. */
+const MRDN_TV_RESOLVE = function(raw){
+  const s = String(raw||'').trim().toUpperCase().replace(/[\s\/\-_]/g,'');
+  if(!s) return null;
+  if(MRDN_TV[s]) return {sym:s, tv:MRDN_TV[s]};
+  if(s.indexOf(':')>0) return {sym:s.split(':')[1], tv:s};        // already exchange-qualified
+  if(/^[A-Z]{6}$/.test(s)) return {sym:s, tv:'FX:'+s};            // plausible cross
+  return {sym:s, tv:s};                                            // let TradingView try
+};
+
+const MRDN_SNAP_ISO = '2026-08-14T10:05:00Z';
 const MRDN_SNAPSHOT = (function(){
   const d = new Date(MRDN_SNAP_ISO);
   const day = new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(d);
@@ -841,6 +1107,8 @@ class Component extends DCLogic {
       open:null, watch:{}, notes:{}, rep:{}, moved:{}, alerts:false, sound:true, toasts:[], fired:{},
       client:'', secs:{ahead:true,recap:true,cur:true,notes:true}, apiUrl:'', feedMsg:'', feedOk:null,
       autoSync:true, syncEvery:5, lastSync:0, syncing:false, syncFails:0,
+      pal:false, palQ:'', palSel:0, riseTick:0,
+      tvSym:'', tvInt:'15', tvOn:true, tvQ:'', tvFavs:[],
       theme:(p && p.theme) || 'dark', density:'comfortable', extra:null, perm:'default',
       cursor:-1, lastSeen:0, newIds:{}, diffText:'', hasDiff:false,
       ratingSrc:'mf', pair:'EURUSD', copyLabel:'COPY AS TEXT',
@@ -852,7 +1120,7 @@ class Component extends DCLogic {
     let s = {};
     try { s = JSON.parse(localStorage.getItem(MRDN_LS) || '{}'); } catch(e){}
     const patch = {};
-    ['tz','query','watchOnly','client','apiUrl','theme','view','density','plan','ratingSrc','pair','autoSync','syncEvery','lastSync'].forEach(k=>{ if(s[k]!==undefined) patch[k]=s[k]; });
+    ['tz','query','watchOnly','client','apiUrl','theme','view','density','plan','ratingSrc','pair','autoSync','syncEvery','lastSync','tvSym','tvInt','tvOn','tvFavs'].forEach(k=>{ if(s[k]!==undefined) patch[k]=s[k]; });
     ['watch','notes','rep','secs','moved'].forEach(k=>{ if(s[k]) patch[k]=s[k]; });
     if(Array.isArray(s.impact)) patch.impact=s.impact;
     if(Array.isArray(s.curs)) patch.curs=s.curs;
@@ -1008,8 +1276,68 @@ class Component extends DCLogic {
     try { if(this.swReg.periodicSync) this.swReg.periodicSync.register('mrdn-calendar',{minInterval:6*3600e3}).catch(()=>{}); } catch(e){}
   }
 
+  openPal(){
+    this.setState({pal:true, palQ:'', palSel:0});
+    setTimeout(()=>{ try{ const i=document.querySelector('[data-pal-input]'); if(i) i.focus(); }catch(e){} }, 30);
+  }
+
+  /* True only when the three sources rate this event differently. */
+  isSplit(e){
+    const b = e && e.impBy; if(!b) return false;
+    const v = [b.mf, b.ff, b.inv].filter(x=>x!=null);
+    return v.length > 1 && v.some(x=>x!==v[0]);
+  }
+
+  /* Which list actually contains this event, given the day on screen. */
+  viewFor(e){
+    const t = Date.parse(e.utc), now = this.state.now;
+    if(t <= now) return 'archive';
+    try {
+      const day = d => new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:this.state.tz}).format(d);
+      if(day(t) === day(now)) return 'today';
+    } catch(err){}
+    return 'week';
+  }
+
+  /* Scroll an event into view and open it. Every filter that could hide the
+     target is widened first — a jump that lands on nothing is worse than no jump. */
+  jumpTo(id, view){
+    const ev = this.events().filter(x=>x.id===id)[0];
+    const land = (tries)=>{
+      let el = null;
+      try { el = document.querySelector('[data-row="'+id+'"]'); } catch(err){}
+      if(!el){
+        if(tries > 0) return setTimeout(()=>land(tries-1), 90);
+        return this.notify('Could not open that release', (ev? ev.name : 'The event')+' is filtered out of every list. Clear the search box, then try again.', false);
+      }
+      try {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 190;
+        window.scrollTo({top: Math.max(0,y), behavior:'smooth'});
+      } catch(err){}
+    };
+    const patch = {pal:false, open:id, cursor:-1};
+    if(view && view!==this.state.view){ patch.view = view; patch.riseTick = this.state.riseTick + 1; }
+    if(this.state.watchOnly) patch.watchOnly = false;
+    if(ev){
+      const imp = this.impOf(ev);
+      if(this.state.impact.indexOf(imp) < 0) patch.impact = this.state.impact.concat([imp]);
+      if(this.state.curs && this.state.curs.length && this.state.curs.indexOf(ev.cur) < 0) patch.curs = [];
+      if(this.state.query) patch.query = '';
+    }
+    this.persist(patch, ()=>setTimeout(()=>land(4), 60));
+  }
+
   handleKey(ev){
     const tag = (ev.target && ev.target.tagName || '').toLowerCase();
+    if((ev.metaKey||ev.ctrlKey) && (ev.key==='k'||ev.key==='K')){ ev.preventDefault(); return this.openPal(); }
+    if(this.state.pal){
+      const list = this.palItems || [];
+      if(ev.key==='Escape'){ ev.preventDefault(); return this.setState({pal:false}); }
+      if(ev.key==='ArrowDown'||ev.key==='Tab'){ ev.preventDefault(); return this.setState(s=>({palSel: Math.min(list.length-1, s.palSel+1)})); }
+      if(ev.key==='ArrowUp'){ ev.preventDefault(); return this.setState(s=>({palSel: Math.max(0, s.palSel-1)})); }
+      if(ev.key==='Enter'){ ev.preventDefault(); const it = list[this.state.palSel]; if(it && it.run) it.run(); return; }
+      if(tag==='input') return;
+    }
     if(tag==='input'||tag==='textarea'||tag==='select') { if(ev.key==='Escape') ev.target.blur(); return; }
     if(ev.metaKey||ev.ctrlKey||ev.altKey) return;
     const k = ev.key, rows = this.rows || [];
@@ -1041,7 +1369,7 @@ class Component extends DCLogic {
   snap(extra){
     const s = this.state;
     return Object.assign({tz:s.tz,query:s.query,watchOnly:s.watchOnly,client:s.client,apiUrl:s.apiUrl,theme:s.theme,view:s.view,
-      density:s.density,ratingSrc:s.ratingSrc,pair:s.pair,autoSync:s.autoSync,syncEvery:s.syncEvery,lastSync:s.lastSync,
+      density:s.density,ratingSrc:s.ratingSrc,pair:s.pair,autoSync:s.autoSync,syncEvery:s.syncEvery,lastSync:s.lastSync,tvSym:s.tvSym,tvInt:s.tvInt,tvOn:s.tvOn,tvFavs:s.tvFavs,
       watch:s.watch,notes:s.notes,rep:s.rep,moved:s.moved,secs:s.secs,impact:s.impact,curs:s.curs,alerts:s.alerts,sound:s.sound,lastSeen:s.lastSeen}, extra||{});
   }
   persist(patch, done){
@@ -1052,7 +1380,8 @@ class Component extends DCLogic {
   applyTheme(t){ try{ document.documentElement.setAttribute('data-theme', t==='light'?'light':'dark'); }catch(e){} }
   applyDensity(d){ try{ document.documentElement.setAttribute('data-density', d==='compact'?'compact':'comfortable'); }catch(e){} }
 
-  go(v){ this.persist({view:v, open:null, cursor:-1}); }
+  go(v){
+    this.setState(s=>({riseTick:s.riseTick+1})); this.persist({view:v, open:null, cursor:-1}); }
 
   /* Effective impact. `promoted` is an explicit editorial override that beats the
      per-site ratings — without it, any event all three sites underrate can never
@@ -1135,10 +1464,11 @@ class Component extends DCLogic {
         imp: e.imp || (e.importance===3||e.impact==='High'?3:(e.importance===2||e.impact==='Medium'?2:1)),
         name: e.name || e.event || e.title, period: e.period || '', actual: e.actual, forecast: e.forecast || e.estimate,
         previous: e.previous || e.prev, revised: e.revised, vol: e.vol || 30, better: e.better || 'higher',
-        pairs: e.pairs || [], src: e.src || e.source || 'feed', hist: e.hist || [], desc: e.desc || ''
+        pairs: e.pairs || [], src: e.src || e.source || 'feed', hist: e.hist || [], desc: e.desc || '',
+        impBy: e.impBy || null, unverified: e.unverified || false
       })).filter(e=>e.utc && e.name);
       if(!mapped.length) throw new Error('no events in payload');
-      const sig = a => a.map(e=>e.id+'|'+e.utc+'|'+(e.actual||'')+'|'+(e.forecast||'')+'|'+(e.revised||'')).join(';');
+      const sig = a => a.map(e=>e.id+'|'+e.utc+'|'+(e.actual||'')+'|'+(e.forecast||'')+'|'+(e.revised||'')+'|'+JSON.stringify(e.impBy||0)).join(';');
       const changed = sig(mapped) !== sig(this.state.extra || []);
       const t = Date.now();
       this.setState({extra:mapped, syncing:false, syncFails:0, lastSync:t,
@@ -1305,9 +1635,10 @@ class Component extends DCLogic {
   }
   num(v){
     if(v===undefined||v===null||v==='') return null;
-    const s = String(v).replace(/,/g,'');
-    const m = s.match(/-?\d+(\.\d+)?/); if(!m) return null;
-    return parseFloat(m[0]);
+    const s = String(v).replace(/,/g,'').trim();
+    const m = s.match(/\d+(\.\d+)?/); if(!m) return null;
+    // Any minus before the first digit counts, even behind a currency symbol.
+    return (/^[^\d]*-/.test(s) ? -1 : 1) * parseFloat(m[0]);
   }
   unitOf(v){
     const s = String(v==null?'':v).trim();
@@ -1364,7 +1695,7 @@ class Component extends DCLogic {
     else if(overdue){ flag='AWAITING'; flagFg='var(--amb)'; }
     else if(e.tentative){ flag='TENT'; flagFg='var(--amb)'; }
     else if(e.revised){ flag='REV'; flagFg='var(--blu)'; }
-    else if(e.impBy){ flag='SPLIT'; flagFg='var(--blu)'; }
+    const split = this.isSplit(e);
 
     const br = this.bracketFor(e);
     const isNew = !!st.newIds[e.id] && a!==null && f!==null;
@@ -1389,7 +1720,8 @@ class Component extends DCLogic {
       edge: (!past && imp>=3) ? col : 'transparent',
       bg: st.cursor>=0 && (this.rows||[])[st.cursor]===e.id ? 'var(--pane2)' : 'transparent',
       dim: past ? '.62' : '1',
-      name:e.name, period:e.period||'', flag, flagFg,
+      name:e.name, period:e.period||'', flag, flagFg, split,
+      splitTitle: split ? 'Rated differently by the three sources — Myfxbook '+(e.impBy.mf||'—')+', ForexFactory '+(e.impBy.ff||'—')+', Investing.com '+(e.impBy.inv||'—')+' of 3' : '',
       pairsText:(e.pairs||[]).join('  ·  '), pairs:e.pairs||[],
       actual: e.actual || (e.unverified && past ? 'not synced' : overdue?'awaiting':past?'pending':'—'),
       actFg: e.actual ? 'var(--fg)' : (e.unverified && past ? 'var(--blu)' : overdue?'var(--amb)':'var(--fg3)'),
@@ -1399,6 +1731,9 @@ class Component extends DCLogic {
       forecast: e.forecast || '—', previous: e.previous || '—',
       surprise: sur, surFg, sigma,
       volText: e.vol ? '±'+e.vol : '—', volRaw: e.vol||0,
+      volFrac: Math.round(Math.min(100, (e.vol||0)))+'%',
+      volLineFg: e.vol>=70?'var(--red)':e.vol>=35?'var(--amb)':'var(--rule2)',
+      isNowMark: this.nowMarkId===e.id, riseDelay: (Math.min(14, this.rowSeq=(this.rowSeq||0)+1)*22)+'ms',
       volFg: e.vol>=70?'var(--red)':e.vol>=35?'var(--amb)':'var(--fg3)',
       spark: bars, hist: bars,
       histNote: hv.length ? 'Oldest to newest; latest highlighted.' : 'No series for this event type.',
@@ -1435,6 +1770,9 @@ class Component extends DCLogic {
   renderVals(){
     const st = this.state, now = st.now, all = this.events();
     const tzLong = st.tz.replace(/_/g,' ');
+    this.rowSeq = 0;
+    const futureSorted = all.filter(e=>Date.parse(e.utc)>now).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc));
+    this.nowMarkId = futureSorted.length ? futureSorted[0].id : null;
 
     let clock='--:--:--', utcNow='--:--';
     try { clock = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:st.tz}).format(now); } catch(e){}
@@ -1444,7 +1782,7 @@ class Component extends DCLogic {
 
     const snapMs = Date.parse(MRDN_SNAP_ISO);
     const ageH = (now - Math.max(snapMs, st.lastSync||0))/3600e3;
-    const stale = ageH > 18;
+    const stale = ageH > 6;
     const staleAge = ageH >= 48 ? Math.floor(ageH/24)+' DAYS' : Math.floor(ageH)+' HOURS';
 
     const view = st.view.indexOf('locked:')===0 ? st.view.slice(7) : (st.view==='pricing' ? 'settings' : st.view);
@@ -1458,10 +1796,23 @@ class Component extends DCLogic {
       return true;
     }).sort((x,y)=>Date.parse(x.utc)-Date.parse(y.utc));
 
+    // Baseline: what the user explicitly asked for (search, watchlist) but
+    // before impact/currency narrowing. The banner counts only the difference.
+    const qFilt = all.filter(e=>{
+      if(st.watchOnly && !st.watch[e.id]) return false;
+      if(st.query){ const q=st.query.toLowerCase(); if((e.name+' '+e.cur+' '+(e.src||'')).toLowerCase().indexOf(q)<0) return false; }
+      return true;
+    });
+    const inWindow = list => {
+      if(view==='today') return list.filter(e=>this.dayKey(e.utc)===todayKey);
+      if(view==='archive') return list.filter(e=>Date.parse(e.utc)<=now);
+      return list.filter(e=>{ const d=Date.parse(e.utc)-now; return d > -30*3600e3 && d < 8*24*3600e3; });
+    };
     let shown, oneDay = false;
-    if(view==='today'){ shown = filt.filter(e=>this.dayKey(e.utc)===todayKey); oneDay = true; }
-    else if(view==='archive'){ shown = filt.filter(e=>Date.parse(e.utc)<=now).reverse(); }
-    else { shown = filt.filter(e=>{ const d=Date.parse(e.utc)-now; return d > -30*3600e3 && d < 8*24*3600e3; }); }
+    if(view==='today'){ shown = inWindow(filt); oneDay = true; }
+    else if(view==='archive'){ shown = inWindow(filt).reverse(); }
+    else { shown = inWindow(filt); }
+    const hiddenN = inWindow(qFilt).length - inWindow(filt).length;
 
     this.rows = shown.map(e=>e.id);
 
@@ -1474,7 +1825,9 @@ class Component extends DCLogic {
     });
     const groups = gmap.map(g=>{
       const hi = g.items.filter(i=>i.imp>=3).length;
-      return {label:g.label+(g.isToday?' · today':''), sub: g.items.length+' releases, '+hi+' high impact', showHead: !oneDay,
+      const n = g.items.length;
+      return {label:g.label+(g.isToday?' · today':''),
+        sub: n+(n===1?' release, ':' releases, ')+hi+' high impact', showHead: !oneDay,
         fg: g.isToday?'var(--fg)':'var(--fg2)', items:g.items};
     });
 
@@ -1496,6 +1849,16 @@ class Component extends DCLogic {
       if(br){ nextBracket = br.lo+' – '+br.hi; nextBracketLabel = 'BRACKET · '+br.pair; }
       else if(nx.vol){ nextBracket = '±'+nx.vol+' pips'; }
     }
+
+    const tvSuggest = (()=>{
+      const q = String(st.tvQ||'').trim().toUpperCase().replace(/[\s\/\-_]/g,'');
+      if(!q) return [];
+      const keys = Object.keys(MRDN_TV);
+      return keys.filter(k=>k.indexOf(q)===0)
+        .concat(keys.filter(k=>k.indexOf(q)>0))
+        .filter((s,i,a)=>a.indexOf(s)===i).slice(0,7)
+        .map(s=>({s, label:s, go: ()=>this.persist({tvSym:s, tvQ:''})}));
+    })();
 
     const sessions = MRDN_SESSIONS.map(s=>{
       const off = this.zoneOffset(s.zone, new Date(now));
@@ -1643,6 +2006,93 @@ class Component extends DCLogic {
       listTitle: view==='archive' ? 'Release archive' : view==='week' ? 'This week' : this.fmtDay(now),
       listSub: shown.length+' of '+all.length+' releases'+(st.watchOnly?' · watchlist only':''),
       countdown, nextAt, nextName, nextCur, nextFc, nextPrev, nextPairs, nextColor, nextImpact,
+      hasNext: !!nx,
+      ringDash: String(Math.round(138.23 * drainScale * 100)/100) + ' 138.23',
+      ringFg: nextColor,
+      nextShort: nx ? nx.name : '',
+      goNext: ()=>{ if(nx) this.jumpTo(nx.id, this.viewFor(nx)); },
+      riseName: (st.riseTick % 2) ? 'mRiseA' : 'mRiseB',
+      tvOn: st.tvOn,
+      toggleTv: ()=>this.persist({tvOn:!st.tvOn}),
+      tvLabel: st.tvOn ? 'HIDE' : 'SHOW',
+      tvSymLabel: (()=>{ const s = st.tvSym || (nx && (nx.pairs||[])[0]) || 'EURUSD'; return s; })(),
+      tvUrl: (()=>{
+        const sym = st.tvSym || (nx && (nx.pairs||[])[0]) || 'EURUSD';
+        const r = MRDN_TV_RESOLVE(sym) || {tv:'FX:EURUSD'};
+        const q = new URLSearchParams({
+          symbol: r.tv, interval: st.tvInt, theme: st.theme==='light'?'light':'dark',
+          style:'1', locale:'en', timezone: st.tz, hide_side_toolbar:'1', hide_legend:'0',
+          allow_symbol_change:'0', save_image:'0', withdateranges:'0', hide_volume:'1', details:'0'
+        });
+        return 'https://s.tradingview.com/widgetembed/?'+q.toString();
+      })(),
+      tvKey: (st.tvSym||'d')+'-'+st.tvInt+'-'+st.theme,
+      tvTabs: (()=>{
+        const cur = (st.tvSym || (nx && (nx.pairs||[])[0]) || 'EURUSD').toUpperCase();
+        const favs = st.tvFavs || [];
+        const list = (nx && nx.pairs || []).slice(0,3)
+          .concat(favs, ['EURUSD','GBPUSD','USDJPY','XAUUSD'])
+          .map(s=>String(s).toUpperCase())
+          .filter((s,i,a)=>a.indexOf(s)===i);
+        if(list.indexOf(cur) < 0) list.unshift(cur);
+        return list.slice(0,9).map(s=>({s, label:s,
+          fg: s===cur?'var(--fg)':'var(--fg3)', bd: s===cur?'var(--acc)':'transparent',
+          isFav: favs.indexOf(s)>=0 ? 'var(--acc)' : 'var(--fg3)',
+          go: ()=>this.persist({tvSym:s, tvQ:''}),
+          pin: ()=>{ const n = favs.indexOf(s)>=0 ? favs.filter(x=>x!==s) : favs.concat([s]).slice(-8); this.persist({tvFavs:n}); }
+        }));
+      })(),
+      tvQ: st.tvQ,
+      onTvQ: e=>this.setState({tvQ:e.target.value}),
+      tvGo: ()=>{ const r = MRDN_TV_RESOLVE(this.state.tvQ); if(r) this.persist({tvSym:r.sym, tvQ:''}); },
+      onTvKey: e=>{ if(e.key==='Enter'){ e.preventDefault(); const r = MRDN_TV_RESOLVE(this.state.tvQ); if(r) this.persist({tvSym:r.sym, tvQ:''}); } },
+      tvSuggest: tvSuggest,
+      hasTvSuggest: tvSuggest.length > 0,
+      tvInts: ['5','15','60','240','D'].map(v=>({v, label: v==='D'?'1D':(v==='240'?'4H':(v==='60'?'1H':v+'M')),
+        fg: v===st.tvInt?'var(--fg)':'var(--fg3)', bd: v===st.tvInt?'var(--rule2)':'transparent',
+        go: ()=>this.persist({tvInt:v})})),
+      palOpen: st.pal,
+      palQ: st.palQ,
+      onPalQ: e=>this.setState({palQ:e.target.value, palSel:0}),
+      closePal: ()=>this.setState({pal:false}),
+      stopPal: e=>e.stopPropagation(),
+      openPal: ()=>this.openPal(),
+      palItems: (()=>{
+        const q = st.palQ.trim().toLowerCase();
+        const hit = s => !q || String(s||'').toLowerCase().indexOf(q) >= 0;
+        const ALIAS = [[/consumer price/i,'cpi inflation'],[/nonfarm|non-farm/i,'nfp payrolls jobs'],
+          [/producer price/i,'ppi'],[/gross domestic/i,'gdp growth'],[/purchasing managers|pmi/i,'pmi'],
+          [/unemployment|jobless/i,'jobs unemployment claims'],[/interest rate decision/i,'rate hike cut decision'],
+          [/retail sales/i,'consumer spending'],[/existing home|building permits|housing/i,'housing'],
+          [/federal open market|fomc/i,'fomc fed'],[/average earnings|hourly earnings/i,'wages']];
+        const alias = e => ALIAS.filter(a=>a[0].test(e.name)).map(a=>a[1]).join(' ');
+        const out = [];
+        const views = [['today','Today','the day\u2019s releases'],['week','This week','seven-day schedule'],
+          ['pair','By pair','releases that move one cross'],['banks','Central banks','rates and speakers'],
+          ['archive','Archive','what has already printed'],['report','Report','client-ready brief'],['settings','Data','sources and feed']];
+        views.forEach(([v,label,sub])=>{ if(hit(label)||hit(sub)||hit(v)) out.push({k:'v'+v, label, sub, kind:'VIEW', run:()=>{ this.setState({pal:false}); this.go(v); }}); });
+        all.filter(e=>hit(e.name)||hit(e.cur)||hit(e.period)||hit(e.src)||hit(alias(e)))
+          .sort((x,y)=>Math.abs(Date.parse(x.utc)-now)-Math.abs(Date.parse(y.utc)-now))
+          .slice(0, q?9:5)
+          .forEach(e=>out.push({k:'e'+e.id, label:e.name+(e.period?' \u00b7 '+e.period:''),
+            sub:e.cur+'  '+this.fmtDayShort(e.utc)+'  '+this.fmtTime(e.utc)+(e.forecast?'   fcst '+e.forecast:''),
+            kind: this.impOf(e)>=3?'HIGH':this.impOf(e)===2?'MED':'LOW',
+            run:()=>this.jumpTo(e.id, this.viewFor(e))}));
+        [['Toggle density','compact or comfortable rows',()=>this.toggleDensity()],
+         ['Toggle theme','dark or light',()=>this.toggleTheme()],
+         ['Toggle alerts','notification and ping before releases',()=>this.toggleAlerts()],
+         ['Send test notification','check delivery on this device',()=>this.runSelfTest()],
+         ['Watchlist only','hide everything unstarred',()=>this.persist({watchOnly:!st.watchOnly})],
+         ['Print the brief','open the print dialogue',()=>{ try{ window.print(); }catch(e){} }]
+        ].forEach(([label,sub,fn])=>{ if(hit(label)||hit(sub)) out.push({k:'a'+label, label, sub, kind:'DO', run:()=>{ this.setState({pal:false}); fn(); }}); });
+        this.palItems = out;
+        return out.map((it,i)=>Object.assign({}, it, {
+          bg: i===st.palSel ? 'var(--pane2)' : 'transparent',
+          bd: i===st.palSel ? 'var(--acc)' : 'transparent',
+          kindFg: it.kind==='HIGH'?'var(--red)':it.kind==='MED'?'var(--amb)':it.kind==='VIEW'?'var(--blu)':'var(--fg3)',
+          pick: it.run, hover: ()=>this.setState({palSel:i})
+        }));
+      })(),
       nextBracket, nextBracketLabel, drainScale: String(drainScale),
       tickAnim: (new Date(now).getSeconds() % 2 === 0) ? 'mTickA' : 'mTickB',
 
@@ -1720,7 +2170,12 @@ class Component extends DCLogic {
       ratingBtns: [['mf','MYFXBOOK'],['ff','FOREXFACTORY'],['inv','INVESTING'],['any','HIGHEST OF THE THREE']].map(([k,l])=>({
         label:l, bd: st.ratingSrc===k?'var(--acc)':'transparent', fg: st.ratingSrc===k?'var(--fg)':'var(--fg3)',
         go: ()=>this.persist({ratingSrc:k})})),
-      splitCount: String(all.filter(e=>e.impBy).length),
+      splitCount: String(all.filter(e=>this.isSplit(e)).length),
+      hiddenN: hiddenN > 0,
+      hiddenMsg: hiddenN + (hiddenN===1?' release ':' releases ')
+        + (view==='today'?'today':view==='archive'?'in the archive':'this week')
+        + (hiddenN===1?' is':' are') + ' hidden by your impact or currency filters',
+      showHidden: ()=>this.persist({impact:[3,2,1], curs:[]}),
 
       apiUrl: st.apiUrl, onApi: e=>this.persist({apiUrl:e.target.value, feedMsg:'', feedOk:null, syncFails:0}),
       doFetch: ()=>{ if(this.state.apiUrl) this.fetchFeed(this.state.apiUrl); else this.setState({feedMsg:'paste a URL first', feedOk:false}); },
